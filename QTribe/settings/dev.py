@@ -15,7 +15,8 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR2 = Path(__file__).resolve().parent.parent.parent
+print('base---------->',BASE_DIR)
 #添加导包路径
 sys.path.insert(0,os.path.join(BASE_DIR,'apps'))
 
@@ -59,7 +60,7 @@ ROOT_URLCONF = 'QTribe.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR2/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,7 +133,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS=[
-    os.path.join(BASE_DIR,'static')
+    os.path.join(BASE_DIR2,'static')
 ]
 
 MEDIA_URL='/media/'
