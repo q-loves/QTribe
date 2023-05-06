@@ -1,0 +1,186 @@
+/*------------------------------
+ MOBILE MENU
+ ------------------------------*/
+.teamo-menu-clone-wrap {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 320px;
+    height: 100vh;
+    background-color: #fff;
+    -webkit-transition: all 0.3s ease 0s;
+    -o-transition: all 0.3s ease 0s;
+    -moz-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+    z-index: 100000;
+    -webkit-box-shadow: 3px 5px 14px -3px rgba(0, 0, 0, 0.11);
+    -moz-box-shadow: 3px 5px 14px -3px rgba(0, 0, 0, 0.11);
+    box-shadow: 3px 5px 14px -3px rgba(0, 0, 0, 0.11);
+    color: #000;
+}
+.teamo-menu-clone-wrap.open {
+    left: 0;
+}
+.teamo-menu-panels-actions-wrap {
+    border-bottom: 1px solid #eee;
+    height: 50px;
+    position: relative;
+}
+.teamo-menu-panels-actions-wrap .teamo-menu-close-btn,
+.teamo-menu-panels-actions-wrap .teamo-menu-prev-panel {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    border-left: 1px solid #eee;
+    text-align: center;
+    line-height: 50px;
+    color: #000;
+}
+.teamo-menu-panels-actions-wrap .teamo-menu-close-btn:hover,
+.teamo-menu-panels-actions-wrap .teamo-menu-prev-panel:hover {
+    color: #000;
+}
+.teamo-menu-panels-actions-wrap .teamo-menu-prev-panel {
+    right: inherit;
+    left: 0;
+    border: none;
+    border-right: 1px solid #eee;
+    
+}
+.teamo-menu-panels-actions-wrap .teamo-menu-current-panel-title {
+    display: block;
+    text-align: center;
+    line-height: 50px;
+    padding: 0 50px;
+    text-transform: uppercase;
+}
+.teamo-menu-panels-actions-wrap .teamo-menu-prev-panel:before {
+    content: "\f104";
+    font-family: FontAwesome;
+}
+.teamo-menu-panel > ul {
+    padding: 0;
+    margin: 0;
+}
+.teamo-menu-panel li {
+    list-style: none;
+    position: relative;
+}
+.teamo-menu-panel > ul > li {
+    padding: 0 20px;
+    border-bottom: 1px solid #eee;
+}
+.teamo-menu-panel > ul > li > a {
+    display: block;
+    line-height: 50px;
+    color: #000;
+    text-transform: uppercase;
+}
+.teamo-menu-panel > ul > li:hover > a,
+.teamo-menu-panel > ul > li.active > a {
+    color: #000;
+}
+.teamo-menu-next-panel {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+}
+.teamo-menu-next-panel:before {
+    content: "\f105";
+    font-family: FontAwesome;
+}
+.teamo-menu-clone-wrap .toggle-submenu {
+    display: none !important;
+}
+.teamo-menu-clone-wrap .teamo-menu-panels {
+    background: inherit;
+    border-color: inherit;
+    z-index: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: calc(100% - 50px);
+    position: relative;
+}
+.teamo-menu-clone-wrap .teamo-menu-panel {
+    background-color: #fff;
+}
+.teamo-menu-clone-wrap .teamo-menu-panel.teamo-menu-sub-panel {
+    border-color: #fff;
+    bottom: 0;
+    box-sizing: border-box;
+    display: block;
+    left: 0;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateX(100%);
+    transition: all 0.2s ease 0s;
+    z-index: 0;
+}
+.teamo-menu-clone-wrap .teamo-menu-panel.teamo-menu-panel-opened {
+    transform: translateX(0);
+    z-index: 999;
+}
+.teamo-menu-clone-wrap .teamo-menu-sub-opened {
+    z-index: 1;
+    opacity: 0;
+    visibility: hidden;
+}
+.teamo-menu-clone-wrap .teamo-menu-hidden {
+    display: block !important;
+    opacity: 0;
+    visibility: hidden;
+}
+.teamo-menu-clone-wrap .submenu.mega-menu {
+    padding: 20px;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+.teamo-menu li > a > .icon {
+    margin-right: 10px;
+}
+.teamo-menu-panel-main {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    -ms-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    transition: all .3s ease;
+}
+.teamo-menu-panel.teamo-menu-panel-opened .submenu{
+    opacity: 1;
+    visibility: visible;
+}
+.teamo-menu-panel > .mega-menu .widget-custom-menu {
+    width: 100%;
+}
+.teamo-menu-panels .menu-item-has-children > a::after {
+    display: none;
+}
+.teamo-menu-panel.teamo-menu-panel-opened .menu-page{
+    background-image: none;
+}
+.teamo-menu-panel .main-menu > li > a,.teamo-menu-panel .teamo-demolink .title,
+.teamo-menu-panel .mega-menu .teamo-custommenu .widgettitle{
+    color: #222222 !important;
+}
+.teamo-menu-panel .mega-menu .teamo-custommenu ul li{
+    color: #555;
+}

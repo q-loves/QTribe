@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login/register</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <script src="/static/js/vue.js"></script>
+</head>
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #EAF6F7;
+<!--linear-gradient(to right, red 0%,red 50%,white 51%,white 100%);-->
+<!--   background: url('/static/images/login-bg-6.jpg') no-repeat;-->
+<!--#f6f5f7;-->
+    background-size: 100% 130%;
+
+}
+
+h2 {
+    margin-bottom: 10px;
+    font-size: 32px;
+    text-transform: capitalize;
+}
+
+.container {
+    position: relative;
+    width: 768px;
+    height: 480px;
+    background-color: white;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.form-container {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background-color: white;
+    transition: all 0.6s ease-in-out;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    height: 100%;
+    width: 100%;
+    padding: 0 50px;
+}
+
+input {
+    width: 100%;
+    margin: 8px 0;
+    padding: 12px;
+    background-color: #eee;
+    border: none;
+}
+#smscode{
+    width: 160px;
+    margin: 8px 2px;
+    padding: 12px 12px;
+    background-color: #eee;
+    border: none;
+}
+
+.forget-password {
+    display: inline-block;
+    height: 20px;
+    text-decoration: none;
+    color: #bbb;
+    text-transform: capitalize;
+    font-size: 12px;
+}
+
+.forget-password:hover {
+    color: lightslategray;
+    border-bottom: 2px solid #ff4b2b;
+}
+
+button {
+    background: #ff4b2b;
+    padding: 10px 50px;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    text-transform: uppercase;
+    color: white;
+    margin-top: 10px;
+    outline: none;
+    transition: transform 80;
+}
+
+#get_code {
+    background: #C3CBC3;
+    padding: 10px 10px;
+    border: 1px solid transparent;
+    border-radius: 0px;
+    text-transform: uppercase;
+    color: black;
+    margin-top: 8px;
+    outline: none;
+    transition: transform 80;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.overlay_container {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 100;
+    right: 0;
+    overflow: hidden;
+    transition: all 0.6s ease-in-out;
+}
+
+.overlay {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    left: -100%;
+    background-color: #ff4b2b;
+}
+
+.overlay_panel {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+    color: white;
+    padding: 0 40px;
+    text-align: center;
+}
+
+.overlay_panel button {
+    background-color: transparent;
+    border: 1px solid white;
+}
+
+.overlay_panel p {
+    font-size: 12px;
+    margin: 10px 0 15px 0;
+}
+
+.overlay_right_container {
+    right: 0;
+}
+
+.container.active .sign-up-container {
+    transform: translateX(100%);
+    z-index: 5;
+}
+
+.container.active .sign-in-container {
+    transform: translateX(100%);
+}
+
+.container.active .overlay_container {
+    transform: translateX(-100%);
+}
+
+.container.active .overlay {
+    transform: translateX(50%);
+}
+/*错误提示*/
+.error-tip{
+    float:right;
+    height:20px;
+    line-height:20px;
+    text-align:left;
+    font-size:12px;
+    width:100%; color:red;
+<!--    display:none;-->
+    position:absolute;
+    right:0px;
+   }
+</style>
+<body>
+    <!-- login/register container -->
+    <div class="container">
+<!--         register-->
+        <div class="form-container sign-up-container">
+
+            <form class="form" id="form" method="post" action="/user/register/" @submit="reg_sub">
+                <h2>sign up</h2>
+                <p class="form-row form-row-wide">
+                    <input type="text" v-model="username" @blur="check_uname" name="username" id="username" placeholder="Username...">
+                    <span class="error-tip" v-show="error_username">  ${error_username_msg}  </span>
+                </p>
+                <p class="form-row form-row-wide">
+                    <input type="text" v-model="phone" @blur="check_phone" name="phone" id="phone" placeholder="Phone...">
+                     <span class="error-tip" v-show="error_phone">  ${error_phone_msg}  </span>
+                <p class="form-row form-row-wide">
+                    <input   type="text" v-model="smscode" @blur="check_smscode" name="smscode" placeholder="Verify code"   class="input-text" id="smscode" >
+                <span class="error-tip" v-show="error_smscode">  ${error_smscode_msg}  </span> <a href="javascript:;" style="font-size: 16px;text-ali、gn: center;font-weight: normal;float: right;"  id="get_code" @click="send_smscode" >${smscode_btn}</a>
+                </p>
+<!--                <button style="font-size: 16px;text-align: center;font-weight: normal;float: right;" id="get_code" @click="send_smscode">${smscode_btn}</button>-->
+
+                <p class="form-row form-row-wide">
+                    <input type="password" v-model="password" @blur="check_pwd" name="password" id="password" placeholder="Password...">
+                     <span class="error-tip" v-show="error_password">  ${error_password_msg}  </span>
+                </p>
+
+                <button class="signUp" type="submit">sign up</button>
+
+            </form>
+        </div>
+
+        <div class="overlay_container">
+            <div class="overlay">
+                <!-- overlay left -->
+<!--                <div class="overlay_panel overlay_left_container">-->
+<!--                    <h2>welcome back!</h2>-->
+<!--                    <p>To keep connected with us please login with your personal info</p>-->
+<!--                    <button id="sign-in">sign in</button>-->
+<!--                </div>-->
+                <div class="overlay_panel overlay_right_container">
+                    <h2>hello friend!</h2>
+                    <p>Enter your username and password and start your journey</p>
+                    <button id="sign-in" >sign in</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/axios-0.18.0.min.js"></script>
+	<script src="/static/js/jquery-1.12.4.min.js"></script>
+	<script src="/static/js/jquery.plugin-countdown.min.js"></script>
+	<script src="/static/js/jquery-countdown.min.js"></script>
+	<script src="/static/js/bootstrap.min.js"></script>
+	<script src="/static/js/owl.carousel.min.js"></script>
+	<script src="/static/js/magnific-popup.min.js"></script>
+	<script src="/static/js/isotope.min.js"></script>
+	<script src="/static/js/jquery.scrollbar.min.js"></script>
+	<script src="/static/js/jquery-ui.min.js"></script>
+	<script src="/static/js/mobile-menu.js"></script>
+	<script src="/static/js/chosen.min.js"></script>
+	<script src="/static/js/slick.js"></script>
+	<script src="/static/js/jquery.elevateZoom.min.js"></script>
+	<script src="/static/js/jquery.actual.min.js"></script>
+	<script src="/static/js/fancybox/source/jquery.fancybox.js"></script>
+	<script src="/static/js/lightbox.min.js"></script>
+	<script src="/static/js/owl.thumbs.min.js"></script>
+	<script src="/static/js/jquery.scrollbar.min.js"></script>
+	<script src="/static/js/frontend-plugin.js"></script>
+<script type="text/javascript" src="{{static('js/user/register.js')}}"></script>
+
+
+</body>
+
+</html>
+

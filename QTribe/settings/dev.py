@@ -16,7 +16,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR2 = Path(__file__).resolve().parent.parent.parent
-print('base---------->',BASE_DIR)
 #添加导包路径
 sys.path.insert(0,os.path.join(BASE_DIR,'apps'))
 
@@ -43,13 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user',
     'pieces_info',
+    'verify_code',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -58,6 +58,23 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'QTribe.urls'
 
 TEMPLATES = [
+{
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        # jinja2模板引擎
+        'DIRS': [os.path.join(BASE_DIR2, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+
+                'django.contrib.messages.context_processors.messages',
+            ],
+            # 补充Jinja2模板引擎环境
+            'environment': 'QTribe.utils.jinja2_env.environment',
+        },
+    },
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR2/'templates'],
@@ -212,3 +229,7 @@ LOGGING = {
         },
     }
 }
+
+#发送短信验证码
+APIID = 'C45813408'
+APIKEY = '28b334224f4475ca2a2472a5847af522'
