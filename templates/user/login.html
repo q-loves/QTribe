@@ -7,6 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>login/register</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <script src="/static/js/vue.js"></script>
+    <script type="text/javascript" src="{{ static('js/axios-0.18.0.min.js') }}"></script>
+    <script>
+        function transform(){
+            window.location.href = '/user/transform/?type=login';
+        }
+    </script>
+
+
 </head>
 <style>
     * {
@@ -52,10 +61,19 @@ h2 {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: left;
     height: 100%;
     width: 100%;
     padding: 0 50px;
+}
+.form_ {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 100%;
+
 }
 
 input {
@@ -65,13 +83,7 @@ input {
     background-color: #eee;
     border: none;
 }
-#smscode{
-    width: 190px;
-    margin: 8px 2px;
-    padding: 12px 12px;
-    background-color: #eee;
-    border: none;
-}
+
 
 .forget-password {
     display: inline-block;
@@ -80,6 +92,7 @@ input {
     color: #bbb;
     text-transform: capitalize;
     font-size: 12px;
+    padding: 8px 80px;
 }
 
 .forget-password:hover {
@@ -99,17 +112,6 @@ button {
     transition: transform 80;
 }
 
-#get_code {
-    background: #C3CBC3;
-    padding: 10px 10px;
-    border: 1px solid transparent;
-    border-radius: 0px;
-    text-transform: uppercase;
-    color: black;
-    margin-top: 8px;
-    outline: none;
-    transition: transform 80;
-}
 
 button:active {
     transform: scale(0.95);
@@ -177,37 +179,38 @@ button:active {
 .container.active .overlay {
     transform: translateX(50%);
 }
+/*错误提示*/
+.error-tip{
+    float:right;
+    height:20px;
+    line-height:20px;
+    text-align:left;
+    font-size:12px;
+    width:100%; color:red;
+<!--    display:none;-->
+    position:absolute;
+    right:0px;
+   }
 </style>
 <body>
     <!-- login/register container -->
+
     <div class="container">
-<!--         register-->
-<!--        <div class="form-container sign-up-container">-->
-<!--            <div class="form">-->
-<!--                <h2>sign up</h2>-->
-<!--                <input type="text" name="username" id="username" placeholder="Username...">-->
-<!--                <input type="text" name="phone" id="phone" placeholder="Phone...">-->
-<!--&lt;!&ndash;                <input type="email" name="emal" id="email" placeholder="Email...">&ndash;&gt;-->
-<!--                <p class="form-row form-row-wide">-->
 
-<!--                    <input   type="text" name="smscode" placeholder="Verify code"    class="input-text" id="smscode" >-->
-<!--                    <a href="javascript:;" style="font-size: 16px;text-align: center;font-weight: normal;float: right;" id="smscode_btn"  ><button id="get_code">获取验证码</button></a>-->
-<!--                </p>-->
-<!--                <input type="password" name="password" id="password" placeholder="Password...">-->
-<!--                <input type="password" name="password" id="password_again" placeholder="Password_again">-->
-<!--                <button class="signUp">sign up</button>-->
-
-<!--            </div>-->
-<!--        </div>-->
-        <!-- login -->
         <div class="form-container sign-in-container">
-            <div class="form">
-                <h2>sign in</h2>
-                <input type="text" name="username" id="username" placeholder="Username...">
-                <input type="password" name="password" id="password" placeholder="Password...">
+            <form class="form" id="form" action="/user/login/" method="post" @submit="reg_sub">
+                <h2 class="form_">sign in</h2>
+                <p class="form-row form-row-wide">
+                    <input type="text" v-model="username" name="username" id="username" @blur="check_uname" placeholder="Username...">
+                    <span class="error-tip" v-show="error_username">${error_username_msg}</span>
+                </p>
+                <p class="form-row form-row-wide">
+                    <input type="password" v-model="password" name="password" id="password" @blur="check_pwd" placeholder="Password...">
+                    <span class="error-tip" v-show="error_password">${error_password_msg}</span>
+                </p>
                 <a href="#" class="forget-password">forget your password</a>
-                <button class="signIn">sign in</button>
-            </div>
+                <button class="signIn" type="submit">sign in</button>
+            </form>
         </div>
         <!-- overlay container -->
         <div class="overlay_container">
@@ -222,18 +225,14 @@ button:active {
                 <div class="overlay_panel overlay_right_container">
                     <h2>hello friend!</h2>
                     <p>Enter your personal details and start journey with us</p>
-                    <button id="sign-up">sign up</button>
+                    <button id="sign-up" onclick="transform()">sign up</button>
                 </div>
-                <!--  overlay right sign in -->
-<!--                <div class="overlay_panel overlay_right_container">-->
-<!--                    <h2>hello friend!</h2>-->
-<!--                    <p>Enter your username and password and start your journey</p>-->
-<!--                    <button id="sign-in">sign in</button>-->
-<!--                </div>-->
+
             </div>
         </div>
     </div>
-    <script src="./day1.js"></script>
+    <script type="text/javascript" src="{{ static('js/user/login.js') }}"></script>
+
 </body>
 
 </html>

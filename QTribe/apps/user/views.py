@@ -1,6 +1,7 @@
+from django.contrib import auth
 from django.contrib.admin import action
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.views import View
@@ -34,6 +35,23 @@ class CheckPhone(View):
 
 
 class Login(View):
-
     def get(self,request):
-        return render(request,'login.html')
+        return render(request,'user/login.html')
+    def post(self,request):
+        username=request.POST.get('username')
+        password=request.POST.get('password')
+        user=auth.authenticate(username=username,password=password)
+        if user:
+
+            return render(request,'base.html')
+        return HttpResponse('用户名或密码错误')
+
+class Transform(View):
+    def get(self,request):
+        type=request.GET.get('type')
+        if type=='register':
+            return render(request, 'user/login.html')
+        if type=='login':
+            return render(request, 'user/register.html')
+        return render(request,'404.html')
+

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="icon" href="/static/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/static/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+    <meta name="keywords" content="响应式后台模板,开源免费后台模板,Bootstrap5后台管理系统模板">
+    <meta name="description" content="Bootstrap-Admin基于bootstrap5的免费开源的响应式后台管理模板">
+    <meta name="author" content="ajiho">
+    <link rel="stylesheet" href="/static/lib/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min0.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-admin.min.css">
+    <title>Django-video</title>
+</head>
+<body>
+
+<!--头部导航-->
+<ul class="bsa-header">
+    <!--   移动端侧边栏toggler(不可删除) -->
+    <li>
+        <div class="bsa-nav-item bsa-mobile-sidebar-toggler-item">
+            <i class="bi bi-list"></i>
+        </div>
+    </li>
+    <!--  搜索框表单部分  -->
+    <li>
+        <div class="bsa-nav-item bsa-cursor-default bsa-search-form-item">
+            <form class="bsa-search-form" action="#">
+                <input type="text" class="form-control bsa-search-form-control" name="keyword" aria-label="搜索关键词"
+                       placeholder="搜索关键词">
+                <button class="bsa-search-submit-btn" type="submit"><i class="bi bi-search"></i></button>
+                <button class="bsa-search-close-icon" type="button"><i class="bi bi-x-lg"></i></button>
+            </form>
+        </div>
+    </li>
+    <!--  空白占位符(可以让.bsa-header-item左右分布)   -->
+    <li class="bsa-spacer"></li>
+    <!--  移动端显示的搜索按钮(和搜索框是配套使用)      -->
+    <li>
+        <div class="bsa-nav-item bsa-mobile-search-toggler-item">
+            <i class="bi bi-search"></i>
+        </div>
+    </li>
+    <!--    通知    -->
+    <li class="dropdown">
+        <div class="bsa-nav-item" data-bs-toggle="dropdown">
+            <div class="bsa-header-badge-wrapper">
+                <span class="bsa-header-badge">99+</span>
+                <i class="bi bi-bell"></i>
+            </div>
+        </div>
+        <div class="dropdown-menu dropdown-menu-end p-0">
+            <div class="card border-0">
+                <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                    <span class="bsa-font-15">通知列表</span>
+                    <a href="javascript:" class="text-muted bsa-font-13 text-decoration-none">全部设为已读</a>
+                </div>
+                <div class="card-body p-0">
+                    <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
+                        <div class="d-flex align-items-center justify-content-center bsa-font-20 bsa-height-45 bsa-width-45 rounded-circle bsa-bg-color1 text-white">
+                            <i class="bi bi-cart"></i>
+                        </div>
+                        <div class="d-flex flex-column gap-1 ms-3">
+                            <h5 class="text-dark mb-0 bsa-ellipsis">新订单</h5>
+                            <div class="text-secondary bsa-ellipsis2">
+                                您收到新的订单
+                            </div>
+                            <div class="small text-muted">10秒前</div>
+                        </div>
+                    </a>
+                    <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
+                        <div class="d-flex align-items-center justify-content-center bsa-font-20 bsa-height-45 bsa-width-45 rounded-circle bsa-bg-color2 text-white">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="d-flex flex-column gap-1 ms-3">
+                            <h5 class="text-dark mb-0 bsa-ellipsis">新增用户</h5>
+                            <div class="text-secondary bsa-ellipsis2">
+                                100个新用户注册
+                            </div>
+                            <div class="small text-muted">30分钟前</div>
+                        </div>
+                    </a>
+                    <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
+                        <div class="d-flex align-items-center justify-content-center bsa-font-20 bsa-height-45 bsa-width-45 rounded-circle bsa-bg-color3 text-white">
+                            <i class="bi bi-chat-square-dots"></i>
+                        </div>
+                        <div class="d-flex flex-column gap-1 ms-3">
+                            <h5 class="text-dark mb-0 bsa-ellipsis">新的评论</h5>
+                            <div class="text-secondary bsa-ellipsis2">
+                                您收到客户新的评论
+                            </div>
+                            <div class="small text-muted">2天前</div>
+                        </div>
+                    </a>
+                    <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
+                        <div class="d-flex align-items-center justify-content-center bsa-font-20 bsa-height-45 bsa-width-45 rounded-circle bsa-bg-color4 text-white">
+                            <i class="bi bi-cart-check"></i>
+                        </div>
+                        <div class="d-flex flex-column gap-1 ms-3">
+                            <h5 class="text-dark mb-0 bsa-ellipsis">订单已经发货</h5>
+                            <div class="text-secondary bsa-ellipsis2">
+                                您的商品已在运送途中
+                            </div>
+                            <div class="small text-muted">3天前</div>
+                        </div>
+                    </a>
+                    <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
+                        <div class="d-flex align-items-center justify-content-center bsa-font-20 bsa-height-45 bsa-width-45 rounded-circle bsa-bg-color4 text-white">
+                            <i class="bi bi-person-workspace"></i>
+                        </div>
+                        <div class="d-flex flex-column gap-1 ms-3">
+                            <h5 class="text-dark mb-0 bsa-ellipsis">新的同事</h5>
+                            <div class="text-secondary bsa-ellipsis2">
+                                新增3位后台管理工作成员
+                            </div>
+                            <div class="small text-muted">1周前</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="card-footer text-center bg-white">
+                    <a href="javascript:" class="text-muted bsa-font-14 text-decoration-none">查看所有通知</a>
+                </div>
+            </div>
+        </div>
+    </li>
+    <!--    用户信息    -->
+    <li class="dropdown">
+        <div class="bsa-nav-item" data-bs-toggle="dropdown">
+            <div class="d-flex align-items-center mb-2">
+                <img src="/media/{{user.user_icon}}" class="bsa-height-40 bsa-width-40 rounded-circle" alt="用户头像">
+                <div class="flex-shrink-0 ms-2 bsa-max-width-150 bsa-user-details">
+                    <div class="bsa-font-15 bsa-ellipsis">{{user.username}}</div>
+                    <div class="bsa-font-13 bsa-ellipsis">超级管理员</div>
+                </div>
+            </div>
+        </div>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="javascript:"><i class="bi bi-person me-2"></i>个人资料</a></li>
+            <li><a class="dropdown-item" href="javascript:"><i class="bi bi-gear me-2"></i>设置</a></li>
+            <li>
+                <div class="dropdown-divider"></div>
+            </li>
+            <li><a class="dropdown-item" href="javascript:"><i class="bi bi-box-arrow-right me-2"></i>退出登录</a>
+            </li>
+        </ul>
+    </li>
+</ul>
+<!--侧边栏-->
+<div class="bsa-sidebar">
+    <div class="bsa-sidebar-header">
+        <img src="/static/images/logo-icon.png" class="bsa-logo-icon" alt="logo-icon">
+        <div class="bsa-logo-text">Django-video</div>
+    </div>
+    <div class="bsa-sidebar-body">
+        <ul class="bsa-menu">
+            <li>
+                <a href="/videos/upload_video/">
+                    <i class="bi bi-house"></i>上传视频
+                </a>
+            </li>
+            <li>
+                <a href="javascript:">
+                    <i class="bi bi-columns-gap"></i>平台中心
+                </a>
+
+            </li>
+            <li>
+                <a href="/users/other_people/" class="bi bi-filetype-js">
+                    附近的人
+                </a>
+
+            </li>
+            <li>
+                <a href="javascript:" class="has-children">
+                    <i class="bi bi-list-nested"></i>个人中心
+                </a>
+                <ul>
+                    <li><a href="/videos/my_video/" >我的作品</a></li>
+                    <li>
+                        <a href="javascript:" >我的收藏</a>
+                    </li>
+                    <li>
+                        <a href="javascript:" >我的关注列表</a>
+
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!--内容区域-->
+<div class="bsa-main-wrapper">
+    <div class="bsa-main-content">
+        <!-- 内容都应该被包裹在此-->
+        {% block content %}
+
+        {% endblock content %}
+
+    </div>
+</div>
+<!--调色板-->
+
+
+
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/bootstrap-admin.min.js"></script>
+
+
+</body>
+</html>

@@ -8,6 +8,11 @@
     <title>login/register</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <script src="/static/js/vue.js"></script>
+    <script>
+        function transform(){
+            window.location.href = '/user/transform/?type=register';
+        }
+    </script>
 </head>
 <style>
     * {
@@ -62,6 +67,16 @@ h2 {
     height: 100%;
     width: 100%;
     padding: 0 50px;
+}
+
+.form_ {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    width: 100%;
+    box-sizing:3px 5px;
 }
 
 input {
@@ -203,7 +218,7 @@ button:active {
         <div class="form-container sign-up-container">
 
             <form class="form" id="form" method="post" action="/user/register/" @submit="reg_sub">
-                <h2>sign up</h2>
+                <h2 class="form_">sign up</h2>
                 <p class="form-row form-row-wide">
                     <input type="text" v-model="username" @blur="check_uname" name="username" id="username" placeholder="Username...">
                     <span class="error-tip" v-show="error_username">  ${error_username_msg}  </span>
@@ -238,7 +253,7 @@ button:active {
                 <div class="overlay_panel overlay_right_container">
                     <h2>hello friend!</h2>
                     <p>Enter your username and password and start your journey</p>
-                    <button id="sign-in" >sign in</button>
+                    <button id="sign-in" onclick="transform()">sign in</button>
                 </div>
             </div>
         </div>
