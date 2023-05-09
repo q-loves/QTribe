@@ -9,6 +9,9 @@ from django.views import View
 from user.models import UserModel
 
 #注册
+from region.models import Nation, Province, City
+
+
 class Register(View):
 
     def get(self,request):
@@ -21,7 +24,7 @@ class Register(View):
         user=UserModel.objects.create_user(username=username,password=password,phone=phone)
         if user:
             state={'code':200}
-        return JsonResponse(state)
+        return redirect('/index/home_index/')
 #校验用户名
 class CheckUsername(View):
     def get(self,request,username):
@@ -42,8 +45,8 @@ class Login(View):
         password=request.POST.get('password')
         user=auth.authenticate(username=username,password=password)
         if user:
-
-            return render(request,'base.html')
+            auth.login(request,user)
+            return redirect('/index/home_index/')
         return HttpResponse('用户名或密码错误')
 
 class Transform(View):
@@ -55,3 +58,9 @@ class Transform(View):
             return render(request, 'user/register.html')
         return render(request,'404.html')
 
+class UpdateInformation(View):
+    def get(self,request):
+        nation=Nation.objects.get(id=request.user.nation_id)
+        province=Province.objects.get(id=request.user.province_id)
+        city=City.objects.get(id=request.user.city_id)
+        return render(request,'user/update_information.html',{'user':request.user,'nation':nation,'province':province,'city':city})

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+        <div class="card border-top border-0 border-4 border-info">
+        <div class="card-body">
+            <div class="border p-4 rounded">
+                <div class="card-title d-flex align-items-center">
+                    <div><i class="bi bi-person me-1 bsa-font-20 text-info"></i>
+                    </div>
+                    <h5 class="mb-0 text-info">发布视频</h5>
+                </div>
+                <hr>
+                <form action="/pieces/upload_video/" enctype="multipart/form-data" method="post">
+                    <div class="row mb-3">
+                        <label for="username4" class="col-sm-3 col-form-label">
+                            视频标题
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="title" placeholder="视频标题" name="title"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+
+                        <label for="formFile" class="col-sm-3 col-form-label">请选择文件</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="file" id="video" name="video" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="address4" class="col-sm-3 col-form-label">
+                            描述
+                        </label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" id="remark" name="remark" rows="5" placeholder="请输入视频描述"
+                                      name="address4"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9">
+                            <button type="submit" class="btn btn-info px-5">发布视频</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

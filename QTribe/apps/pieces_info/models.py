@@ -29,11 +29,16 @@ class ArticleModel(BaseModel):
         return self.title
 
 class VideoModel(BaseModel):
-    video=models.FileField(verbose_name='视频内容',upload_to='static/video/')
+    video=models.FileField(verbose_name='视频内容')
+    title = models.CharField(verbose_name='视频标题', max_length=20, null=True, blank=True)
     star_count = models.IntegerField(default=0, verbose_name='点赞量', blank=True, null=True)
     comment_count = models.IntegerField(default=0, verbose_name='评论量', blank=True, null=True)
     category = models.ForeignKey('CategoryModel', on_delete=models.CASCADE, verbose_name='视频类型', blank=True, null=True,
                                  related_name='video')
+    duration_time=models.CharField(verbose_name='视频时长',max_length=20,null=True,blank=True)
+    remark=models.CharField(verbose_name='备注',max_length=20,null=True,blank=True)
+    img_path = models.CharField(verbose_name='照片文件', max_length=20, null=True, blank=True)
+    running_count = models.IntegerField(verbose_name='播放次数', max_length=20, null=True, blank=True)
     user = models.ForeignKey('user.UserModel', verbose_name='用户', on_delete=models.CASCADE, related_name='video')
     class Meta:
         db_table = 't_video'
@@ -41,7 +46,7 @@ class VideoModel(BaseModel):
         verbose_name_plural = verbose_name
 
 class ImageModel(BaseModel):
-    image=models.ImageField(verbose_name='图片内容',upload_to='static/images/')
+    image=models.ImageField(verbose_name='图片内容')
     video=models.ForeignKey('VideoModel',verbose_name='视频',on_delete=models.CASCADE,blank=True,null=True,related_name='image')
     article=models.ForeignKey('ArticleModel',verbose_name='文章',on_delete=models.CASCADE,blank=True,null=True,related_name='image')
     user=models.ForeignKey('user.UserModel',verbose_name='用户',on_delete=models.CASCADE,related_name='image')

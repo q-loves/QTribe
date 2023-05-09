@@ -1,0 +1,23 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+        <!-- 内容都应该被包裹在此-->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body py-4">
+                <form>
+                    <div class="mb-3">
+                        <label for="title" class="form-label">文章标题</label>
+                        <input type="email" class="form-control" id="title" name="title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="content" class="form-label">文章内容</label>
+                        <textarea id="content" class="form-control" name="content"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">提交文章</button>
+                </form>
+            </div>
+        </div>
+
+{% endblock content %}
