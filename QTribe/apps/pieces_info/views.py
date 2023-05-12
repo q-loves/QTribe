@@ -13,6 +13,8 @@ from django.views import View
 
 from pieces_info.models import VideoModel
 
+from pieces_info.models import ImageModel
+
 
 class UploadVideo(LoginRequiredMixin, View):
     def get(self, request):
@@ -131,3 +133,14 @@ class MyLife(View):
     def get(self,request):
         return render(request,'pieces/my_life.html')
 
+#上传图片
+class UploadImage(View):
+    def post(self,request):
+        try:
+            image=request.FILES.get('image')
+            request.user.icon=image
+            request.user.save()
+            img=ImageModel.objects.create(image=image,user=request.user)
+            return JsonResponse({'code':200})
+        except:
+            return JsonResponse({'code':401})

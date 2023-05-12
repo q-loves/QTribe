@@ -113,9 +113,10 @@
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="d-flex flex-column align-items-center text-center">
-                                                <img src="/static/images/login-bg-5.jpg" alt="Admin"
+                                                <img src={{user.icon.url}}  alt="Admin" onclick="imgClick()"
                                                      class="rounded-circle p-1 bsa-bg-color4 bsa-width-100 bsa-height-100" data-bs-toggle="modal"
                                                      data-bs-target="#exampleModal">
+                                                 <input id="file" type="file" name="file" class="file" value="" onchange="upload()" style="display: none">
                                                 <div class="mt-3">
 
                                                     <p class="text-secondary mb-1">{{user.username}}</p>
@@ -142,34 +143,6 @@
                                 </div>
                             </div>
 
-                            <!-- 头像裁剪Modal -->
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">裁剪新的个人资料图片</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div id="my-croppie"></div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button data-deg="90" type="button" class="btn btn-outline-secondary rotate">
-                                                <i class="bi bi-arrow-counterclockwise"></i>
-                                            </button>
-                                            <button data-deg="-90" type="button" class="btn btn-outline-secondary rotate">
-                                                <i class="bi bi-arrow-clockwise"></i>
-                                            </button>
-                                            <button id="croppie-result" type="button" class="btn btn-secondary">
-                                                确定
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                     </div>
                 </div>
 
@@ -177,6 +150,25 @@
         </div>
 <script type="text/javascript" src="{{static('js/user/information.js')}}"></script>
 <script type="text/javascript">
+        function upload(e){
+
+            let file = $('#file')[0].files[0]
+            console.log('eee',file)
+            let param = new FormData()       // 创建form对象
+            param.append('image', file)       // 通过append向form对象添加数据
+            axios.post('/pieces/upload_image/',param).then(response=>{
+                if(response.data.code==200){
+                    swal('更换成功');
+                }else{
+                    swal('更换失败');
+                }
+            });
+        }
+        function imgClick(){
+            $('#file').click();
+        }
+
+        //保存修改后端地域
         function transform(){
             window.location.href = '/index/information/';
         }

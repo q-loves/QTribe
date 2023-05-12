@@ -7,7 +7,7 @@ let vue=new Vue({
        //v-model
       title:'',
       remark:'',
-      video_:'',
+
 
        //v-show
        error_title:false,
