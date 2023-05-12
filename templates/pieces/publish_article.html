@@ -2,8 +2,123 @@
 {% extends 'base.html' %}
 {% block content %}
 
-        <!-- 内容都应该被包裹在此-->
-        <div class="card border-0 shadow-sm">
+
+<style>
+        .mainHeader{
+
+            padding-top: 1px;
+            padding-bottom: 1px;
+            background-color: white !important;
+            border-bottom: 5px solid #0b6cb8;
+        }
+
+        .logo_icon{
+
+            height: 38px;
+        }
+
+        .liColor{
+            color: #4f4f4f
+
+        }
+
+        .toolbar {
+            border: 1px solid #ccc;
+        }
+        .text {
+            border: 1px solid #ccc;
+            min-height: 300px;
+
+        }
+<!--        //////-->
+img {
+	width: 100%;
+	display: block;
+	border: none;
+	vertical-align: bottom;
+	border: none;
+}
+
+.Box1 {
+   background-color: #FEFEFF;
+    color: #333333;
+    font-size: 18px;
+    border: 2px solid #088DEA;
+    margin-top: 5%;
+    margin-left: 5%;
+    width: 90%;
+}
+.Box {
+    height: 40px;
+    margin-left: 6%;
+    line-height: 65px;
+    font-size: 18px;
+    font-family: FangSong;
+    font-weight: bold;
+}
+.productImg {
+height: 530px;
+overflow: hidden;
+}
+.imgBiMG{
+    width: 20%;
+    height: 84px;
+    float: left;
+    display: block;
+    margin-left: 7%;
+    margin-top: 2%;
+}
+.uploadDIv {
+    width: 95px;
+    height: 75px;
+    background-color: #edf0f2;
+    font-size: 70px;
+    color: #bfbfbf;
+    text-align: center;
+    line-height: 75px;
+    float: left;
+    position: relative;
+    left: 7%;
+    top: 5%;
+}
+.uploadDIv input {
+	width: 78px;
+	height: 78px;
+	opacity: 0;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	z-index: 4;
+	padding: 0;
+}
+
+.setPops{width: 70%;
+    position: absolute;
+    left:15%;
+    top:50%;
+    z-index: 10;
+    overflow: hidden;
+    display: none;
+}
+.filterPop{
+    background: rgba(0,0,0,.5);
+    position: absolute;
+    left:0px;
+    top:0px;
+    width: 100%;
+    height:100%;
+    z-index: 9;
+    overflow: hidden;
+    display: none;
+}
+
+
+</style>
+
+
+
+
+ <div class="card border-0 shadow-sm">
             <div class="card-body py-4">
                 <form>
                     <div class="mb-3">
@@ -13,11 +128,78 @@
 
                     <div class="mb-3">
                         <label for="content" class="form-label">文章内容</label>
-                        <textarea id="content" class="form-control" name="content"></textarea>
+
+
+                        <div style="padding: 8px 0; color: #ccc"></div>
+                            <div id="div1" class="toolbar">
+                        </div>
+                        <div id="div2" class="text" contenteditable="true" ></div> <!--可使用 min-height 实现编辑区域自动增加高度-->
                     </div>
+
+		<div class="Box1">
+			<div class="productImg">
+				<div id="uploadBox"></div>
+				<div class="uploadDIv">
+					<span>+</span><input type="file" name="file" multiple="multiple" id="inputs" accept="image/*" class='fileTest' multiple="multiple" />
+				</div>
+			</div>
+		</div>
+
                     <button type="submit" class="btn btn-primary">提交文章</button>
+
                 </form>
             </div>
-        </div>
 
+        </div>
+<script type="application/javascript">
+var i = 0;
+$(function() {
+	var img = []; //创建一个空对象用来保存传入的图片
+	var AllowImgFileSize = '1024'; //1兆
+        $("#inputs").change(function() {
+        var fil = this.files;
+        for(var i = 0; i < fil.length; i++) {
+            var curr = fil[i].size;
+            if(curr > AllowImgFileSize * 1024) { //当图片大于99兆提示
+                layer.msg("图片文件大小超过限制 请上传小于1M的文件");
+            } else {
+                reads(fil[i]);
+                img.push(fil[i]); // 将传入的图片push到空对象中
+            }
+        }
+	if(img.length >= 9) { //判断图片的数量，数量不能超过6张
+        $('.uploadDIv').hide();
+        } else {
+        $('.uploadDIv').show();
+        }
+        });
+	})
+	function removethis(i){
+
+        $("#img"+i+"").remove()
+        if($("#uploadBox").children().length<9){
+            $('.uploadDIv').show();
+	}
+}
+function reads(fil) {
+    var reader = new FileReader();
+    reader.readAsDataURL(fil);
+    reader.onload = function() {
+    document.getElementById("uploadBox").innerHTML += "<div id='img"+i+"' class='divImg' id='uploadImg'><img onclick='showpicture(this)' src='" + reader.result + "' class='imgBiMG'><img style='width: 5%; float: left;margin-top: 2%; display: block; display: block;' src='../image/sc.png' onclick='removethis("+i+")'></div>";
+    i++
+    }
+}
+
+//添加点击图片放大
+function showpicture(pic){
+	$(".filterPop").css("display","block")
+	 var setPopsWidth=$(".setPops").width();
+    $(".setPops, .filterPop").fadeIn();
+    $(".setPops").css({height:setPopsWidth,marginTop:-setPopsWidth/2+"px"});
+    $(".setPops").children("img")[0].src=pic.src;
+}
+function toHide() {
+    $(".setPops, .filterPop").fadeOut()
+}
+</script>
 {% endblock content %}

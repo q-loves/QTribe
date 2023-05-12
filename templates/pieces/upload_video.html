@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<style>
+    /*错误提示*/
+.error-tip{
+    float:right;
+    height:20px;
+    line-height:20px;
+    text-align:left;
+    font-size:12px;
+    width:100%; color:red;
+<!--    display:none;-->
+    position:absolute;
+    right:0px;
+   }
+</style>
         <div class="card border-top border-0 border-4 border-info">
         <div class="card-body">
             <div class="border p-4 rounded">
@@ -9,21 +24,22 @@
                     <h5 class="mb-0 text-info">发布视频</h5>
                 </div>
                 <hr>
-                <form action="/pieces/upload_video/" enctype="multipart/form-data" method="post">
+                <form id="form"  enctype="multipart/form-data"  v-on:submit.prevent="uploadFile">
                     <div class="row mb-3">
                         <label for="username4" class="col-sm-3 col-form-label">
                             视频标题
                         </label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="title" placeholder="视频标题" name="title"
+                            <input type="text" v-model="title" @blur="check_title" class="form-control" id="title" placeholder="视频标题" name="title"
                                    autocomplete="off">
+                            <span class="error-tip" v-show="error_title">  ${error_title_msg}  </span>
                         </div>
                     </div>
                     <div class="row mb-3">
 
                         <label for="formFile" class="col-sm-3 col-form-label">请选择文件</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="file" id="video" name="video" autocomplete="off">
+                            <input class="form-control" type="file" ref="fileInput"  id="video" name="video" autocomplete="off" >
                         </div>
                     </div>
 
@@ -32,19 +48,34 @@
                             描述
                         </label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" id="remark" name="remark" rows="5" placeholder="请输入视频描述"
+                            <textarea class="form-control" v-model="remark" @blur="check_remark" id="remark" name="remark" rows="5" placeholder="请输入视频描述"
                                       name="address4"></textarea>
+                            <span class="error-tip" v-show="error_remark">  ${error_remark_msg}  </span>
                         </div>
                     </div>
 
                     <div class="row">
                         <label class="col-sm-3 col-form-label"></label>
                         <div class="col-sm-9">
-                            <button type="submit" class="btn btn-info px-5">发布视频</button>
+                            <button type="submit"  class="btn btn-info px-5" >发布视频</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+
+<script type="text/javascript" src="{{static('js/pieces/video.js')}}"></script>
+<!--<script>-->
+
+<!--$('input[type="file"]').change(function(e){-->
+<!--    console.log(e);-->
+<!--    console.log('111111',e.target.files[0]);-->
+<!--})-->
+
+<!--</script>-->
+
+
+
 {% endblock content %}

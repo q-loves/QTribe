@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'pieces_info',
     'verify_code',
     'index',
-    'region',
+
 ]
 
 MIDDLEWARE = [

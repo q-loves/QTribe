@@ -36,7 +36,7 @@ class VideoModel(BaseModel):
     category = models.ForeignKey('CategoryModel', on_delete=models.CASCADE, verbose_name='视频类型', blank=True, null=True,
                                  related_name='video')
     duration_time=models.CharField(verbose_name='视频时长',max_length=20,null=True,blank=True)
-    remark=models.CharField(verbose_name='备注',max_length=20,null=True,blank=True)
+    remark=models.CharField(verbose_name='备注',max_length=50,null=True,blank=True)
     img_path = models.CharField(verbose_name='照片文件', max_length=20, null=True, blank=True)
     running_count = models.IntegerField(verbose_name='播放次数', max_length=20, null=True, blank=True)
     user = models.ForeignKey('user.UserModel', verbose_name='用户', on_delete=models.CASCADE, related_name='video')

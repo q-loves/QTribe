@@ -1,5 +1,8 @@
+import json
+
 from django.contrib import auth
 from django.contrib.admin import action
+from django.db.models import F
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
@@ -8,8 +11,7 @@ from django.views import View
 
 from user.models import UserModel
 
-#注册
-from region.models import Nation, Province, City
+
 
 
 class Register(View):
@@ -24,6 +26,7 @@ class Register(View):
         user=UserModel.objects.create_user(username=username,password=password,phone=phone)
         if user:
             state={'code':200}
+            auth.login(request,user)
         return redirect('/index/home_index/')
 #校验用户名
 class CheckUsername(View):
@@ -35,6 +38,30 @@ class CheckPhone(View):
     def get(self,request,phone):
         count=UserModel.objects.filter(phone=phone).count()
         return JsonResponse({'count':count})
+
+#校验邮箱地址
+class CheckEmail(View):
+    def get(self,request,email):
+        count=UserModel.objects.filter(email=email).count()
+        return JsonResponse({'count':count})
+
+#校验密码
+class ResetPassword(View):
+    def get(self,request):
+        password=request.GET.get('password')
+
+        if request.user.check_password(password):
+            return JsonResponse({'code':200})
+        return JsonResponse({'code':401})
+    def post(self,request):
+        try:
+            data=json.loads(request.body)
+            password=data['password']
+            request.user.set_password(password)
+            return JsonResponse({'code':200})
+        except:
+            return JsonResponse({'code':401})
+
 
 
 class Login(View):
@@ -60,7 +87,19 @@ class Transform(View):
 
 class UpdateInformation(View):
     def get(self,request):
-        nation=Nation.objects.get(id=request.user.nation_id)
-        province=Province.objects.get(id=request.user.province_id)
-        city=City.objects.get(id=request.user.city_id)
-        return render(request,'user/update_information.html',{'user':request.user,'nation':nation,'province':province,'city':city})
+        return render(request,'user/update_information.html',{'user':request.user})
+    def post(self,request):
+
+        try:
+            data=json.loads(request.body)
+            #利用新字典接收不为空的数据
+            dict={}
+            for key in data:
+                if data.get(key):
+                    dict[key]=data.get(key)
+            user=UserModel.objects.filter(id=request.user.id).update(**dict)
+            return JsonResponse({'code':200})
+        except:
+            return JsonResponse({'code':401})
+
+

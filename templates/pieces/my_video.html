@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% block content %}
+{#爱心css文件#}
+<style>
+    .heart{
+        background-color: #8a93a0;
+        height: 13px;
+        width: 13px;
+        transform: rotate(-45deg) scale(1);
+        display: inline-block;
+        }
+
+    .heart::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: 0;
+        background-color: inherit;
+        border-radius: 50%;
+        height: 13px;
+        width: 13px;
+        }
+    .heart::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -50%;
+        background-color: inherit;
+        border-radius: 50%;
+        height: 13px;
+        width: 13px;
+        }
+    .heratPop{
+        animation: pulse 1s linear infinite;
+        }
+    @keyframes pulse {
+        0% {
+        transform: rotate(-45deg) scale(1);
+        }
+        10% {
+        transform: rotate(-45deg) scale(1.1);
+        }
+        20% {
+        transform: rotate(-45deg) scale(0.9);
+        }
+        30% {
+        transform: rotate(-45deg) scale(1.2);
+        }
+        40% {
+        transform: rotate(-45deg) scale(0.9);
+        }
+        50% {
+        transform: rotate(-45deg) scale(1.1);
+        }
+        60% {
+        transform: rotate(-45deg) scale(0.9);
+        }
+        70% {
+        transform: rotate(-45deg) scale(1);
+        }
+        }
+    .hearts {
+        position: absolute;
+        color: #E7273F;
+        font-size: 15px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: fly 3s linear forwards;
+        }
+    @keyframes fly {
+        to {
+        transform: translate(-50%, -50px) scale(0);
+        }
+        }
+
+</style>
+<!--//导航栏-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
+    <div class="container-fluid"><a class="navbar-brand" href="javascript:">我的作品</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navcnt1" aria-controls="navcnt1" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navcnt1">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/pieces/my_video/">
+                        <i class="el-icon-camera"></i> 视频
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pieces/my_life/">
+                        <i class="el-icon-cold-drink"></i> 分享生活
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pieces/my_article/">
+                        <i class="el-icon-document-copy"></i> 文章
+                    </a>
+                </li>
+
+            </ul>
+            <form class="d-flex bsa-nav-search">
+                <div class="input-group">
+                    <input aria-label="搜索关键字" type="text" class="form-control" placeholder="搜索关键字" autocomplete="off">
+                    <button class="btn" type="submit"><i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+{#视频内容#}
+<div class="card border-0 shadow-sm">
+    {% for video in page_content %}
+    <div class="card-body p-4">
+        <h5 class="card-title">欢迎光临{{video.user.username}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">来看看你的作品吧！！！</h6>
+        <hr>
+        <div class="row row-cols-1 g-3">
+            <div class="col">
+                <div class="card border-0 shadow">
+                    <div class="card-body">
+                        <div class="row">
+                            <a href="javascript:scanMedia({{video.id}},'{{video.video.url}}','{{video.title}}')"
+                               class="col-md-3 bg-light  d-none d-md-flex align-items-center justify-content-center bsa-art-thumbs-wrapper">
+                                <img src="/media/{{video.img_path}}" class="img-fluid" alt="文章缩略图">
+                            </a>
+                            <div class="col-md-9">
+                                <div class="d-flex flex-column gap-2">
+                                    <a href="javascript:" class="h4 text-decoration-none link-dark bsa-ellipsis2">
+                                        <span class="badge bg-warning me-1 align-text-bottom">置顶</span>
+                                        <span class="badge bg-danger me-1 align-text-bottom">荐</span>
+                                        {{video.title}}
+                                    </a>
+
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        <a href="javascript:" class="text-decoration-none">
+                                            <img src="/static/images/login-bg-5.jpg"
+                                                 class="bsa-width-40 bsa-height-40 rounded-circle" alt="作者头像">
+                                            <span class="text-muted">{{video.user.username}}</span>
+                                        </a>
+                                        <div class="text-muted">
+                                            <i class="bi bi-clock-fill"></i>
+                                            播放次数：<span class="ms-1">{{video.running_count}}</span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="text-secondary bsa-ellipsis3">
+                                        {{video.remark}}
+                                    </div>
+
+                                    <div class="d-flex align-items-center flex-wrap gap-2">
+                                        <a href="javascript:overhead({{video.id}})"
+                                           class="badge rounded-pill bg-success text-white text-decoration-none"
+                                           id="overhead_video">顶置</a>
+                                        <a href="javascript:delete_video({{video.id}},'{{video.title}}')"
+                                           class="badge rounded-pill bg-primary text-white text-decoration-none">删除</a>
+                                        <pre>  </pre>
+                                        <div class="likeBtn" id="likeBtn">
+                                            <a class="heart" id="heart" href="/videos/thumbs_up/?like_id={{video.id}}"></a>
+                                            <span>{{video.star_count}}</span>
+                                        </div>
+                                        <pre>  </pre>
+
+                                        <a> 视频时长:{{video.duration_time}} </a>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    {% endfor %}
+</div>
+{#分页部分#}
+<hr>
+<div class="row row-cols-1 g3">
+    <div class="col">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination"> <!-- 逻辑判断，如果有前一页，则可以点击上一页按钮 -->
+                {% if page_content.has_previous() %}
+                <li class="page-item"><a class="page-link"
+                                         href="/pieces/my_video/?page_number={{ page_content.previous_page_number() }}"
+                                         aria-label="Previous"> <span aria-hidden="true">«</span> </a></li>
+                {% else %}
+                <!-- 禁用按钮 -->
+                <li class="page-item"><a class="page-link"
+                                         href="/pieces/my_video/?page_number=1"
+                                         aria-label="Previous"> <span aria-hidden="true">«</span> </a></li>
+                {% endif %}
+                <!-- 呈现所有的页码 -->
+                <!-- 呈现所有的页码 -->
+                {% for page_num in page_list %}
+                    {% if page_num == current_page %}
+                        <li class="page-item active" aria-current="page"><span class="page-link">{{page_num}}</span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="/pieces/my_video/?page_number={{ page_num }}">{{page_num}}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                <!-- 逻辑判断，如果有后一页，则可以点击下一页按钮 -->
+                {% if page_content.has_next() %}
+                <li class="page-item"><a class="page-link"
+                                         href="/pieces/my_video/?page_number={{ page_content.next_page_number() }}"
+                                         aria-label="Next"> <span aria-hidden="true">»</span> </a></li>
+                {% else %} <!-- 禁用按钮 -->
+                <li class="page-item"><a class="page-link"
+                                         href="/pieces/my_video/?page_number={{num_pages}}"
+                                         aria-label="Next"> <span aria-hidden="true">»</span> </a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{#播放视频状态框#}
+<div class="modal fade" id="exampleLargeModal" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="model_title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        id="video_close"></button>
+            </div>
+            <div class="modal-body">
+                <video controls="controls" width="100%" height="100%" autoplay="autoplay" volume="1" id="myVideo"
+                       loop="loop">
+                    <source id="media_src" src="" type="video/mp4"/>
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
