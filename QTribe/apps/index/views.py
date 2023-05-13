@@ -15,10 +15,6 @@ class NoFindPage(View):
     def get(self,request):
         return render(request,'404.html')
 
-#上传文章
-class PublishArticle(View):
-    def get(self,request):
-        return render(request,'pieces/publish_article.html')
 
 #查看个人资料
 class Information(View):

@@ -37,7 +37,7 @@ class VideoModel(BaseModel):
                                  related_name='video')
     duration_time=models.CharField(verbose_name='视频时长',max_length=20,null=True,blank=True)
     remark=models.CharField(verbose_name='备注',max_length=50,null=True,blank=True)
-    img_path = models.CharField(verbose_name='照片文件', max_length=20, null=True, blank=True)
+    img_path = models.CharField(verbose_name='照片文件', max_length=256, null=True, blank=True)
     running_count = models.IntegerField(verbose_name='播放次数', max_length=20, null=True, blank=True)
     user = models.ForeignKey('user.UserModel', verbose_name='用户', on_delete=models.CASCADE, related_name='video')
     class Meta:
@@ -46,7 +46,8 @@ class VideoModel(BaseModel):
         verbose_name_plural = verbose_name
 
 class ImageModel(BaseModel):
-    image=models.ImageField(verbose_name='图片内容')
+    image=models.ImageField(verbose_name='图片内容',blank=True,null=True)#用户头像，文章图像，生活照片
+    image_path=models.CharField(verbose_name='图片相对路径',max_length=256,blank=True,null=True)#视频截取图片
     video=models.ForeignKey('VideoModel',verbose_name='视频',on_delete=models.CASCADE,blank=True,null=True,related_name='image')
     article=models.ForeignKey('ArticleModel',verbose_name='文章',on_delete=models.CASCADE,blank=True,null=True,related_name='image')
     user=models.ForeignKey('user.UserModel',verbose_name='用户',on_delete=models.CASCADE,related_name='image')

@@ -3,21 +3,20 @@ let vue=new Vue({
     delimiters:['${','}'],
     data:{
 
-      video:'',
+
        //v-model
       title:'',
-      remark:'',
+      content:'',
 
 
        //v-show
        error_title:false,
-       error_remark:false,
+       error_content:false,
        error_form:false,
-
        //v-message
-       error_title_msg:'标题过长',
-       error_remark_msg:'视频描述过长',
-       error_form_msg:'请完善表单信息',
+       error_title_msg:'',
+       error_content_msg:'请输入文章',
+       error_form_msg:'请完善表单内容',
 
 
   },
@@ -26,53 +25,63 @@ let vue=new Vue({
               open1:function() {
                     this.$notify({
 //                      title: '成功',
-                      message: '视频上传成功',
+                      message: '上传成功',
                       type: 'success'
                     });
                   },
               open2:function() {
                 this.$notify.error({
 //                  title: '错误',
-                  message: '视频上传失败'
+                  message: '上传失败'
                 });
               },
               //上传视频成功或失败后，弹出弹窗
               uploadFile:function(){
+
                     const formData = new FormData();
                     const file = this.$refs.fileInput.files[0];
-                    //判断表单是否填写完整
-                    if(!this.error_title && !this.error_remark && file){
+                    if(!this.error_title && !this.error_content && file){
                         this.error_form=false;
 
-                        formData.append('video', file);
+                        for(var i=0;i<this.$refs.fileInput.files.length;i++){
+                            formData.append('image', this.$refs.fileInput.files[i]);
+                        }
                         formData.append('title',this.title);
-                        formData.append('remark',this.remark);
-                        let url = '/pieces/upload_video/';
-
-                        axios.post(url,formData).then(response=>{
+                        formData.append('content',this.content);
+                        console.log('file---->',formData)
+                        axios.post('/pieces/publish_article/',formData).then(response=>{
                             if(response.data.code==200){
-
-                                  this.open1();
+                                swal('文章上传成功');
                             }else{
-
-                                  this.open2();
+                                swal('文章上传失败');
                             }
                         });
                     }else{
                         this.error_form=true;
                     }
 
+//                    let url = '/pieces/upload_article/';
+//
+//                    axios.post(url,formData).then(response=>{
+//                        if(response.data.code==200){
+//
+//                              this.open1();
+//                        }else{
+//
+//                              this.open2();
+//                        }
+//                    });
               },
 
             //校验标题
             check_title:function(){
-                let reg =/^.{1,20}$/;
+                let reg =/^.{1,100}$/;
                 if(!this.title){
                     this.error_title_msg='标题不可为空';
                     this.error_title = true;
                 }else{
                      if(!reg.test(this.title)){
-                            this.error_tile_msg='标题字数不可超过20';
+                            this.error_tile_msg='标题字数不可超过100';
                             this.error_title = true;
                          }else{
                             this.error_title = false;
@@ -82,19 +91,12 @@ let vue=new Vue({
 
           },
             //校验视频描述
-            check_remark:function(){
-                let reg =/^.{1,50}$/;
-                if(!this.remark){
-                    this.error_remark_msg='描述不可为空';
-                    this.error_remark = true;
+            check_content:function(){
+                if(!this.content){
+                    this.error_content_msg='文章不可为空';
+                    this.error_content = true;
                 }else{
-                    if(!reg.test(this.remark)){
-                        this.error_remark_msg='描述字数不可超过50';
-                        this.error_remark = true;
-
-                     }else{
-                        this.error_remark = false;
-                  }
+                    this.error_content = false;
 
                  }
 

@@ -58,6 +58,7 @@
                         <label class="col-sm-3 col-form-label"></label>
                         <div class="col-sm-9">
                             <button type="submit"  class="btn btn-info px-5" >发布视频</button>
+                            <span class="error-tip" v-show="error_form">  ${error_form_msg}  </span>
                         </div>
                     </div>
                 </form>

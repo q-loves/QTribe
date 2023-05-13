@@ -5,15 +5,14 @@ import subprocess
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
 
-from pieces_info.models import VideoModel
-
-from pieces_info.models import ImageModel
+from pieces_info.models import VideoModel,ImageModel,ArticleModel
 
 
 class UploadVideo(LoginRequiredMixin, View):
@@ -25,19 +24,14 @@ class UploadVideo(LoginRequiredMixin, View):
         title=request.POST.get('title')
         remark=request.POST.get('remark')
         video_path=request.FILES.get('video')
-        print('title----------->',title)
-        print('remark----------->',remark)
-        print('video_path----------->',video_path)
-        # title = data['title']
-        # remark = data['remark']
-        # video_path = data['video']
+
         if not video_path:#上传失败
             return JsonResponse({'code':401})
 
         video_obj=VideoModel.objects.create(title=title, remark=remark, video=video_path, user=request.user)
-        video_operator(video_obj.id,
+        video_operator(request,video_obj.id,
                        video_path=os.path.join(settings.BASE_DIR2,'media',video_obj.video.name),
-                       img_path=os.path.join(settings.BASE_DIR2,'media',f'{video_obj.id}.jpg'))
+                       img_path=os.path.join(settings.BASE_DIR2,'media',f'{video_obj.video.name}{video_obj.id}.jpg'))
 
         #上传成功
         return JsonResponse({'code':200})
@@ -71,7 +65,7 @@ def run_cmd(cmd1, cmd2):
         return False, int(play_time)
 
 
-def video_operator(video_id, video_path, img_path):
+def video_operator(request,video_id, video_path, img_path):
     """视频处理,就是拼凑好两条ffmpeg的命令"""
     # 拼凑播放时长的命令
     cmd1 = f'ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 -i {video_path}'
@@ -85,10 +79,13 @@ def video_operator(video_id, video_path, img_path):
     if result[0]:
         # 得到图片的名字
         image_name = os.path.basename(img_path)
+        image_path='/media/'+image_name
         # 得到视频播放时长
         play_time = '%02d:%02d' % (int(result[1] / 60), result[1] % 60)
-        # 修改数据库的数据，注意：is_success修改为Ture
-        VideoModel.objects.filter(id=video_id).update(img_path=image_name, duration_time=play_time)
+        with transaction.atomic():#is_success还未完善
+            video=VideoModel.objects.filter(id=video_id).update(img_path=image_path, duration_time=play_time)
+
+            ImageModel.objects.create(image_path=image_path,video_id=video_id,user=request.user)
 
 #自己的视频列表页面
 class MyVideo(View):
@@ -133,14 +130,32 @@ class MyLife(View):
     def get(self,request):
         return render(request,'pieces/my_life.html')
 
-#上传图片
+#上传用户头像
 class UploadImage(View):
     def post(self,request):
         try:
-            image=request.FILES.get('image')
-            request.user.icon=image
-            request.user.save()
-            img=ImageModel.objects.create(image=image,user=request.user)
-            return JsonResponse({'code':200})
+            with transaction.atomic():
+                image=request.FILES.get('image')
+                request.user.icon=image
+                request.user.save()
+                img=ImageModel.objects.create(image=image,user=request.user)
+                return JsonResponse({'code':200})
         except:
             return JsonResponse({'code':401})
+
+#上传文章
+class PublishArticle(View):
+       def get(self,request):
+            return render(request,'pieces/publish_article.html')
+       def post(self,request):
+           title=request.POST.get('title')
+           content=request.POST.get('content')
+           images=request.FILES.getlist('image')
+           try:
+               with transaction.atomic():#数据库绑定事物
+                   article=ArticleModel.objects.create(title=title,content=content,default_img=images[0],user=request.user)
+                   for image in images:
+                       ImageModel.objects.create(image=image,user=request.user,article=article)
+                   return JsonResponse({'code': 200})
+           except:
+               return JsonResponse({'code': 401})

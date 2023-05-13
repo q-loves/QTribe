@@ -113,6 +113,19 @@ overflow: hidden;
 }
 
 
+    /*错误提示*/
+.error-tip{
+    float:right;
+    height:20px;
+    line-height:20px;
+    text-align:left;
+    font-size:12px;
+    width:100%; color:red;
+<!--    display:none;-->
+    position:absolute;
+    right:0px;
+   }
+
 </style>
 
 
@@ -120,86 +133,54 @@ overflow: hidden;
 
  <div class="card border-0 shadow-sm">
             <div class="card-body py-4">
-                <form>
+                <form enctype="multipart/form-data"  v-on:submit.prevent="uploadFile" id="form">
                     <div class="mb-3">
                         <label for="title" class="form-label">文章标题</label>
-                        <input type="email" class="form-control" id="title" name="title">
+                        <input type="title" v-model="title" @blur="check_title" class="form-control" id="title" name="title">
+                        <span class="error-tip" v-show="error_title">  ${error_title_msg}  </span>
                     </div>
 
                     <div class="mb-3">
                         <label for="content" class="form-label">文章内容</label>
-
-
                         <div style="padding: 8px 0; color: #ccc"></div>
                             <div id="div1" class="toolbar">
                         </div>
-                        <div id="div2" class="text" contenteditable="true" ></div> <!--可使用 min-height 实现编辑区域自动增加高度-->
+                        <div id="div2" class="text" contenteditable="true" v-model="content" @blur="check_content" @input="content=$event.target.innerHTML"></div> <!--可使用 min-height 实现编辑区域自动增加高度-->
+                        <span class="error-tip" v-show="error_content">  ${error_content_msg}  </span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="file" class="form-label">附加图片</label>
+                        <input type="file" ref="fileInput" name="files" class="form-control" id="file" multiple="multiple" autocomplete="off" >
                     </div>
 
-		<div class="Box1">
-			<div class="productImg">
-				<div id="uploadBox"></div>
-				<div class="uploadDIv">
-					<span>+</span><input type="file" name="file" multiple="multiple" id="inputs" accept="image/*" class='fileTest' multiple="multiple" />
-				</div>
-			</div>
-		</div>
-
-                    <button type="submit" class="btn btn-primary">提交文章</button>
-
+                    <button type="submit" class="btn btn-primary" >提交文章</button>
+                    <span class="error-tip" v-show="error_form">  ${error_form_msg}  </span>
                 </form>
             </div>
 
         </div>
-<script type="application/javascript">
-var i = 0;
-$(function() {
-	var img = []; //创建一个空对象用来保存传入的图片
-	var AllowImgFileSize = '1024'; //1兆
-        $("#inputs").change(function() {
-        var fil = this.files;
-        for(var i = 0; i < fil.length; i++) {
-            var curr = fil[i].size;
-            if(curr > AllowImgFileSize * 1024) { //当图片大于99兆提示
-                layer.msg("图片文件大小超过限制 请上传小于1M的文件");
-            } else {
-                reads(fil[i]);
-                img.push(fil[i]); // 将传入的图片push到空对象中
-            }
-        }
-	if(img.length >= 9) { //判断图片的数量，数量不能超过6张
-        $('.uploadDIv').hide();
-        } else {
-        $('.uploadDIv').show();
-        }
-        });
-	})
-	function removethis(i){
 
-        $("#img"+i+"").remove()
-        if($("#uploadBox").children().length<9){
-            $('.uploadDIv').show();
-	}
-}
-function reads(fil) {
-    var reader = new FileReader();
-    reader.readAsDataURL(fil);
-    reader.onload = function() {
-    document.getElementById("uploadBox").innerHTML += "<div id='img"+i+"' class='divImg' id='uploadImg'><img onclick='showpicture(this)' src='" + reader.result + "' class='imgBiMG'><img style='width: 5%; float: left;margin-top: 2%; display: block; display: block;' src='../image/sc.png' onclick='removethis("+i+")'></div>";
-    i++
-    }
-}
-
-//添加点击图片放大
-function showpicture(pic){
-	$(".filterPop").css("display","block")
-	 var setPopsWidth=$(".setPops").width();
-    $(".setPops, .filterPop").fadeIn();
-    $(".setPops").css({height:setPopsWidth,marginTop:-setPopsWidth/2+"px"});
-    $(".setPops").children("img")[0].src=pic.src;
-}
-function toHide() {
-    $(".setPops, .filterPop").fadeOut()
-}
-</script>
+<script type="text/javascript" src="{{static('js/pieces/article.js')}}"></script>
+<!--<script type="application/javascript">-->
+<!--        function upload(){-->
+<!--            var title = document.getElementById("title").value;-->
+<!--            var content = document.getElementById("div2").textContent;-->
+<!--            console.log('title-&ndash;&gt;',title);-->
+<!--            console.log('content-&ndash;&gt;',content);-->
+<!--            var formData = new FormData();-->
+<!--			        for(var i=0;i<$("#file")[0].files.length;i++) {  //循环获取上传个文件-->
+<!--			            formData.append("file", $("#file")[0].files[i]);-->
+<!--			        }-->
+<!--            formData.append('title',title);-->
+<!--            formData.append('content',content);-->
+<!--			console.log('formData-&ndash;&gt;',formData)-->
+<!--			axios.post('/pieces/publish_article/',formData).then(response=>{-->
+<!--			        if(response.data.code==200){-->
+<!--			            swal('文章发布成功');-->
+<!--			        }else{-->
+<!--			            swal('文章发布失败');-->
+<!--			        }-->
+<!--			});-->
+<!--        }-->
+<!--</script>-->
 {% endblock content %}
