@@ -75,6 +75,54 @@
         }
 
 </style>
+{# 表单相关依赖 #}
+<script src="/static/lib/jquery/dist/jquery.min.js"></script>
+<script src="/static/lib/formvalidation/js/formValidation.js"></script>
+<script src="/static/lib/formvalidation/js/framework/bootstrap.js"></script>
+<script src="/static/lib/formvalidation/js/language/zh_CN.js"></script>
+{#发送ajax请求，播放视频，删除视频#}
+<script>
+        function scanMedia(id,url,title) {
+            //播放视频
+            $.ajax({
+                //增加浏览数量
+                url: '/pieces/play_video/',
+                method: 'post',
+                data: {"id": id},
+                dataType: "json",
+                success: function (data) {
+                    if (data.length != 0) {
+
+                        $('#media_src').attr("src", 'http://127.0.0.1:8083'+url);
+                        $('#model_title').text(title);
+                        document.querySelector('video').load();//video重载，以免读取src失败
+                        $('#video_close').click(function () {
+                            document.getElementById("myVideo").pause()
+                            //$('#myVideo').pause()
+                        })
+                        $("#exampleLargeModal").modal('show');
+
+                    } else {
+                        alert('失败！！！');
+                    }
+                }
+            })
+        }
+        //删除视频
+        function delete_video(id, title) {
+            // 设置弹出框的提示内容
+            $('#video_delete_message').text('确认要删除 '+ title + ', 这个视频吗？')
+            // 给确认删除的按钮添加一个鼠标点击事件
+            $('#delete_btn').click(function () {
+                document.location.href = '/videos/delete_video/?id='+id
+            })
+            $("#delete_video").modal('show');
+        }
+
+
+
+</script>
+
 <!--//导航栏-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
     <div class="container-fluid"><a class="navbar-brand" href="javascript:">我的作品</a>
@@ -128,7 +176,7 @@
                             <div class="col-md-9">
                                 <div class="d-flex flex-column gap-2">
                                     <a href="javascript:" class="h4 text-decoration-none link-dark bsa-ellipsis2">
-                                        <span class="badge bg-warning me-1 align-text-bottom">置顶</span>
+                                        {% if video.is_top == 1%}<span class="badge bg-warning me-1 align-text-bottom">置顶</span>{% endif %}
                                         <span class="badge bg-danger me-1 align-text-bottom">荐</span>
                                         {{video.title}}
                                     </a>
@@ -151,14 +199,14 @@
                                     </div>
 
                                     <div class="d-flex align-items-center flex-wrap gap-2">
-                                        <a href="javascript:overhead({{video.id}})"
+                                        <a href="/pieces/top_video?v_id={{video.id}}&is_top={{video.is_top}}&current_page={{current_page}}"
                                            class="badge rounded-pill bg-success text-white text-decoration-none"
-                                           id="overhead_video">顶置</a>
+                                           id="overhead_video">{% if video.is_top == 1%}取消{% endif %}顶置</a>
                                         <a href="javascript:delete_video({{video.id}},'{{video.title}}')"
                                            class="badge rounded-pill bg-primary text-white text-decoration-none">删除</a>
                                         <pre>  </pre>
                                         <div class="likeBtn" id="likeBtn">
-                                            <a class="heart" id="heart" href="/videos/thumbs_up/?like_id={{video.id}}"></a>
+                                            <a class="heart" id="heart" href="/pieces/star_video/?v_id={{video.id}}&current_page={{current_page}}"></a>
                                             <span>{{video.star_count}}</span>
                                         </div>
                                         <pre>  </pre>

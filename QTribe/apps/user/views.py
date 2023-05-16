@@ -52,7 +52,7 @@ class CheckPassword(View):
         username=data.get('username')
         phone=data.get('phone')
         password=data.get('password')
-
+        #用户名登陆时需要username，绑定qq，微信时需要手机号
         if not (username or phone):
             return JsonResponse({'code':4001,'errormsg':'缺少必传参数'})
         if username:

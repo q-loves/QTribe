@@ -32,7 +32,6 @@ class BindQQ(View):
         code = request.GET.get('code')
         # 获取openid
         userinfo, openid = AgentLogin.qq(settings.QQ_CLIENT_ID, settings.QQ_APP_KEY, settings.QQ_REDIRECT_URI, code)
-        print('openid------>',openid)
         # 根据openid判断用户是否已经绑定
         user = QQUser.objects.filter(openid=openid)
         # 若已绑定，就直接进入新闻页面
@@ -40,7 +39,6 @@ class BindQQ(View):
             return redirect('/index/home_index/')
         # 若没有绑定，就进入绑定页面
         sec_openid = generate_secret_openid(openid)  # 加密
-        print('generate------>',sec_openid)
         return render(request, 'oauth/bind_qq.html', {'sec_openid': sec_openid})
     def post(self,request):
         data=json.loads(request.body)
@@ -50,8 +48,7 @@ class BindQQ(View):
         password=data.get('password')
         sec_openid=data.get('sec_openid')
         user=UserModel.objects.get(phone=phone)
-        print('password---->',password)
-        print('sec_openid---->',sec_openid)
+
         if not user:
             return JsonResponse({'code':4001,'errormsg':'该手机号未绑定用户，请先注册'})
         redis_conn=django_redis.get_redis_connection('verify_code')
@@ -66,5 +63,46 @@ class BindQQ(View):
         login(request,user)
         return JsonResponse({'code': 200})
 
+class GetWeChatUrl(View):
+    def get(self, request):
+        # 获得微信扫码的链接地址
+        wechat_url = AgentLogin.weixin_url(settings.WECHAT_CLIENT_ID, settings.WECHAT_REDIRECT_URI)
 
+        return JsonResponse({'code': '200', 'login_url': wechat_url})
 
+class BindWeChat(View):
+    def get(self, request):
+        # 捕获参数code
+        code = request.GET.get('code')
+        # 获取openid
+        userinfo, openid = AgentLogin.qq(settings.WECHAT_CLIENT_ID, settings.WECHAT__APP_KEY, settings.WECHAT__REDIRECT_URI, code)
+        # 根据openid判断用户是否已经绑定
+        user = QQUser.objects.filter(openid=openid)
+        # 若已绑定，就直接进入新闻页面
+        if user:
+            return redirect('/index/home_index/')
+        # 若没有绑定，就进入绑定页面
+        sec_openid = generate_secret_openid(openid)  # 加密
+        return render(request, 'oauth/bind_qq.html', {'sec_openid': sec_openid})
+    def post(self,request):
+        data=json.loads(request.body)
+
+        phone=data.get('phone')
+        smscode=data.get('smscode')
+        password=data.get('password')
+        sec_openid=data.get('sec_openid')
+        user=UserModel.objects.get(phone=phone)
+
+        if not user:
+            return JsonResponse({'code':4001,'errormsg':'该手机号未绑定用户，请先注册'})
+        redis_conn=django_redis.get_redis_connection('verify_code')
+        code_rel=redis_conn.get(f'sms{phone}').decode('utf-8')
+        if code_rel!=smscode:
+            return JsonResponse({'code':4002,'errormsg':'验证码输入错误'})
+        if not user.check_password(password):
+            return JsonResponse({'code': 4003, 'errormsg': '密码错误'})
+
+        openid = check_secret_openid(sec_openid)
+        QQUser.objects.create(user=user,openid=openid)
+        login(request,user)
+        return JsonResponse({'code': 200})

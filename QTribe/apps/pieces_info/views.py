@@ -6,8 +6,9 @@ from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.db import transaction
+from django.db.models import F
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.views import View
@@ -82,8 +83,8 @@ def video_operator(request,video_id, video_path, img_path):
         image_path='/media/'+image_name
         # 得到视频播放时长
         play_time = '%02d:%02d' % (int(result[1] / 60), result[1] % 60)
-        with transaction.atomic():#is_success还未完善
-            video=VideoModel.objects.filter(id=video_id).update(img_path=image_path, duration_time=play_time)
+        with transaction.atomic():
+            video=VideoModel.objects.filter(id=video_id).update(img_path=image_path, duration_time=play_time,is_success=True)
 
             ImageModel.objects.create(image_path=image_path,video_id=video_id,user=request.user)
 
@@ -119,6 +120,33 @@ class MyVideo(View):
                                                         'page_list': page_list,
                                                         'current_page': page_content.number,
                                                         'num_pages': num_pages})
+#播放视频,浏览次数
+class PlayVideo(View):
+    def post(self,request):
+        v_id = int(request.POST.get('id'))
+        VideoModel.objects.filter(id=v_id).update(running_count=F('running_count')+1)
+        return JsonResponse({"data": "success"})
+#视频点赞量
+class StarVideo(View):
+    def get(self,request):
+        v_id=int(request.GET.get('v_id'))
+        current_page=int(request.GET.get('current_page'))
+        VideoModel.objects.filter(id=v_id).update(star_count=F('star_count') + 1)
+        return redirect(f'/pieces/my_video/?page_number={current_page}')
+
+#视频顶置
+class TopVideo(View):
+    def get(self,request):
+        v_id=int(request.GET.get('v_id'))
+        is_top=int(request.GET.get('is_top'))
+        current_page = int(request.GET.get('current_page'))
+        if is_top==1:
+            VideoModel.objects.filter(id=v_id).update(is_top=0)
+            return redirect(f'/pieces/my_video/?page_number={current_page}')
+        if is_top==0:
+            VideoModel.objects.filter(id=v_id).update(is_top=1)
+            return redirect(f'/pieces/my_video/?page_number={current_page}')
+
 
 #自己的文章列表页面
 class MyArticle(View):

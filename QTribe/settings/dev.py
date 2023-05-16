@@ -241,3 +241,10 @@ APIKEY = '28b334224f4475ca2a2472a5847af522'
 QQ_CLIENT_ID = '101917966'  # app id
 QQ_REDIRECT_URI = 'http://www.nagle.cn:8083/about'  # 回调地址
 QQ_APP_KEY = '20fcc768255829c08fa4efbe8acf0001'  # app key
+
+# 微信登录的配置参数
+# WECHAT_CLIENT_ID = 'wx2a6cf9373f278ed2'  # app id
+WECHAT_CLIENT_ID = 'wxc358bf43a8cdccd5'  # app id
+WECHAT_REDIRECT_URI = 'http://www.nagle.cn:8083/weixin'  # 回调地址
+# WECHAT_APP_KEY = 'b32af04d9062ebc44b3f5d8b87a5a48e'  # app key
+WECHAT_APP_KEY = 'dd2fa2be153ab8b25fec8d3230dca662'  # app key

@@ -15,9 +15,11 @@ let vue=new Vue({
        error_password_msg:'密码格式错误',
 
        qq_url:'',
+       wechat_url:'',
 
   },mounted(){
        this.get_qq_url();
+       this.get_wechat_url();
     },
     methods:{
          get_qq_url:function(){
@@ -26,7 +28,17 @@ let vue=new Vue({
              }).then(response=>{
                if(response.data.code=='200'){
                   this.qq_url=response.data.login_url;
-                  console.log('url-->',this.qq_url)
+               }
+             }).catch(error=>{
+               console.log(error.response)
+             });
+         },
+          get_wechat_url:function(){
+             axios.get('/get_wechat_url/',{
+               responseType:'json'
+             }).then(response=>{
+               if(response.data.code=='200'){
+                  this.wechat_url=response.data.login_url;
                }
              }).catch(error=>{
                console.log(error.response)
