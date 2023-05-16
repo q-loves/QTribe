@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-7*3tmx7*vk-i@v1)yq3o9x492aq0h0bbkj0to153(l0m%)_#3a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'www.nagle.cn']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'pieces_info',
     'verify_code',
     'index',
+    'oauth',
 
 ]
 
@@ -235,3 +236,8 @@ LOGGING = {
 #发送短信验证码
 APIID = 'C45813408'
 APIKEY = '28b334224f4475ca2a2472a5847af522'
+
+# QQ登录的配置参数
+QQ_CLIENT_ID = '101917966'  # app id
+QQ_REDIRECT_URI = 'http://www.nagle.cn:8083/about'  # 回调地址
+QQ_APP_KEY = '20fcc768255829c08fa4efbe8acf0001'  # app key

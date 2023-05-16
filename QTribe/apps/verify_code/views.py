@@ -39,4 +39,4 @@ class CheckSmsCode(View):
             return JsonResponse({'code':'4002','errormsg':'验证码已过期'})
         if code_real!=code:
             return JsonResponse({'code':'4003','errormsg':'验证码错误'})
-        return JsonResponse({'code':'200','errormsg':'ok'})
+        return JsonResponse({'code':200,'errormsg':'ok'})

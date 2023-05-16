@@ -24,6 +24,7 @@ urlpatterns = [
     path('pieces/',include('pieces_info.urls')),
     path('code/',include('verify_code.urls')),
     path('index/',include('index.urls')),
+    re_path('^',include('oauth.urls')),
     #添加静态文件
     re_path(r'^media/(?P<path>.*)$',serve,{'document_root':settings.MEDIA_ROOT})
 ]

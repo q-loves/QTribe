@@ -14,11 +14,24 @@ let vue=new Vue({
        error_username_msg:'用户名错误',
        error_password_msg:'密码格式错误',
 
+       qq_url:'',
 
-  },
-
+  },mounted(){
+       this.get_qq_url();
+    },
     methods:{
-
+         get_qq_url:function(){
+             axios.get('/get_qq_url/',{
+               responseType:'json'
+             }).then(response=>{
+               if(response.data.code=='200'){
+                  this.qq_url=response.data.login_url;
+                  console.log('url-->',this.qq_url)
+               }
+             }).catch(error=>{
+               console.log(error.response)
+             });
+         },
 
      check_uname:function(){
             if(!this.username){
@@ -30,10 +43,20 @@ let vue=new Vue({
      },
      check_pwd:function(){
             if (!this.password){
+                this.error_password_msg='密码不可为空';
                 this.error_password = true;
-                this.error_password_msg='密码不可为空'
+
             }else{
-                this.error_username = false;
+                let data = {'username':this.username,'password':this.password}
+                axios.post('/user/check_password/',data).then(response=>{
+                    if(response.data.code==200){
+                        this.error_password=false;
+                    }else{
+                        this.error_password_msg='用户名或密码错误';
+                        this.error_password=true;
+
+                    }
+                });
             }
      },
       // 监听表单提交事件

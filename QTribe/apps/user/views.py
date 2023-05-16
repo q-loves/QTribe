@@ -45,6 +45,28 @@ class CheckEmail(View):
         count=UserModel.objects.filter(email=email).count()
         return JsonResponse({'count':count})
 
+# 校验密码
+class CheckPassword(View):
+    def post(self, request):
+        data=json.loads(request.body)
+        username=data.get('username')
+        phone=data.get('phone')
+        password=data.get('password')
+
+        if not (username or phone):
+            return JsonResponse({'code':4001,'errormsg':'缺少必传参数'})
+        if username:
+            user=UserModel.objects.filter(username=username)
+            if user.check_password(password):
+                return JsonResponse({'code':200})
+            return JsonResponse({'code': 4002, 'errormsg': '用户名或密码错误'})
+        if phone:
+            user=UserModel.objects.get(phone=phone)
+            print('user-->',user)
+            if user.check_password(password):
+                return JsonResponse({'code':200})
+            return JsonResponse({'code': 4002, 'errormsg': '手机号或密码错误'})
+
 #校验密码
 class ResetPassword(View):
     def get(self,request):
@@ -74,7 +96,8 @@ class Login(View):
         if user:
             auth.login(request,user)
             return redirect('/index/home_index/')
-        return HttpResponse('用户名或密码错误')
+        #其实下面这个return是不必写的，因为在之前已经做了用户名和密码校验，密码不正确程序根本无法到达login这个函数里面。
+        return redirect('/index/no_find/')
 
 class Transform(View):
     def get(self,request):

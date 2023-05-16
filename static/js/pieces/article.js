@@ -35,7 +35,7 @@ let vue=new Vue({
                   message: '上传失败'
                 });
               },
-              //上传视频成功或失败后，弹出弹窗
+              //上传文章成功或失败后，弹出弹窗
               uploadFile:function(){
 
                     const formData = new FormData();

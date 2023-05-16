@@ -218,17 +218,14 @@ button:active {
         <div class="form-container sign-up-container">
 
             <form class="form" id="form" method="post" action="/user/register/" @submit="reg_sub">
-                <h2 class="form_">sign up</h2>
-                <p class="form-row form-row-wide">
-                    <input type="text" v-model="username" @blur="check_uname" name="username" id="username" placeholder="Username...">
-                    <span class="error-tip" v-show="error_username">  ${error_username_msg}  </span>
-                </p>
+                <h2 class="form_">Bind WeChat</h2>
+
                 <p class="form-row form-row-wide">
                     <input type="text" v-model="phone" @blur="check_phone" name="phone" id="phone" placeholder="Phone...">
                      <span class="error-tip" v-show="error_phone">  ${error_phone_msg}  </span>
                 <p class="form-row form-row-wide">
                     <input   type="text" v-model="smscode" @blur="check_smscode" name="smscode" placeholder="Verify code"   class="input-text" id="smscode" >
-                    <span class="error-tip" v-show="error_smscode">  ${error_smscode_msg}  </span> <a href="javascript:;" style="font-size: 16px;text-ali、gn: center;font-weight: normal;float: right;"  id="get_code" @click="send_smscode" >${smscode_btn}</a>
+                <span class="error-tip" v-show="error_smscode">  ${error_smscode_msg}  </span> <a href="javascript:;" style="font-size: 16px;text-ali、gn: center;font-weight: normal;float: right;"  id="get_code" @click="send_smscode" >${smscode_btn}</a>
                 </p>
 <!--                <button style="font-size: 16px;text-align: center;font-weight: normal;float: right;" id="get_code" @click="send_smscode">${smscode_btn}</button>-->
 
@@ -237,7 +234,7 @@ button:active {
                      <span class="error-tip" v-show="error_password">  ${error_password_msg}  </span>
                 </p>
 
-                <button class="signUp" type="submit">sign up</button>
+                <button class="signUp" type="submit">bind it</button>
 
             </form>
         </div>
@@ -252,8 +249,8 @@ button:active {
 <!--                </div>-->
                 <div class="overlay_panel overlay_right_container">
                     <h2>hello friend!</h2>
-                    <p>Enter your personal details and start journey with us</p>
-                    <button id="sign-in" onclick="transform()">sign in</button>
+                    <p>Please bind your WeChat to an account</p>
+                    <button id="sign-in" onclick="history.go(-1)">return</button>
                 </div>
             </div>
         </div>
@@ -278,7 +275,6 @@ button:active {
 	<script src="/static/js/owl.thumbs.min.js"></script>
 	<script src="/static/js/jquery.scrollbar.min.js"></script>
 	<script src="/static/js/frontend-plugin.js"></script>
-<!--	<script src="/static/js/user/register.js"></script>-->
 <script type="text/javascript" src="{{static('js/user/register.js')}}"></script>
 
 

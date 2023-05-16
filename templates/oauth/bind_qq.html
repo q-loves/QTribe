@@ -8,11 +8,11 @@
     <title>qloves Blog</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <script src="/static/js/vue.js"></script>
-    <script>
-        function transform(){
-            window.location.href = '/user/transform/?type=register';
-        }
-    </script>
+
+    <!--    sweetalert-->
+   <link href="/static/css/sweetalert.css" rel="stylesheet" />
+    <script src="/static/js/sweetalert-dev.js" type="text/javascript"></script>
+
 </head>
 <style>
     * {
@@ -66,7 +66,7 @@ h2 {
     align-items: left;
     height: 100%;
     width: 100%;
-    padding: 0 50px;
+    padding: 10px 50px;
 }
 
 .form_ {
@@ -94,19 +94,7 @@ input {
     border: none;
 }
 
-.forget-password {
-    display: inline-block;
-    height: 20px;
-    text-decoration: none;
-    color: #bbb;
-    text-transform: capitalize;
-    font-size: 12px;
-}
 
-.forget-password:hover {
-    color: lightslategray;
-    border-bottom: 2px solid #ff4b2b;
-}
 
 button {
     background: #ff4b2b;
@@ -122,7 +110,7 @@ button {
 
 #get_code {
     background: #C3CBC3;
-    padding: 10px 10px;
+    padding: 10px 2px;
     border: 1px solid transparent;
     border-radius: 0px;
     text-transform: uppercase;
@@ -217,18 +205,15 @@ button:active {
 <!--         register-->
         <div class="form-container sign-up-container">
 
-            <form class="form" id="form" method="post" action="/user/register/" @submit="reg_sub">
-                <h2 class="form_">sign up</h2>
-                <p class="form-row form-row-wide">
-                    <input type="text" v-model="username" @blur="check_uname" name="username" id="username" placeholder="Username...">
-                    <span class="error-tip" v-show="error_username">  ${error_username_msg}  </span>
-                </p>
+            <form class="form" id="form" enctype="multipart/form-data"  v-on:submit.prevent="bind_qq" >
+                <h2 class="form_">Bind QQ</h2>
+                <input  type="hidden" name="sec_openid" ref="sec_openid" value="{{sec_openid}}" >
                 <p class="form-row form-row-wide">
                     <input type="text" v-model="phone" @blur="check_phone" name="phone" id="phone" placeholder="Phone...">
                      <span class="error-tip" v-show="error_phone">  ${error_phone_msg}  </span>
                 <p class="form-row form-row-wide">
                     <input   type="text" v-model="smscode" @blur="check_smscode" name="smscode" placeholder="Verify code"   class="input-text" id="smscode" >
-                    <span class="error-tip" v-show="error_smscode">  ${error_smscode_msg}  </span> <a href="javascript:;" style="font-size: 16px;text-ali、gn: center;font-weight: normal;float: right;"  id="get_code" @click="send_smscode" >${smscode_btn}</a>
+                <span class="error-tip" v-show="error_smscode">  ${error_smscode_msg}  </span> <a href="javascript:;" style="font-size: 16px;text-ali、gn: center;font-weight: normal;float: right;"  id="get_code" @click="send_smscode" >${smscode_btn}</a>
                 </p>
 <!--                <button style="font-size: 16px;text-align: center;font-weight: normal;float: right;" id="get_code" @click="send_smscode">${smscode_btn}</button>-->
 
@@ -236,9 +221,10 @@ button:active {
                     <input type="password" v-model="password" @blur="check_pwd" name="password" id="password" placeholder="Password...">
                      <span class="error-tip" v-show="error_password">  ${error_password_msg}  </span>
                 </p>
-
-                <button class="signUp" type="submit">sign up</button>
-
+                <p>
+                    <button class="signUp" type="submit" >bind it</button>
+                    <span class="error-tip" v-show="error_form">  ${error_form_msg}  </span>
+                </p>
             </form>
         </div>
 
@@ -252,8 +238,8 @@ button:active {
 <!--                </div>-->
                 <div class="overlay_panel overlay_right_container">
                     <h2>hello friend!</h2>
-                    <p>Enter your personal details and start journey with us</p>
-                    <button id="sign-in" onclick="transform()">sign in</button>
+                    <p>Please bind your QQ to an account</p>
+                    <button id="sign-in" onclick="history.go(-1)">return</button>
                 </div>
             </div>
         </div>
@@ -278,8 +264,7 @@ button:active {
 	<script src="/static/js/owl.thumbs.min.js"></script>
 	<script src="/static/js/jquery.scrollbar.min.js"></script>
 	<script src="/static/js/frontend-plugin.js"></script>
-<!--	<script src="/static/js/user/register.js"></script>-->
-<script type="text/javascript" src="{{static('js/user/register.js')}}"></script>
+<script type="text/javascript" src="{{static('js/oauth/bind_qq.js')}}"></script>
 
 
 </body>

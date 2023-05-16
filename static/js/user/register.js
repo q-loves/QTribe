@@ -76,26 +76,33 @@ let vue = new Vue({
        },
        check_smscode:function(){
            //短信验证码格式校验
-           let reg = /^\d{6}$/;
+//           let reg = /^\d{6}$/;
+           let reg = /\d{6}/;
+           console.log("this.smscode",this.smscode);
+           console.log("reg.test",typeof(reg.test(this.smscode)));
+
+
            if(!reg.test(this.smscode)){
+            console.log('11111111111');
                this.error_smscode = true;
            }else{
+                console.log("true")
                this.error_smscode = false;
            }
+
+
            if(!this.error_smscode){
-              axios.get('/code/check_smscode/'+this.phone+'/?smscode='+this.smscode ,{
-              responseType:json
-              }).then(response=>{
+              axios.get('/code/check_smscode/'+this.phone+'/?smscode='+this.smscode).then(response=>{
               let code=response.data.code
               if(code!=200){
-              this.error_smscode=true
-              this.error_smscode_msg=request.data.errormsg
-              }else{
+                  this.error_smscode=true;
+                  this.error_smscode_msg=response.data.errormsg;
 
+              }else{
               this.error_smscode=false
 
               }
-              })
+              });
            }
        },
 
@@ -165,8 +172,9 @@ let vue = new Vue({
             this.check_uname();
             this.check_phone();
             this.check_pwd();
+            this.check_smscode();
 
-            if(this.error_username||this.error_phone||this.error_password){
+            if(this.error_username||this.error_phone||this.error_password||this.error_smscode){
                 //阻止表单提交
                 window.event.returnValue = false;
             }
