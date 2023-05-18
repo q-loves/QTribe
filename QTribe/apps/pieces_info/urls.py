@@ -1,16 +1,28 @@
 from django.urls import path
 
-from pieces_info.views import UploadVideo, MyVideo,MyArticle,MyLife,UploadImage,PublishArticle,PlayVideo,StarVideo,TopVideo
+from pieces_info.views.article import MyArticle,  StarArticle, TopArticle, PublishArticle,DetailsArticle,DeleteArticle
+from pieces_info.views.life import MyLife
+from pieces_info.views.video import UploadVideo, MyVideo, PlayVideo, StarVideo, TopVideo, DeleteVideo
+
+
+
 
 urlpatterns=[
+     #视频
      path('upload_video/',UploadVideo.as_view()),
      path('my_video/',MyVideo.as_view()),
      path('play_video/',PlayVideo.as_view()),
      path('star_video/',StarVideo.as_view()),
      path('top_video/',TopVideo.as_view()),
+     path('delete_video/',DeleteVideo.as_view()),
+     #文章
      path('my_article/',MyArticle.as_view()),
-     path('my_life/',MyLife.as_view()),
-     path('upload_image/',UploadImage.as_view()),
+     path('star_article/',StarArticle.as_view()),
+     path('top_article/',TopArticle.as_view()),
      path('publish_article/', PublishArticle.as_view()),
+     path('details_article/', DetailsArticle.as_view()),
+     path('delete_article/', DeleteArticle.as_view()),
+     #生活
+     path('my_life/',MyLife.as_view()),
 
 ]

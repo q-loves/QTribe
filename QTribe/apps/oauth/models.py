@@ -1,10 +1,10 @@
 from django.db import models
 
 # Create your models here.
-from QTribe.utils.base_model import BaseModel
+from QTribe.utils.base_model import BaseModel2
 
 
-class QQUser(BaseModel):
+class QQUser(BaseModel2):
     user=models.ForeignKey('user.UserModel',on_delete=models.CASCADE,verbose_name='qq用户')
     openid=models.CharField(verbose_name='openid',max_length=64,db_index=True)
 
@@ -13,7 +13,7 @@ class QQUser(BaseModel):
         verbose_name='QQ用户'
         verbose_name_plural=verbose_name
 
-class WeChatUser(BaseModel):
+class WeChatUser(BaseModel2):
     user=models.ForeignKey('user.UserModel',on_delete=models.CASCADE,verbose_name='qq用户')
     openid=models.CharField(verbose_name='openid',max_length=64,db_index=True)
 

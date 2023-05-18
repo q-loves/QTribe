@@ -156,7 +156,7 @@
             console.log('eee',file)
             let param = new FormData()       // 创建form对象
             param.append('image', file)       // 通过append向form对象添加数据
-            axios.post('/pieces/upload_image/',param).then(response=>{
+            axios.post('/user/upload_image/',param).then(response=>{
                 if(response.data.code==200){
                     swal('更换成功');
                 }else{

@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from QTribe.utils.base_model import BaseModel
+from QTribe.utils.base_model import BaseModel2
 
 class CategoryModel(models.Model):
     name=models.CharField(verbose_name='类别名称',max_length=16,blank=True,null=True)
@@ -11,12 +11,14 @@ class CategoryModel(models.Model):
         verbose_name_plural = verbose_name
 
 
-class ArticleModel(BaseModel):
+class ArticleModel(BaseModel2):
     """文章"""
     title = models.CharField(max_length=100,unique=True,verbose_name='文章标题')
     content = models.TextField(verbose_name='文章内容')
     default_img = models.ImageField(verbose_name='首页图片',blank=True,null=True)
+    running_count = models.IntegerField(verbose_name='浏览次数', max_length=20, null=True, blank=True, default=0)
     star_count = models.IntegerField(default=0,verbose_name='点赞量',blank=True,null=True)
+    collection_count = models.IntegerField(default=0, verbose_name='收藏量', blank=True, null=True)
     comment_count = models.IntegerField(default=0,verbose_name='评论量',blank=True,null=True)
     category=models.ForeignKey('CategoryModel',on_delete=models.CASCADE,verbose_name='文章类型',blank=True,null=True,related_name='article')
     user=models.ForeignKey('user.UserModel',on_delete=models.CASCADE,verbose_name='作者',related_name='article')
@@ -29,10 +31,11 @@ class ArticleModel(BaseModel):
     def __str__(self):
         return self.title
 
-class VideoModel(BaseModel):
+class VideoModel(BaseModel2):
     video=models.FileField(verbose_name='视频内容')
     title = models.CharField(verbose_name='视频标题', max_length=20, null=True, blank=True)
     star_count = models.IntegerField(default=0, verbose_name='点赞量', blank=True, null=True)
+    collection_count = models.IntegerField(default=0, verbose_name='收藏量', blank=True, null=True)
     comment_count = models.IntegerField(default=0, verbose_name='评论量', blank=True, null=True)
     category = models.ForeignKey('CategoryModel', on_delete=models.CASCADE, verbose_name='视频类型', blank=True, null=True,
                                  related_name='video')
@@ -48,7 +51,8 @@ class VideoModel(BaseModel):
         verbose_name = '视频'
         verbose_name_plural = verbose_name
         ordering=['-is_top','-id']
-class ImageModel(BaseModel):
+
+class ImageModel(BaseModel2):
     image=models.ImageField(verbose_name='图片内容',blank=True,null=True)#用户头像，文章图像，生活照片
     image_path=models.CharField(verbose_name='图片相对路径',max_length=256,blank=True,null=True)#视频截取图片
     video=models.ForeignKey('VideoModel',verbose_name='视频',on_delete=models.CASCADE,blank=True,null=True,related_name='image')
@@ -60,7 +64,7 @@ class ImageModel(BaseModel):
         verbose_name='图片'
         verbose_name_plural=verbose_name
 
-class CommentModel(BaseModel):
+class CommentModel(BaseModel2):
     content=models.CharField(verbose_name='评论内容',max_length=128)
     article=models.ForeignKey('ArticleModel',on_delete=models.CASCADE,related_name='comment',blank=True,null=True)
     video=models.ForeignKey('VideoModel',on_delete=models.CASCADE,related_name='comment',blank=True,null=True)

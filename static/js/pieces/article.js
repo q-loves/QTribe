@@ -43,11 +43,12 @@ let vue=new Vue({
                     if(!this.error_title && !this.error_content && file){
                         this.error_form=false;
 
-                        for(var i=0;i<this.$refs.fileInput.files.length;i++){
-                            formData.append('image', this.$refs.fileInput.files[i]);
-                        }
+//                        for(var i=0;i<this.$refs.fileInput.files.length;i++){
+//                            formData.append('image', this.$refs.fileInput.files[i]);
+//                        }
                         formData.append('title',this.title);
                         formData.append('content',this.content);
+                        formData.append('image',file);
                         console.log('file---->',formData)
                         axios.post('/pieces/publish_article/',formData).then(response=>{
                             if(response.data.code==200){

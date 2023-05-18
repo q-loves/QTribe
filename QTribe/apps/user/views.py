@@ -2,6 +2,7 @@ import json
 
 from django.contrib import auth
 from django.contrib.admin import action
+from django.db import transaction
 from django.db.models import F
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
@@ -11,7 +12,7 @@ from django.views import View
 
 from user.models import UserModel
 
-
+from pieces_info.models import ImageModel
 
 
 class Register(View):
@@ -125,4 +126,15 @@ class UpdateInformation(View):
         except:
             return JsonResponse({'code':401})
 
-
+#上传用户头像
+class UploadImage(View):
+    def post(self,request):
+        try:
+            with transaction.atomic():
+                image=request.FILES.get('image')
+                request.user.icon=image
+                request.user.save()
+                img=ImageModel.objects.create(image=image,user=request.user)
+                return JsonResponse({'code':200})
+        except:
+            return JsonResponse({'code':401})

@@ -2,6 +2,7 @@ from django.urls import path, re_path
 
 from user.views import Register, Login ,CheckUsername, CheckPhone,Transform,UpdateInformation,CheckEmail,ResetPassword,CheckPassword
 
+from user.views import UploadImage
 
 urlpatterns=[
    path('register/',Register.as_view()),
@@ -12,6 +13,7 @@ urlpatterns=[
    re_path('check_email/(?P<email>[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,})/',CheckEmail.as_view()),
    path('transform/', Transform.as_view()),
    path('update_information/', UpdateInformation.as_view()),
+   path('upload_image/',UploadImage.as_view()),
    path('reset_password/', ResetPassword.as_view()),
 
 ]

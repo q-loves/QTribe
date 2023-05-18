@@ -1,19 +1,20 @@
-import json
+
+#上传视频
 import os
 import subprocess
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import transaction
 from django.db.models import F
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
-
-# Create your views here.
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
 from django.views import View
 
-from pieces_info.models import VideoModel,ImageModel,ArticleModel
+from pieces_info.models import VideoModel, ImageModel
+
+from user.models import StarModel
 
 
 class UploadVideo(LoginRequiredMixin, View):
@@ -120,10 +121,11 @@ class MyVideo(View):
                                                         'page_list': page_list,
                                                         'current_page': page_content.number,
                                                         'num_pages': num_pages})
+
 #播放视频,浏览次数
 class PlayVideo(View):
     def post(self,request):
-        v_id = int(request.POST.get('id'))
+        v_id = int(request.POST.get('v_id'))
         VideoModel.objects.filter(id=v_id).update(running_count=F('running_count')+1)
         return JsonResponse({"data": "success"})
 #视频点赞量
@@ -131,8 +133,18 @@ class StarVideo(View):
     def get(self,request):
         v_id=int(request.GET.get('v_id'))
         current_page=int(request.GET.get('current_page'))
-        VideoModel.objects.filter(id=v_id).update(star_count=F('star_count') + 1)
-        return redirect(f'/pieces/my_video/?page_number={current_page}')
+        video = VideoModel.objects.get(id=v_id)
+        is_star=StarModel.objects.filter(user_id=request.user.id,video_id=v_id)
+        if is_star:
+            video.star_count-=1
+            video.save()
+            StarModel.objects.filter(user_id=request.user.id, video_id=v_id).delete()
+            return redirect(f'/index/video_mall?page_number={current_page}')
+        else:
+            video.star_count+=1
+            video.save()
+            StarModel.objects.create(user=request.user,video=video)
+            return redirect(f'/index/video_mall?page_number={current_page}')
 
 #视频顶置
 class TopVideo(View):
@@ -142,48 +154,19 @@ class TopVideo(View):
         current_page = int(request.GET.get('current_page'))
         if is_top==1:
             VideoModel.objects.filter(id=v_id).update(is_top=0)
-            return redirect(f'/pieces/my_video/?page_number={current_page}')
+            return redirect(f'/pieces/my_video?page_number={current_page}')
         if is_top==0:
             VideoModel.objects.filter(id=v_id).update(is_top=1)
-            return redirect(f'/pieces/my_video/?page_number={current_page}')
+            return redirect(f'/pieces/my_video?page_number={current_page}')
 
-
-#自己的文章列表页面
-class MyArticle(View):
+#删除视频
+class DeleteVideo(View):
     def get(self,request):
-        return render(request,'pieces/my_article.html')
-
-#自己的生活列表页面
-class MyLife(View):
-    def get(self,request):
-        return render(request,'pieces/my_life.html')
-
-#上传用户头像
-class UploadImage(View):
-    def post(self,request):
+        v_id=int(request.GET.get('v_id'))
+        current_page=int(request.GET.get('current_page'))
+        VideoModel.objects.filter(id=v_id).delete()
         try:
-            with transaction.atomic():
-                image=request.FILES.get('image')
-                request.user.icon=image
-                request.user.save()
-                img=ImageModel.objects.create(image=image,user=request.user)
-                return JsonResponse({'code':200})
+            return redirect(f'/pieces/my_video?page_number={current_page}')
         except:
-            return JsonResponse({'code':401})
+            return redirect(f'/pieces/my_video?page_number={current_page-1}')
 
-#上传文章
-class PublishArticle(View):
-       def get(self,request):
-            return render(request,'pieces/publish_article.html')
-       def post(self,request):
-           title=request.POST.get('title')
-           content=request.POST.get('content')
-           images=request.FILES.getlist('image')
-           try:
-               with transaction.atomic():#数据库绑定事物
-                   article=ArticleModel.objects.create(title=title,content=content,default_img=images[0],user=request.user)
-                   for image in images:
-                       ImageModel.objects.create(image=image,user=request.user,article=article)
-                   return JsonResponse({'code': 200})
-           except:
-               return JsonResponse({'code': 401})

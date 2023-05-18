@@ -1,11 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
 {#爱心css文件#}
-
 <style>
-
-
-    .el-icon-star-off{ font-size:25px; color: #FFEE00; cursor:pointer;}
+    .el-icon-star-off{ font-size:25px; color: #130B12; cursor:pointer;}
+    .heart{
+        background-color: #8a93a0;
+        height: 13px;
+        width: 13px;
+        transform: rotate(-45deg) scale(1);
+        display: inline-block;
+        }
+        .heart::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: 0;
+        background-color: inherit;
+        border-radius: 50%;
+        height: 13px;
+        width: 13px;
+        }
+    .heart::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -50%;
+        background-color: inherit;
+        border-radius: 50%;
+        height: 13px;
+        width: 13px;
+        }
     .putheart{
         background-color: #FD2B1F;
         height: 13px;
@@ -33,23 +57,21 @@
         height: 13px;
         width: 13px;
         }
-
 </style>
 {# 表单相关依赖 #}
 <script src="/static/lib/jquery/dist/jquery.min.js"></script>
 <script src="/static/lib/formvalidation/js/formValidation.js"></script>
 <script src="/static/lib/formvalidation/js/framework/bootstrap.js"></script>
 <script src="/static/lib/formvalidation/js/language/zh_CN.js"></script>
-<script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
-
 {#发送ajax请求，播放视频，删除视频#}
 <script>
+        function starIt(v_id,current_page) {
 
-        function starIt(id,current_page) {
-                let url = '/pieces/star_video?v_id='+id+'&current_page='+current_page
-                axios.get(url);
-                }
+            let url = '/pieces/star_video?v_id='+v_id+'&current_page='+current_page;
+            axios.get(url);
 
+<!--            window.location.href='/index/video_mall/?page_number='+current_page;-->
+            }
 
         function scanMedia(id,url,title) {
             //播放视频
@@ -77,16 +99,7 @@
                 }
             })
         }
-        //删除视频
-        function delete_video(id, title,current_page) {
-            // 设置弹出框的提示内容
-            $('#video_delete_message').text('确认要删除 '+ title + ', 这个视频吗？')
-            // 给确认删除的按钮添加一个鼠标点击事件
-            $('#delete_btn').click(function () {
-                document.location.href = '/pieces/delete_video/?v_id='+id+'&current_page='+current_page
-            })
-            $("#delete_video").modal('show');
-        }
+
 
 
 
@@ -94,23 +107,23 @@
 
 <!--//导航栏-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
-    <div class="container-fluid"><a class="navbar-brand" href="javascript:">我的作品</a>
+    <div class="container-fluid"><a class="navbar-brand" href="javascript:">看点广场</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navcnt1" aria-controls="navcnt1" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navcnt1">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/pieces/my_video/">
+                    <a class="nav-link active" aria-current="page" href="/index/video_mall/">
                         <i class="el-icon-camera"></i> 视频
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/pieces/my_life/">
+                    <a class="nav-link" href="/index/life_mall/">
                         <i class="el-icon-cold-drink"></i> 分享生活
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/pieces/my_article/">
+                    <a class="nav-link" href="/index/article_mall/">
                         <i class="el-icon-document-copy"></i> 文章
                     </a>
                 </li>
@@ -131,7 +144,7 @@
     {% for video in page_content %}
     <div class="card-body p-4">
         <h5 class="card-title">欢迎光临{{video.user.username}}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">来看看你的作品吧！！！</h6>
+        <h6 class="card-subtitle mb-2 text-muted">来看大家的作品吧！！！</h6>
         <hr>
         <div class="row row-cols-1 g-3">
             <div class="col">
@@ -174,18 +187,22 @@
                                         <a href="javascript:delete_video({{video.id}},'{{video.title}}','{{current_page}}')"
                                            class="badge rounded-pill bg-primary text-white text-decoration-none">删除</a>
                                         <pre>  </pre>
-<!--                                        <div class="likeBtn" id="likeBtn">-->
-<!--                                            <a class="heart" id="heart" href="/pieces/star_video/?v_id={{video.id}}&current_page={{current_page}}"></a>-->
-<!--                                            <span>{{video.star_count}}</span>-->
-<!--&lt;!&ndash;                                        </div>&ndash;&gt;/pieces/star_video/?v_id={{video.id}}&current_page={{current_page}}-->
+<!--                                        {% for obj in video.starmodel_set.all()%}-->
+<!--                                            var flag=0;-->
+<!--                                            {% if user == obj.user%}-->
+<!--                                                var flag=1;-->
+<!--                                            {% endif %}-->
+<!--                                        {% endfor%}-->
+
+
                                         <div>
-                                            <div class="putheart"> </div>
+                                            <a class="{% if video.id in star_ids %}put{% endif %}heart" href="/pieces/star_video?v_id={{video.id}}&current_page={{current_page}}"></a>
                                             <span>{{video.star_count}}</span>
                                         </div>
                                         <pre>  </pre>
                                         <div>
-                                            <div class="el-icon-star-off"></div>
-                                            <span>{{video.collection_count}}</span>
+                                            <a class="el-icon-star-off" href=""></a>
+                                            <span>{{video.star_count}}</span>
                                         </div>
                                         <pre>  </pre>
 
@@ -215,12 +232,12 @@
             <ul class="pagination"> <!-- 逻辑判断，如果有前一页，则可以点击上一页按钮 -->
                 {% if page_content.has_previous() %}
                 <li class="page-item"><a class="page-link"
-                                         href="/pieces/my_video/?page_number={{ page_content.previous_page_number() }}"
+                                         href="/index/video_mall/?page_number={{ page_content.previous_page_number() }}"
                                          aria-label="Previous"> <span aria-hidden="true">«</span> </a></li>
                 {% else %}
                 <!-- 禁用按钮 -->
                 <li class="page-item"><a class="page-link"
-                                         href="/pieces/my_video/?page_number=1"
+                                         href="/index/video_mall/?page_number=1"
                                          aria-label="Previous"> <span aria-hidden="true">«</span> </a></li>
                 {% endif %}
                 <!-- 呈现所有的页码 -->
@@ -229,18 +246,18 @@
                     {% if page_num == current_page %}
                         <li class="page-item active" aria-current="page"><span class="page-link">{{page_num}}</span></li>
                     {% else %}
-                        <li class="page-item"><a class="page-link" href="/pieces/my_video/?page_number={{ page_num }}">{{page_num}}</a>
+                        <li class="page-item"><a class="page-link" href="/index/video_mall/?page_number={{ page_num }}">{{page_num}}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
                 <!-- 逻辑判断，如果有后一页，则可以点击下一页按钮 -->
                 {% if page_content.has_next() %}
                 <li class="page-item"><a class="page-link"
-                                         href="/pieces/my_video/?page_number={{ page_content.next_page_number() }}"
+                                         href="/index/video_mall/?page_number={{ page_content.next_page_number() }}"
                                          aria-label="Next"> <span aria-hidden="true">»</span> </a></li>
                 {% else %} <!-- 禁用按钮 -->
                 <li class="page-item"><a class="page-link"
-                                         href="/pieces/my_video/?page_number={{num_pages}}"
+                                         href="/index/video_mall/?page_number={{num_pages}}"
                                          aria-label="Next"> <span aria-hidden="true">»</span> </a></li>
                 {% endif %}
             </ul>
