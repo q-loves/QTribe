@@ -1,5 +1,4 @@
-
-#上传视频
+# 上传视频
 import os
 import subprocess
 
@@ -14,7 +13,7 @@ from django.views import View
 
 from pieces_info.models import VideoModel, ImageModel
 
-from user.models import StarModel
+from user.models import StarModel, CollectionModel
 
 
 class UploadVideo(LoginRequiredMixin, View):
@@ -23,20 +22,22 @@ class UploadVideo(LoginRequiredMixin, View):
 
     def post(self, request):
         # data=json.loads(request.body)
-        title=request.POST.get('title')
-        remark=request.POST.get('remark')
-        video_path=request.FILES.get('video')
+        title = request.POST.get('title')
+        remark = request.POST.get('remark')
+        video_path = request.FILES.get('video')
 
-        if not video_path:#上传失败
-            return JsonResponse({'code':401})
+        if not video_path:  # 上传失败
+            return JsonResponse({'code': 401})
 
-        video_obj=VideoModel.objects.create(title=title, remark=remark, video=video_path, user=request.user)
-        video_operator(request,video_obj.id,
-                       video_path=os.path.join(settings.BASE_DIR2,'media',video_obj.video.name),
-                       img_path=os.path.join(settings.BASE_DIR2,'media',f'{video_obj.video.name}{video_obj.id}.jpg'))
+        video_obj = VideoModel.objects.create(title=title, remark=remark, video=video_path, user=request.user)
+        video_operator(request, video_obj.id,
+                       video_path=os.path.join(settings.BASE_DIR2, 'media', video_obj.video.name),
+                       img_path=os.path.join(settings.BASE_DIR2, 'media', f'{video_obj.video.name}{video_obj.id}.jpg'))
 
-        #上传成功
-        return JsonResponse({'code':200})
+        # 上传成功
+        return JsonResponse({'code': 200})
+
+
 def run_cmd(cmd1, cmd2):
     """运行命令"""
     flag1 = False
@@ -67,7 +68,7 @@ def run_cmd(cmd1, cmd2):
         return False, int(play_time)
 
 
-def video_operator(request,video_id, video_path, img_path):
+def video_operator(request, video_id, video_path, img_path):
     """视频处理,就是拼凑好两条ffmpeg的命令"""
     # 拼凑播放时长的命令
     cmd1 = f'ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 -i {video_path}'
@@ -81,17 +82,19 @@ def video_operator(request,video_id, video_path, img_path):
     if result[0]:
         # 得到图片的名字
         image_name = os.path.basename(img_path)
-        image_path='/media/'+image_name
+        image_path = '/media/' + image_name
         # 得到视频播放时长
         play_time = '%02d:%02d' % (int(result[1] / 60), result[1] % 60)
         with transaction.atomic():
-            video=VideoModel.objects.filter(id=video_id).update(img_path=image_path, duration_time=play_time,is_success=True)
+            video = VideoModel.objects.filter(id=video_id).update(img_path=image_path, duration_time=play_time,
+                                                                  is_success=True)
 
-            ImageModel.objects.create(image_path=image_path,video_id=video_id,user=request.user)
+            ImageModel.objects.create(image_path=image_path, video_id=video_id, user=request.user)
 
-#自己的视频列表页面
+
+# 自己的视频列表页面
 class MyVideo(View):
-    def get(self,request):
+    def get(self, request):
 
         page_number = int(request.GET.get('page_number', 1))
         # 获取该用户所有视频
@@ -122,51 +125,187 @@ class MyVideo(View):
                                                         'current_page': page_content.number,
                                                         'num_pages': num_pages})
 
-#播放视频,浏览次数
+
+# 播放视频,浏览次数
 class PlayVideo(View):
-    def post(self,request):
+    def post(self, request):
         v_id = int(request.POST.get('v_id'))
-        VideoModel.objects.filter(id=v_id).update(running_count=F('running_count')+1)
+        VideoModel.objects.filter(id=v_id).update(running_count=F('running_count') + 1)
         return JsonResponse({"data": "success"})
-#视频点赞量
+
+
+# 视频点赞量
 class StarVideo(View):
-    def get(self,request):
-        v_id=int(request.GET.get('v_id'))
-        current_page=int(request.GET.get('current_page'))
+    def get(self, request):
+        v_id = int(request.GET.get('v_id'))
+        args = request.GET.get('args')  # 判断是从看点广场页面进入，还是从点赞列表页面进入
+        current_page = int(request.GET.get('current_page'))
         video = VideoModel.objects.get(id=v_id)
-        is_star=StarModel.objects.filter(user_id=request.user.id,video_id=v_id)
+        is_star = StarModel.objects.filter(user_id=request.user.id, video_id=v_id)
         if is_star:
-            video.star_count-=1
+            video.star_count -= 1
             video.save()
             StarModel.objects.filter(user_id=request.user.id, video_id=v_id).delete()
-            return redirect(f'/index/video_mall?page_number={current_page}')
-        else:
-            video.star_count+=1
-            video.save()
-            StarModel.objects.create(user=request.user,video=video)
-            return redirect(f'/index/video_mall?page_number={current_page}')
+            if args == 'mall':
+                return redirect(f'/index/video_mall?page_number={current_page}')
+            if args == 'star':  # 有可能用户取消点赞后，当页就没有内容，防止报错，加一个try
+                try:
+                    return redirect(f'/pieces/star_video_list?page_number={current_page}')
+                except:
+                    return redirect(f'/pieces/star_video_list?page_number={current_page - 1}')
+            if args == 'collect':
+                return redirect(f'/pieces/collect_video_list?page_number={current_page}')
 
-#视频顶置
-class TopVideo(View):
-    def get(self,request):
-        v_id=int(request.GET.get('v_id'))
-        is_top=int(request.GET.get('is_top'))
+        else:
+            video.star_count += 1
+            video.save()
+            StarModel.objects.create(user=request.user, video=video)
+            if args == 'mall':
+                return redirect(f'/index/video_mall?page_number={current_page}')
+            if args == 'collect':
+                return redirect(f'/pieces/collect_video_list?page_number={current_page}')
+
+
+# 视频收藏量
+class CollectVideo(View):
+    def get(self, request):
+        v_id = int(request.GET.get('v_id'))
         current_page = int(request.GET.get('current_page'))
-        if is_top==1:
+        args = request.GET.get('args')  # 判断是从看点广场页面进入，还是从收藏列表页面进入
+        video = VideoModel.objects.get(id=v_id)
+        is_collect = CollectionModel.objects.filter(user_id=request.user.id, video_id=v_id)
+        if is_collect:
+            video.collection_count -= 1
+            video.save()
+            CollectionModel.objects.filter(user_id=request.user.id, video_id=v_id).delete()
+            if args == 'mall':
+                return redirect(f'/index/video_mall?page_number={current_page}')
+            if args == 'collect':
+                try:
+                    return redirect(f'/pieces/collect_video_list?page_number={current_page}')
+                except:
+                    return redirect(f'/pieces/collect_video_list?page_number={current_page - 1}')
+            if args == 'star':
+                return redirect(f'/pieces/star_video_list?page_number={current_page}')
+        else:
+            video.collection_count += 1
+            video.save()
+            CollectionModel.objects.create(user=request.user, video=video)
+            if args == 'mall':
+                return redirect(f'/index/video_mall?page_number={current_page}')
+            if args == 'star':
+                return redirect(f'/pieces/star_video_list?page_number={current_page}')
+
+
+# 视频顶置
+class TopVideo(View):
+    def get(self, request):
+        v_id = int(request.GET.get('v_id'))
+        is_top = int(request.GET.get('is_top'))
+        current_page = int(request.GET.get('current_page'))
+        if is_top == 1:
             VideoModel.objects.filter(id=v_id).update(is_top=0)
             return redirect(f'/pieces/my_video?page_number={current_page}')
-        if is_top==0:
+        if is_top == 0:
             VideoModel.objects.filter(id=v_id).update(is_top=1)
             return redirect(f'/pieces/my_video?page_number={current_page}')
 
-#删除视频
+
+# 删除视频
 class DeleteVideo(View):
-    def get(self,request):
-        v_id=int(request.GET.get('v_id'))
-        current_page=int(request.GET.get('current_page'))
+    def get(self, request):
+        v_id = int(request.GET.get('v_id'))
+        current_page = int(request.GET.get('current_page'))
         VideoModel.objects.filter(id=v_id).delete()
         try:
             return redirect(f'/pieces/my_video?page_number={current_page}')
         except:
-            return redirect(f'/pieces/my_video?page_number={current_page-1}')
+            return redirect(f'/pieces/my_video?page_number={current_page - 1}')
 
+
+# 点赞的视频列表页面
+class StarVideoList(View):
+    def get(self, request):
+        page_number = int(request.GET.get('page_number', 1))
+        star_ids = []
+        objs = request.user.starmodel_set.all()
+        for obj in objs:
+            star_ids.append(obj.video_id)
+        # 获取该用户所有点赞过的视频
+        video_list = VideoModel.objects.filter(id__in=star_ids)
+        collection_ids = []  # 用于筛选用户收藏过的视频，方便前端渲染
+        for video in video_list:
+            objs = request.user.collectionmodel_set.all()
+            for obj in objs:
+                if obj.video == video:
+                    collection_ids.append(video.id)
+        # 创建分页对象
+        paginator = Paginator(video_list, 2)
+        num_pages = paginator.num_pages
+        # 获取页码数列，用于前端遍历
+        if paginator.num_pages > 5:
+            if page_number - 2 <= 1:
+                page_list = range(1, 6)
+            elif page_number + 2 >= num_pages:
+                page_list = range(num_pages - 4, num_pages + 1)
+            else:
+                page_list = range(page_number - 1, page_number + 4)
+
+        else:
+            page_list = paginator.page_range
+        try:
+            # 获取对应页数的全部视频
+            page_content = paginator.page(page_number)
+        except PageNotAnInteger:
+            page_content = paginator.page(1)
+        except EmptyPage:
+            page_content = paginator.page(num_pages)
+        return render(request, 'pieces/star_video.html', {'page_content': page_content,
+                                                          'page_list': page_list,
+                                                          'current_page': page_content.number,
+                                                          'num_pages': num_pages,
+                                                          'collection_ids': collection_ids})
+
+
+# 收藏的视频列表页面
+class CollectVideoList(View):
+    def get(self, request):
+        page_number = int(request.GET.get('page_number', 1))
+        collection_ids = []
+        objs = request.user.collectionmodel_set.all()
+        for obj in objs:
+            collection_ids.append(obj.video_id)
+        # 获取该用户所有收藏的视频
+        video_list = VideoModel.objects.filter(id__in=collection_ids)
+        star_ids = []  # 用于筛选用户点赞过的视频，方便前端渲染
+        for video in video_list:
+            objs = request.user.starmodel_set.all()
+            for obj in objs:
+                if obj.video == video:
+                    star_ids.append(video.id)
+        # 创建分页对象
+        paginator = Paginator(video_list, 2)
+        num_pages = paginator.num_pages
+        # 获取页码数列，用于前端遍历
+        if paginator.num_pages > 5:
+            if page_number - 2 <= 1:
+                page_list = range(1, 6)
+            elif page_number + 2 >= num_pages:
+                page_list = range(num_pages - 4, num_pages + 1)
+            else:
+                page_list = range(page_number - 1, page_number + 4)
+
+        else:
+            page_list = paginator.page_range
+        try:
+            # 获取对应页数的全部视频
+            page_content = paginator.page(page_number)
+        except PageNotAnInteger:
+            page_content = paginator.page(1)
+        except EmptyPage:
+            page_content = paginator.page(num_pages)
+        return render(request, 'pieces/collect_video.html', {'page_content': page_content,
+                                                             'page_list': page_list,
+                                                             'current_page': page_content.number,
+                                                             'num_pages': num_pages,
+                                                             'star_ids': star_ids})

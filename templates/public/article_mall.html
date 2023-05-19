@@ -69,7 +69,73 @@
         height: 13px;
         width: 13px;
         }
-
+    .collect {
+       box-sizing: border-box;
+       position: relative;
+       display: inline-block;
+       color:#8a93a0;
+       width: 17px;
+       height: 17px;
+       transform: scale(var(--ggs,1));
+       border-left: 7px solid transparent;
+       border-right: 3px solid transparent;
+       border-bottom: 8px solid transparent;
+       box-shadow: 0 0 0 2px,
+          inset 6px 4px 0 -4px,
+          inset -6px 4px 0 -4px;
+       border-radius: 3px
+    }
+    .collect::after,
+    .collect::before {
+       content: "";
+       display: inline-block;
+       box-sizing: border-box;
+       position: absolute;
+       width: 2px;
+       height: 5px;
+       background: currentColor;
+       transform: rotate(46deg);
+       top: 5px;
+       right: 4px
+    }
+    .collect::after {
+       transform: rotate(-46deg);
+       right: 2px
+    }
+    .putcollect {
+       box-sizing: border-box;
+       position: relative;
+       color:#8a93a0;
+       background-color: #FFFF00;
+       display: inline-block;
+       width: 17px;
+       height: 17px;
+       transform: scale(var(--ggs,1));
+       border-left: 7px solid transparent;
+       border-right: 3px solid transparent;
+       border-bottom: 8px solid transparent;
+       box-shadow: 0 0 0 2px,
+          inset 6px 4px 0 -4px,
+          inset -6px 4px 0 -4px;
+       border-radius: 3px
+    }
+    .putcollect::after,
+    .putcollect::before {
+       content: "";
+       display: inline-block;
+       box-sizing: border-box;
+       position: absolute;
+       width: 2px;
+       height: 5px;
+       background: currentColor;
+       transform: rotate(46deg);
+       top: 5px;
+       right: 4px
+    }
+    .putcollect::after {
+       transform: rotate(-46deg);
+       right: 2px
+    }
 
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
@@ -125,7 +191,7 @@
                             <div class="col-md-9">
                                 <div class="d-flex flex-column gap-2">
                                     <a href="javascript:" class="h4 text-decoration-none link-dark bsa-ellipsis2">
-                                        {% if article.is_top == 1%}<span class="badge bg-warning me-1 align-text-bottom">置顶</span>{% endif %}
+
                                         <span class="badge bg-danger me-1 align-text-bottom">荐</span>
                                         {{article.title}}
                                     </a>
@@ -148,15 +214,15 @@
                                     </div>
 
                                     <div class="d-flex align-items-center flex-wrap gap-2">
-                                        <a href="/pieces/top_article?a_id={{article.id}}&is_top={{article.is_top}}&current_page={{current_page}}"
-                                           class="badge rounded-pill bg-success text-white text-decoration-none"
-                                           id="overhead_article">{% if article.is_top == 1%}取消{% endif %}顶置</a>
-                                        <a href="javascript:delete_article({{article.id}},'{{article.title}}','{{current_page}}')"
-                                           class="badge rounded-pill bg-primary text-white text-decoration-none">删除</a>
-                                        <pre>  </pre>
+
                                         <div class="likeBtn" id="likeBtn">
-                                            <a class="{% if article.id in star_ids %}put{% endif %}heart" id="heart" href="/pieces/star_article/?a_id={{article.id}}&current_page={{current_page}}"></a>
+                                            <a class="{% if article.id in star_ids %}put{% endif %}heart" id="heart" href="/pieces/star_article/?a_id={{article.id}}&current_page={{current_page}}&args=mall"></a>
                                             <span>{{article.star_count}}</span>
+                                        </div>
+                                        <pre>  </pre>
+                                        <div>
+                                            <a class="{% if article.id in collection_ids %}put{% endif %}collect" href="/pieces/collect_article?a_id={{article.id}}&current_page={{current_page}}&args=mall"></a>
+                                            <span>{{article.collection_count}}</span>
                                         </div>
                                         <pre>  </pre>
 

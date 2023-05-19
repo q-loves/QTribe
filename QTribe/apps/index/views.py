@@ -23,6 +23,7 @@ class Information(View):
     def get(self,request):
         return render(request,'pieces/information.html',{'user':request.user})
 
+#视频广场
 class VideoMall(View):
     def get(self,request):
         page_number = int(request.GET.get('page_number', 1))
@@ -34,6 +35,12 @@ class VideoMall(View):
             for obj in objs:
                 if obj.video==video:
                     star_ids.append(video.id)
+        collection_ids=[]#用于筛选用户收藏过的视频，方便前端渲染
+        for video in video_list:
+            objs=request.user.collectionmodel_set.all()
+            for obj in objs:
+                if obj.video==video:
+                    collection_ids.append(video.id)
 
         # 创建分页对象
         paginator = Paginator(video_list, 2)
@@ -60,8 +67,9 @@ class VideoMall(View):
                                                         'page_list': page_list,
                                                         'current_page': page_content.number,
                                                         'num_pages': num_pages,
-                                                        'star_ids':star_ids})
-#文章列表页面
+                                                        'star_ids':star_ids,
+                                                        'collection_ids':collection_ids})
+#文章广场
 class ArticleMall(View):
     def get(self,request):
         page_number = int(request.GET.get('page_number', 1))
@@ -72,6 +80,12 @@ class ArticleMall(View):
             for obj in objs:
                 if obj.article==article:
                     star_ids.append(article.id)
+        collection_ids=[]#用于筛选用户收藏过的视频，方便前端渲染
+        for article in articles:
+            objs=request.user.collectionmodel_set.all()
+            for obj in objs:
+                if obj.article==article:
+                    collection_ids.append(article.id)
         # 创建分页对象
         paginator = Paginator(articles, 2)
         num_pages = paginator.num_pages
@@ -97,7 +111,8 @@ class ArticleMall(View):
                                                         'page_list': page_list,
                                                         'current_page': page_content.number,
                                                         'num_pages': num_pages,
-                                                        'star_ids':star_ids})
+                                                        'star_ids':star_ids,
+                                                        'collection_ids':collection_ids})
 
 class LifeMall(View):
     def get(self,request):

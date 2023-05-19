@@ -16,7 +16,6 @@
 
 <style>
 
-    .el-icon-star-off{ font-size:25px; color: #FFEE00; cursor:pointer;}
     .putheart{
         background-color: #FD2B1F;
         height: 13px;
@@ -44,6 +43,40 @@
         height: 13px;
         width: 13px;
         }
+ .putcollect {
+       box-sizing: border-box;
+       position: relative;
+       color:#8a93a0;
+       background-color: #FFFF00;
+       display: inline-block;
+       width: 17px;
+       height: 17px;
+       transform: scale(var(--ggs,1));
+       border-left: 7px solid transparent;
+       border-right: 3px solid transparent;
+       border-bottom: 8px solid transparent;
+       box-shadow: 0 0 0 2px,
+          inset 6px 4px 0 -4px,
+          inset -6px 4px 0 -4px;
+       border-radius: 3px
+    }
+    .putcollect::after,
+    .putcollect::before {
+       content: "";
+       display: inline-block;
+       box-sizing: border-box;
+       position: absolute;
+       width: 2px;
+       height: 5px;
+       background: currentColor;
+       transform: rotate(46deg);
+       top: 5px;
+       right: 4px
+    }
+    .putcollect::after {
+       transform: rotate(-46deg);
+       right: 2px
+    }
 
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
@@ -134,7 +167,7 @@
                                         </div>
                                         <pre>  </pre>
                                         <div>
-                                            <div class="el-icon-star-off"></div>
+                                            <div class="putcollect"></div>
                                             <span>{{article.collection_count}}</span>
                                         </div>
                                         <pre>  </pre>
