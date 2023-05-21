@@ -6,6 +6,8 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views import View
 from django.db.models import F
+from haystack.query import EmptySearchQuerySet
+from haystack.views import SearchView
 from pieces_info.models import ArticleModel,ImageModel
 
 #上传文章
@@ -63,6 +65,7 @@ class StarArticle(View):
     def get(self,request):
         a_id=int(request.GET.get('a_id'))
         current_page=int(request.GET.get('current_page'))
+        q = request.GET.get('q')
         args = request.GET.get('args')  # 判断是从看点广场页面进入，还是从点赞列表页面进入
         article = ArticleModel.objects.get(id=a_id)
         is_star=StarModel.objects.filter(user_id=request.user.id,article_id=a_id)
@@ -79,6 +82,8 @@ class StarArticle(View):
                     return redirect(f'/pieces/star_article_list?page_number={current_page - 1}')
             if args == 'collect':
                 return redirect(f'/pieces/collect_article_list?page_number={current_page}')
+            if args=='search':
+                return redirect(f'/pieces/search_article/?page={current_page}&q={q}')
         else:
             article.star_count+=1
             article.save()
@@ -87,12 +92,15 @@ class StarArticle(View):
                 return redirect(f'/index/article_mall?page_number={current_page}')
             if args == 'collect':
                 return redirect(f'/pieces/collect_article_list?page_number={current_page}')
+            if args=='search':
+                return redirect(f'/pieces/search_article/?page={current_page}&q={q}')
 
 #文章收藏量
 class CollectArticle(View):
     def get(self,request):
         a_id=int(request.GET.get('a_id'))
         current_page=int(request.GET.get('current_page'))
+        q = request.GET.get('q')
         args = request.GET.get('args')  # 判断是从看点广场页面进入，还是从收藏列表页面进入
         article = ArticleModel.objects.get(id=a_id)
         is_collect=CollectionModel.objects.filter(user_id=request.user.id,article_id=a_id)
@@ -109,6 +117,8 @@ class CollectArticle(View):
                     return redirect(f'/pieces/collect_article_list?page_number={current_page - 1}')
             if args == 'star':
                 return redirect(f'/pieces/star_article_list?page_number={current_page}')
+            if args=='search':
+                return redirect(f'/pieces/search_article/?page={current_page}&q={q}')
         else:
             article.collection_count+=1
             article.save()
@@ -117,6 +127,8 @@ class CollectArticle(View):
                 return redirect(f'/index/article_mall?page_number={current_page}')
             if args == 'star':
                 return redirect(f'/pieces/star_article_list?page_number={current_page}')
+            if args=='search':
+                return redirect(f'/pieces/search_article/?page={current_page}&q={q}')
 
 #文章顶置
 class TopArticle(View):
@@ -232,3 +244,71 @@ class CollectArticleList(View):
                                                         'current_page': page_content.number,
                                                         'num_pages': num_pages,
                                                          'star_ids':star_ids})
+class ArticleSearchView(SearchView):
+
+    template = 'search/article_search.html'
+    results = EmptySearchQuerySet()
+    results_per_page = 2
+    def __init__(self):
+        from haystack.query import SearchQuerySet
+        sqs=SearchQuerySet().using('default')
+        super(ArticleSearchView, self).__init__(searchqueryset=sqs)
+    def get_query(self):
+        queryset=super(ArticleSearchView, self).get_query()
+        return queryset
+    def get_results(self):
+        result=[]
+        for obj in self.form.search():
+            if obj.model_name == 'articlemodel':
+                result.append(obj)
+        return result
+    def get_context(self):
+        (paginator, page) = self.build_page()
+        num_pages = paginator.num_pages
+        page_number = int(self.request.GET.get('page', 1))
+        # 获取页码数列，用于前端遍历
+        if paginator.num_pages > 5:
+            if page_number - 2 <= 1:
+                page_list = range(1, 6)
+            elif page_number + 2 >= num_pages:
+                page_list = range(num_pages - 4, num_pages + 1)
+            else:
+                page_list = range(page_number - 1, page_number + 4)
+
+        else:
+            page_list = paginator.page_range
+        piece_list = []
+
+        star_ids = []  # 接受用户已点过赞的视频
+        collection_ids = []  # 接受用户已收藏的视频
+        for article in page:
+            piece_list.append(article.object)
+            stars_obj = article.object.starmodel_set.all()
+            collections_obj = article.object.collectionmodel_set.all()
+            for obj in stars_obj:
+                if obj.user == self.request.user:
+                    star_ids.append(obj.article_id)
+            for obj in collections_obj:
+                if obj.user == self.request.user:
+                    collection_ids.append(obj.article_id)
+        context = {
+            "query": self.query,
+            "form": self.form,
+            "page": page,
+            "page_list": page_list,
+            "piece_list": piece_list,
+            'current_page': page.number,
+            'num_pages': num_pages,
+            "paginator": paginator,
+            "q": self.get_query(),
+            "suggestion": None,
+            "star_ids": star_ids,
+            "collection_ids": collection_ids,
+        }
+
+        if (
+                hasattr(self.results, "query")
+                and self.results.query.backend.include_spelling
+        ):
+            context["suggestion"] = self.form.get_suggestion()
+        return context

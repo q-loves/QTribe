@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'verify_code',
     'index',
     'oauth',
+    'haystack',
 
 ]
 
@@ -248,3 +249,30 @@ WECHAT_CLIENT_ID = 'wx2a6cf9373f278ed2'  # app id
 WECHAT_REDIRECT_URI = 'http://www.nagle.cn:8083/weixin'  # 回调地址
 WECHAT_APP_KEY = 'b32af04d9062ebc44b3f5d8b87a5a48e'  # app key
 # WECHAT_APP_KEY = 'dd2fa2be153ab8b25fec8d3230dca662'  # app key
+
+# haystack相关配置
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE':
+            'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine'
+        ,
+        'URL': 'http://192.168.221.129:9200/',  # Elasticsearch服务器ip地址，端⼝号固定为9200
+
+        'INDEX_NAME': 'article',  # Elasticsearch建⽴的索引库的名称
+        # 排除掉其他的索引模型
+        'EXCLUDED_INDEXES': ['pieces_info.search_indexes.VideoModelIndex'],
+    },
+    'video': {
+        'ENGINE':
+            'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine'
+        ,
+        'URL': 'http://192.168.221.129:9200/',  # Elasticsearch服务器ip地址，端⼝号固定为9200
+
+        'INDEX_NAME': 'video',  # Elasticsearch建⽴的索引库的名称
+        # 排除掉其他的索引模型
+        'EXCLUDED_INDEXES': ['pieces_info.search_indexes.ArticleModelIndex'],
+    },
+}
+
+# 当添加、修改、删除数据时，⾃动⽣成索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

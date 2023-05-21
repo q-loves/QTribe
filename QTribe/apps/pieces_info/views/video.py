@@ -4,12 +4,14 @@ import subprocess
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator, InvalidPage
 from django.db import transaction
 from django.db.models import F
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import redirect, render
 from django.views import View
+from haystack.query import EmptySearchQuerySet
+from haystack.views import SearchView
 
 from pieces_info.models import VideoModel, ImageModel
 
@@ -140,6 +142,7 @@ class StarVideo(View):
         v_id = int(request.GET.get('v_id'))
         args = request.GET.get('args')  # 判断是从看点广场页面进入，还是从点赞列表页面进入
         current_page = int(request.GET.get('current_page'))
+        q=request.GET.get('q')
         video = VideoModel.objects.get(id=v_id)
         is_star = StarModel.objects.filter(user_id=request.user.id, video_id=v_id)
         if is_star:
@@ -155,6 +158,8 @@ class StarVideo(View):
                     return redirect(f'/pieces/star_video_list?page_number={current_page - 1}')
             if args == 'collect':
                 return redirect(f'/pieces/collect_video_list?page_number={current_page}')
+            if args=='search':
+                return redirect(f'/pieces/search_video/?page={current_page}&q={q}')
 
         else:
             video.star_count += 1
@@ -164,7 +169,8 @@ class StarVideo(View):
                 return redirect(f'/index/video_mall?page_number={current_page}')
             if args == 'collect':
                 return redirect(f'/pieces/collect_video_list?page_number={current_page}')
-
+            if args=='search':
+                return redirect(f'/pieces/search_video/?page={current_page}&q={q}')
 
 # 视频收藏量
 class CollectVideo(View):
@@ -172,6 +178,7 @@ class CollectVideo(View):
         v_id = int(request.GET.get('v_id'))
         current_page = int(request.GET.get('current_page'))
         args = request.GET.get('args')  # 判断是从看点广场页面进入，还是从收藏列表页面进入
+        q=request.GET.get('q')
         video = VideoModel.objects.get(id=v_id)
         is_collect = CollectionModel.objects.filter(user_id=request.user.id, video_id=v_id)
         if is_collect:
@@ -187,6 +194,8 @@ class CollectVideo(View):
                     return redirect(f'/pieces/collect_video_list?page_number={current_page - 1}')
             if args == 'star':
                 return redirect(f'/pieces/star_video_list?page_number={current_page}')
+            if args=='search':
+                return redirect(f'/pieces/search_video/?page={current_page}&q={q}')
         else:
             video.collection_count += 1
             video.save()
@@ -195,7 +204,8 @@ class CollectVideo(View):
                 return redirect(f'/index/video_mall?page_number={current_page}')
             if args == 'star':
                 return redirect(f'/pieces/star_video_list?page_number={current_page}')
-
+            if args=='search':
+                return redirect(f'/pieces/search_video/?page={current_page}&q={q}')
 
 # 视频顶置
 class TopVideo(View):
@@ -304,8 +314,79 @@ class CollectVideoList(View):
             page_content = paginator.page(1)
         except EmptyPage:
             page_content = paginator.page(num_pages)
+
         return render(request, 'pieces/collect_video.html', {'page_content': page_content,
                                                              'page_list': page_list,
                                                              'current_page': page_content.number,
                                                              'num_pages': num_pages,
                                                              'star_ids': star_ids})
+
+#搜索引擎
+class VideoSearchView(SearchView,View):
+
+    template = 'search/video_search.html'
+    results = EmptySearchQuerySet()
+    results_per_page = 2
+    def __init__(self):
+        from haystack.query import SearchQuerySet
+        sqs=SearchQuerySet().using('video')
+        super(VideoSearchView, self).__init__(searchqueryset=sqs)
+    def get_query(self):
+        queryset=super(VideoSearchView, self).get_query()
+        return queryset
+    def get_results(self):
+        result=[]
+        for obj in self.form.search():
+            if obj.model_name == 'videomodel':
+                result.append(obj)
+        return result
+    def get_context(self):
+        (paginator, page) = self.build_page()
+        num_pages = paginator.num_pages
+        page_number=int(self.request.GET.get('page',1))
+        # 获取页码数列，用于前端遍历
+        if paginator.num_pages > 5:
+            if page_number - 2 <= 1:
+                page_list = range(1, 6)
+            elif page_number + 2 >= num_pages:
+                page_list = range(num_pages - 4, num_pages + 1)
+            else:
+                page_list = range(page_number - 1, page_number + 4)
+
+        else:
+            page_list = paginator.page_range
+        piece_list=[]#接受查询到的对象
+        star_ids=[]#接受用户已点过赞的视频
+        collection_ids=[]#接受用户已收藏的视频
+        for video in page:
+            piece_list.append(video.object)
+            stars_obj=video.object.starmodel_set.all()
+            collections_obj=video.object.collectionmodel_set.all()
+            for obj in stars_obj:
+                if obj.user==self.request.user:
+                    star_ids.append(obj.video_id)
+            for obj in collections_obj:
+                if obj.user==self.request.user:
+                    collection_ids.append(obj.video_id)
+
+        context = {
+            "query": self.query,
+            "form": self.form,
+            "page": page,
+            "page_list":page_list,
+            "piece_list": piece_list,
+            'current_page': page.number,
+            'num_pages': num_pages,
+            "paginator": paginator,
+            "q":self.get_query(),
+            "suggestion": None,
+            "star_ids":star_ids,
+            "collection_ids":collection_ids,
+        }
+
+        if (
+            hasattr(self.results, "query")
+            and self.results.query.backend.include_spelling
+        ):
+            context["suggestion"] = self.form.get_suggestion()
+        return context

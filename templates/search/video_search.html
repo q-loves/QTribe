@@ -1,18 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<script>
-            //删除视频
-        function delete_article(id, title,current_page) {
-            // 设置弹出框的提示内容
-            $('#article_delete_message').text('确认要删除 '+ title + ', 这篇文章吗？')
-            // 给确认删除的按钮添加一个鼠标点击事件
-            $('#delete_btn').click(function () {
-                document.location.href = '/pieces/delete_article/?a_id='+id+'&current_page='+current_page
-            })
-            $("#delete_article").modal('show');
-        }
-</script>
 {#爱心css文件#}
+
 <style>
     .heart{
         background-color: #8a93a0;
@@ -21,8 +10,7 @@
         transform: rotate(-45deg) scale(1);
         display: inline-block;
         }
-
-    .heart::before {
+        .heart::before {
         content: '';
         position: absolute;
         top: -50%;
@@ -136,97 +124,149 @@
        transform: rotate(-46deg);
        right: 2px
     }
-
 </style>
+{# 表单相关依赖 #}
+<script src="/static/lib/jquery/dist/jquery.min.js"></script>
+<script src="/static/lib/formvalidation/js/formValidation.js"></script>
+<script src="/static/lib/formvalidation/js/framework/bootstrap.js"></script>
+<script src="/static/lib/formvalidation/js/language/zh_CN.js"></script>
+<script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+
+{#发送ajax请求，播放视频，删除视频#}
+<script>
+
+        function starIt(id,current_page) {
+                let url = '/pieces/star_video?v_id='+id+'&current_page='+current_page
+                axios.get(url);
+                }
+
+
+        function scanMedia(id,url,title) {
+            //播放视频
+            $.ajax({
+                //增加浏览数量
+                url: '/pieces/play_video/',
+                method: 'post',
+                data: {"v_id": id},
+                dataType: "json",
+                success: function (data) {
+                    if (data.length != 0) {
+
+                        $('#media_src').attr("src", 'http://127.0.0.1:8083'+url);
+                        $('#model_title').text(title);
+                        document.querySelector('video').load();//video重载，以免读取src失败
+                        $('#video_close').click(function () {
+                            document.getElementById("myVideo").pause()
+                            //$('#myVideo').pause()
+                        })
+                        $("#exampleLargeModal").modal('show');
+
+                    } else {
+                        alert('失败！！！');
+                    }
+                }
+            })
+        }
+
+
+
+
+</script>
+
+<!--//导航栏-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
-    <div class="container-fluid"><a class="navbar-brand" href="javascript:">收藏的作品</a>
+    <div class="container-fluid"><a class="navbar-brand" href="javascript:">看点广场</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navcnt1" aria-controls="navcnt1" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navcnt1">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link"  href="/pieces/collect_video_list/">
+                    <a class="nav-link active" aria-current="page" href="/index/video_mall/">
                         <i class="el-icon-camera"></i> 视频
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"  href="">
+                    <a class="nav-link" href="/">
                         <i class="el-icon-cold-drink"></i> 分享生活
                     </a>
                 </li>
-
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/pieces/collect_article_list/">
+                    <a class="nav-link" href="/index/article_mall/">
                         <i class="el-icon-document-copy"></i> 文章
                     </a>
                 </li>
 
             </ul>
-<!--            <form class="d-flex bsa-nav-search" action="/pieces/search_article/">-->
-<!--                <div class="input-group">-->
-<!--                    <input aria-label="搜索关键字" type="text" name="q" class="form-control" placeholder="搜索关键字" autocomplete="off">-->
-<!--                    <button class="btn" type="submit"><i class="bi bi-search"></i>-->
-<!--                    </button>-->
-<!--                </div>-->
-<!--            </form>-->
+            <form class="d-flex bsa-nav-search" action="/pieces/search_video/">
+                <div class="input-group">
+                    <input aria-label="搜索关键字" type="text" name="q" class="form-control" placeholder="搜索关键字" autocomplete="off">
+                    <button class="btn" type="submit"><i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </nav>
 {#视频内容#}
 <div class="card border-0 shadow-sm">
-    {% for article in page_content %}
+    {% for video in piece_list %}
     <div class="card-body p-4">
-        <h5 class="card-title">欢迎光临{{article.user.username}}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">来看大家的作品吧！！！</h6>
+        <h5 class="card-title">欢迎光临{{video.user.username}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">来看看你搜索的作品吧！！！</h6>
         <hr>
         <div class="row row-cols-1 g-3">
             <div class="col">
                 <div class="card border-0 shadow">
                     <div class="card-body">
                         <div class="row">
-                            <a href="/pieces/details_article?a_id={{article.id}}"
+                            <a href="javascript:scanMedia({{video.id}},'{{video.video.url}}','{{video.title}}')"
                                class="col-md-3 bg-light  d-none d-md-flex align-items-center justify-content-center bsa-art-thumbs-wrapper">
-                                <img src={{article.default_img.url}} class="img-fluid" alt="文章缩略图">
+                                <img src={{video.img_path}} class="img-fluid" alt="文章缩略图">
                             </a>
                             <div class="col-md-9">
                                 <div class="d-flex flex-column gap-2">
                                     <a href="javascript:" class="h4 text-decoration-none link-dark bsa-ellipsis2">
 
                                         <span class="badge bg-danger me-1 align-text-bottom">荐</span>
-                                        {{article.title}}
+                                        {{video.title}}
                                     </a>
 
                                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                                         <a href="javascript:" class="text-decoration-none">
-                                            <img src="{{article.user.icon.url}}"
+                                            <img src="{{video.user.icon.url}}"
                                                  class="bsa-width-40 bsa-height-40 rounded-circle" alt="作者头像">
-                                            <span class="text-muted">{{article.user.username}}</span>
+                                            <span class="text-muted">{{video.user.username}}</span>
                                         </a>
                                         <div class="text-muted">
                                             <i class="bi bi-clock-fill"></i>
-                                            浏览次数：<span class="ms-1">{{article.running_count}}</span>
+                                            播放次数：<span class="ms-1">{{video.running_count}}</span>
                                         </div>
 
                                     </div>
 
                                     <div class="text-secondary bsa-ellipsis3">
-<!--                                        {{article.remark}}-->
+                                        {{video.remark}}
                                     </div>
 
                                     <div class="d-flex align-items-center flex-wrap gap-2">
 
-                                        <div class="likeBtn" id="likeBtn">
-                                            <a class="{% if article.id in collection_ids %}put{% endif %}heart" id="heart" href="/pieces/star_article/?a_id={{article.id}}&current_page={{current_page}}&args=collect"></a>
-                                            <span>{{article.star_count}}</span>
+
+<!--                                        <div class="likeBtn" id="likeBtn">-->
+<!--                                            <a class="heart" id="heart" href="/pieces/star_video/?v_id={{video.id}}&current_page={{current_page}}"></a>-->
+<!--                                            <span>{{video.star_count}}</span>-->
+<!--&lt;!&ndash;                                        </div>&ndash;&gt;/pieces/star_video/?v_id={{video.id}}&current_page={{current_page}}-->
+                                        <div>
+                                            <a class="{% if video.id in star_ids %}put{% endif %}heart" href="/pieces/star_video?v_id={{video.id}}&current_page={{current_page}}&args=search&q={{q}}"></a>
+                                            <span>{{video.star_count}}</span>
                                         </div>
                                         <pre>  </pre>
                                         <div>
-                                            <a class="putcollect" href="/pieces/collect_article?a_id={{article.id}}&current_page={{current_page}}&args=collect"></a>
-                                            <span>{{article.collection_count}}</span>
+                                            <a class="{% if video.id in collection_ids %}put{% endif %}collect" href="/pieces/collect_video?v_id={{video.id}}&current_page={{current_page}}&args=search&q={{q}}"></a>
+                                            <span>{{video.collection_count}}</span>
                                         </div>
                                         <pre>  </pre>
 
-                                        <a> 发布时间:{{article.create_time}} </a>
+                                        <a> 视频时长:{{video.duration_time}} </a>
                                     </div>
 
                                 </div>
@@ -250,14 +290,14 @@
     <div class="col">
         <nav aria-label="Page navigation example">
             <ul class="pagination"> <!-- 逻辑判断，如果有前一页，则可以点击上一页按钮 -->
-                {% if page_content.has_previous() %}
+                {% if page.has_previous() %}
                 <li class="page-item"><a class="page-link"
-                                         href="/pieces/collect_article_list/?page_number={{ page_content.previous_page_number() }}"
+                                         href="/pieces/search_video/?q={{q}}&page={{ page.previous_page_number() }}"
                                          aria-label="Previous"> <span aria-hidden="true">«</span> </a></li>
                 {% else %}
                 <!-- 禁用按钮 -->
                 <li class="page-item"><a class="page-link"
-                                         href="/pieces/collect_article_list/?page_number=1"
+                                         href="/pieces/search_video/?q={{q}}&page=1"
                                          aria-label="Previous"> <span aria-hidden="true">«</span> </a></li>
                 {% endif %}
                 <!-- 呈现所有的页码 -->
@@ -266,33 +306,51 @@
                     {% if page_num == current_page %}
                         <li class="page-item active" aria-current="page"><span class="page-link">{{page_num}}</span></li>
                     {% else %}
-                        <li class="page-item"><a class="page-link" href="/pieces/collect_article_list/?page_number={{ page_num }}">{{page_num}}</a>
+                        <li class="page-item"><a class="page-link" href="/pieces/search_video/?q={{q}}&page={{ page_num }}">{{page_num}}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
                 <!-- 逻辑判断，如果有后一页，则可以点击下一页按钮 -->
-                {% if page_content.has_next() %}
+                {% if page.has_next() %}
                 <li class="page-item"><a class="page-link"
-                                         href="/pieces/collect_article_list/?page_number={{ page_content.next_page_number() }}"
+                                         href="/pieces/search_video/?q={{q}}&page={{ page.next_page_number() }}"
                                          aria-label="Next"> <span aria-hidden="true">»</span> </a></li>
                 {% else %} <!-- 禁用按钮 -->
                 <li class="page-item"><a class="page-link"
-                                         href="/pieces/collect_article_list/?page_number={{num_pages}}"
+                                         href="/pieces/search_video/?q={{q}}&page={{num_pages}}"
                                          aria-label="Next"> <span aria-hidden="true">»</span> </a></li>
                 {% endif %}
             </ul>
         </nav>
     </div>
 </div>
+{#播放视频状态框#}
+<div class="modal fade" id="exampleLargeModal" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="model_title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        id="video_close"></button>
+            </div>
+            <div class="modal-body">
+                <video controls="controls" width="100%" height="100%" autoplay="autoplay" volume="1" id="myVideo"
+                       loop="loop">
+                    <source id="media_src" src="" type="video/mp4"/>
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
 {#删除视频状态框#}
-<div class="modal fade" id="delete_article" tabindex="-1" aria-hidden="true" style="display: none;">
+<div class="modal fade" id="delete_video" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Modal title</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="article_delete_message">
+            <div class="modal-body" id="video_delete_message">
 
             </div>
             <div class="modal-footer">
