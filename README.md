@@ -30,6 +30,9 @@ _____
 ---
 ![image](https://github.com/q-loves/QTribe/assets/121675743/1a9f32bd-8130-4033-8f99-8f0f601b0844)
 ### 绑定后就可以进入平台中心。下次再用QQ登陆时，扫码后就可直接进入平台中心。
+____
+![image](https://github.com/q-loves/QTribe/assets/121675743/d55aeb2b-3f43-4f09-90c2-7fcb95476c34)
+
 ## 平台内部结构
 ---
 ### 可以在看点广场里面浏览平台用户们上传的各种作品，自己可以点赞收藏，评论等
