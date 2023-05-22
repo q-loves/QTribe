@@ -15,7 +15,7 @@ ______
 ### 3.创建自己的mysql数据库，把setting.dev里面mysql的配置改成自己的。配置好后，运行python manage.py makemigrations 和 python manage.py migrate 命令进行数据库迁移。
 ### 3.下载docker，在docker上拉取elasticsearch镜像，创建elasticsearch容器并开启。（这一步是实现搜索功能的，如果不按照步骤来，会报错:confused:）<br>
 ### 4.运行命令python manage.py runserver 8083（注意，必须是8083端口）可启动项目.<br>
-![image](https://github.com/q-loves/QTribe/assets/121675743/f5edc83f-03a1-43f3-b09f-6ccda6e61151)
+![HE(D~H6PGZW55OQ`G%~BG`I(1)_edit_400445283161146](https://github.com/q-loves/QTribe/assets/121675743/d96099a0-9e63-4836-b0fb-92a737ae522f)
 
 
 ## 项目具体实现<br>
@@ -32,7 +32,7 @@ _____
 ![image](https://github.com/q-loves/QTribe/assets/121675743/1a9f32bd-8130-4033-8f99-8f0f601b0844)
 ### 绑定后就可以进入平台中心。下次再用QQ登陆时，扫码后就可直接进入平台中心。
 ____
-![image](https://github.com/q-loves/QTribe/assets/121675743/d55aeb2b-3f43-4f09-90c2-7fcb95476c34)
+![image](https://github.com/q-loves/QTribe/assets/121675743/a0aa5c91-ba46-4a0a-8413-269312a0f7c1)
 
 ## 平台内部结构
 ---
