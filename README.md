@@ -12,7 +12,7 @@ ______
 ### 注：现在项目还未做完，大家如果想一起做的话，可以先fork到自己本地。:sparkling_heart:<br>
 ### 1.先在自己电脑的C:\Windows\System32\drivers\etc\hosts文件里面映射一下地址（如下图）<br>
 ### 2.在pycharm（其他编译器也可，我习惯用这个）里面配置一下环境pip install requirements.txt。<br>
-### 3.穿件自己的mysql数据库，把setting.dev里面mysql的配置改成自己的。配置好后，运行python manage.py makemigrations 和 python manage.py migrate 命令进行数据库迁移。
+### 3.创建自己的mysql数据库，把setting.dev里面mysql的配置改成自己的。配置好后，运行python manage.py makemigrations 和 python manage.py migrate 命令进行数据库迁移。
 ### 3.下载docker，在docker上拉取elasticsearch镜像，创建elasticsearch容器并开启。（这一步是实现搜索功能的，如果不按照步骤来，会报错:confused:）<br>
 ### 4.运行命令python manage.py runserver 8083（注意，必须是8083端口）可启动项目.<br>
 ![HE(D~H6PGZW55OQ`G%~BG`I(1)_edit_400445283161146](https://github.com/q-loves/QTribe/assets/121675743/5845a90b-8481-4639-9e07-8b58379f2cce)
