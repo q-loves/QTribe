@@ -15,7 +15,8 @@ ______
 ### 3.创建自己的mysql数据库，把setting.dev里面mysql的配置改成自己的。配置好后，运行python manage.py makemigrations 和 python manage.py migrate 命令进行数据库迁移。
 ### 3.下载docker，在docker上拉取elasticsearch镜像，创建elasticsearch容器并开启。（这一步是实现搜索功能的，如果不按照步骤来，会报错:confused:）<br>
 ### 4.运行命令python manage.py runserver 8083（注意，必须是8083端口）可启动项目.<br>
-![HE(D~H6PGZW55OQ`G%~BG`I(1)_edit_400445283161146](https://github.com/q-loves/QTribe/assets/121675743/5845a90b-8481-4639-9e07-8b58379f2cce)
+![image](https://github.com/q-loves/QTribe/assets/121675743/f5edc83f-03a1-43f3-b09f-6ccda6e61151)
+
 
 ## 项目具体实现<br>
 ____
