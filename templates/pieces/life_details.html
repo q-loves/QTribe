@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+        .col img {
+            width: 300px;
+            height: 300px;
+            margin: 10px;
+        }
+</style>
+ <div class="card border-0 shadow-sm">
+            <div class="row g-0">
+<!--                <div class="col-md-4 border-end">-->
+<!--                    <img src="https://temp.im/800x800?text=shop-img" class="img-fluid" alt="...">-->
+                    <div class="row mb-3 row-cols-auto g-2 justify-content-left mt-3">
+                        {% for img in imgs %}
+                        <div class="col" ><img src="{{img.url}}"
+                                              class="border rounded bsa-cursor-pointer" alt=""></div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">
+                            {{life.copy|safe}}
+                        </h2>
+
+                        <div class="d-flex gap-3 mt-3">
+                            <a href="javascript:" class="btn btn-primary">立即购买</a>
+                            <a href="javascript:" class="btn btn-outline-primary">
+                                <i class='bi bi-cart'></i>
+                                <span class="text">加入购物车</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+
+{% endblock content %}

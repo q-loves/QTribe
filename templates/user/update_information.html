@@ -1,4 +1,14 @@
 {% extends 'base.html' %}
+
+{% block css %}
+<!--    lay ui-->
+    <link href="/static/layui/css/layui.css" rel="stylesheet" />
+    <script src="/static/layui/layui.js" type="text/javascript"></script>
+    <script src="/static/js/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/js/area.js" type="text/javascript"></script>
+    <script src="/static/js/selectMore.js" type="text/javascript"></script>
+{% endblock css%}
+
 {% block content %}
 <style>
     /*错误提示*/
@@ -113,9 +123,15 @@
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="d-flex flex-column align-items-center text-center">
-                                                <img src={{user.icon.url}}  alt="Admin" onclick="imgClick()"
-                                                     class="rounded-circle p-1 bsa-bg-color4 bsa-width-100 bsa-height-100" data-bs-toggle="modal"
+                                            {% if a.flag==1 %}
+                                                <img src={{user.icon.url}} alt="Admin" onclick="imgClick()"
+                                                     class="rounded-circle p-1 bsa-bg-color4 bsa-width-60 bsa-height-60" data-bs-toggle="modal"
                                                      data-bs-target="#exampleModal">
+                                            {% else %}
+                                                <img src="" alt="Admin" onclick="imgClick()"
+                                                     class="rounded-circle p-1 bsa-bg-color4 bsa-width-60 bsa-height-60" data-bs-toggle="modal"
+                                                     data-bs-target="#exampleModal">
+                                            {% endif %}
                                                  <input id="file" type="file" name="file" class="file" value="" onchange="upload()" style="display: none">
                                                 <div class="mt-3">
 

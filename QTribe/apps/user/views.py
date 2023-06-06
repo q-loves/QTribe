@@ -9,10 +9,13 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.views import View
+from haystack.query import EmptySearchQuerySet
+from haystack.views import SearchView
 
-from user.models import UserModel
+from user.models import UserModel,FocusModel
 
 from pieces_info.models import ImageModel
+
 
 
 class Register(View):
@@ -100,6 +103,11 @@ class Login(View):
         #其实下面这个return是不必写的，因为在之前已经做了用户名和密码校验，密码不正确程序根本无法到达login这个函数里面。
         return redirect('/index/no_find/')
 
+class Logout(View):
+    def get(self,request):
+        auth.logout(request)
+        return redirect('/user/login/')
+
 class Transform(View):
     def get(self,request):
         type=request.GET.get('type')
@@ -138,3 +146,89 @@ class UploadImage(View):
                 return JsonResponse({'code':200})
         except:
             return JsonResponse({'code':401})
+
+#用户关注
+class FocusUser(View):
+    def get(self,request):
+        o_id=request.GET.get('o_id')
+        u_id=request.user.id
+        is_focus=int(request.GET.get('is_focus'))
+        focus_obj=FocusModel.objects.filter(user_id=u_id,focus_user_id=o_id)
+        if not is_focus:#如果已经关注，就是取消关注的请求
+            focus_obj.update(flag='0')
+            return JsonResponse({'code':200})
+        if  is_focus:
+            if focus_obj:
+                focus_obj.update(flag='1')
+                return JsonResponse({'code': 200})
+            FocusModel.objects.create(user_id=u_id,focus_user_id=o_id,flag='1')
+            return JsonResponse({'code':200})
+        return JsonResponse({'code':400})
+
+#搜索引擎
+class UserSearchView(SearchView):
+
+    template = 'search/user_search.html'
+    results = EmptySearchQuerySet()
+    results_per_page = 2
+    def __init__(self):
+        from haystack.query import SearchQuerySet
+        sqs=SearchQuerySet().using('user')
+        super(UserSearchView, self).__init__(searchqueryset=sqs)
+    def get_query(self):
+        queryset=super(UserSearchView, self).get_query()
+        return queryset
+    def get_results(self):
+        result=[]
+        for obj in self.form.search():
+            if obj.model_name == 'usermodel':
+                result.append(obj)
+        return result
+    def get_context(self):
+        (paginator, page) = self.build_page()
+        num_pages = paginator.num_pages
+        page_number=int(self.request.GET.get('page',1))
+        # 获取页码数列，用于前端遍历
+        if paginator.num_pages > 5:
+            if page_number - 2 <= 1:
+                page_list = range(1, 6)
+            elif page_number + 2 >= num_pages:
+                page_list = range(num_pages - 4, num_pages + 1)
+            else:
+                page_list = range(page_number - 1, page_number + 4)
+
+        else:
+            page_list = paginator.page_range
+        user_list=[]
+        focus_ids=[]
+        icon_ids = []
+        for user in page:
+            user_list.append(user.object)
+            if user.object.icon:
+                    icon_ids.append(user.object.id)
+        focus_objs=self.request.user.focusmodel_set.all()
+        for obj in focus_objs:
+            if obj.flag=='1':
+                focus_ids.append(obj.focus_user_id)
+        context = {
+            "query": self.query,
+            "form": self.form,
+            "page": page,
+            "page_list":page_list,
+            "user_list": user_list,
+            'current_page': page.number,
+            'num_pages': num_pages,
+            "paginator": paginator,
+            "q":self.get_query(),
+            "suggestion": None,
+            "focus_ids":focus_ids,
+            "icon_ids":icon_ids,
+        }
+
+        if (
+            hasattr(self.results, "query")
+            and self.results.query.backend.include_spelling
+        ):
+            context["suggestion"] = self.form.get_suggestion()
+        return context
+

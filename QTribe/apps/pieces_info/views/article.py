@@ -68,11 +68,16 @@ class StarArticle(View):
         q = request.GET.get('q')
         args = request.GET.get('args')  # 判断是从看点广场页面进入，还是从点赞列表页面进入
         article = ArticleModel.objects.get(id=a_id)
-        is_star=StarModel.objects.filter(user_id=request.user.id,article_id=a_id)
-        if is_star:
+        try:
+            is_star=StarModel.objects.get(user_id=request.user.id,article_id=a_id)
+            flag=is_star.flag
+        except:
+            is_star=0
+        if is_star and flag=='1':
             article.star_count-=1
             article.save()
-            StarModel.objects.filter(user_id=request.user.id, article_id=a_id).delete()
+            is_star.flag = '0'
+            is_star.save()
             if args == 'mall':
                 return redirect(f'/index/article_mall?page_number={current_page}')
             if args == 'star':  # 有可能用户取消点赞后，当页就没有内容，防止报错，加一个try
@@ -87,7 +92,11 @@ class StarArticle(View):
         else:
             article.star_count+=1
             article.save()
-            StarModel.objects.create(user=request.user,article=article)
+            if not is_star:
+                StarModel.objects.create(user=request.user,article=article,flag='1')
+            else:
+                is_star.flag = '1'
+                is_star.save()
             if args == 'mall':
                 return redirect(f'/index/article_mall?page_number={current_page}')
             if args == 'collect':
@@ -103,11 +112,16 @@ class CollectArticle(View):
         q = request.GET.get('q')
         args = request.GET.get('args')  # 判断是从看点广场页面进入，还是从收藏列表页面进入
         article = ArticleModel.objects.get(id=a_id)
-        is_collect=CollectionModel.objects.filter(user_id=request.user.id,article_id=a_id)
-        if is_collect:
+        try:
+            is_collect=CollectionModel.objects.get(user_id=request.user.id,article_id=a_id)
+            flag=is_collect.flag
+        except:
+            is_collect=0
+        if is_collect and flag=='1':
             article.collection_count-=1
             article.save()
-            CollectionModel.objects.filter(user_id=request.user.id, article_id=a_id).delete()
+            is_collect.flag = '0'
+            is_collect.save()
             if args == 'mall':
                 return redirect(f'/index/article_mall?page_number={current_page}')
             if args == 'collect':
@@ -122,7 +136,11 @@ class CollectArticle(View):
         else:
             article.collection_count+=1
             article.save()
-            CollectionModel.objects.create(user=request.user,article=article)
+            if not is_collect:
+                CollectionModel.objects.create(user=request.user,article=article,flag='1')
+            else:
+                is_collect.flag = '1'
+                is_collect.save()
             if args == 'mall':
                 return redirect(f'/index/article_mall?page_number={current_page}')
             if args == 'star':
@@ -169,13 +187,14 @@ class StarArticleList(View):
         star_ids=[]
         objs=request.user.starmodel_set.all()
         for obj in objs:
-            star_ids.append(obj.article_id)
+            if obj.flag=='1':
+                star_ids.append(obj.article_id)
         articles=ArticleModel.objects.filter(id__in=star_ids)
         collection_ids=[]
         for article in articles:
             objs=request.user.collectionmodel_set.all()
             for obj in objs:
-                if obj.article==article:
+                if obj.article==article and obj.flag=='1':
                     collection_ids.append(article.id)
         # 创建分页对象
         paginator = Paginator(articles, 2)
@@ -210,13 +229,14 @@ class CollectArticleList(View):
         collection_ids=[]
         objs=request.user.collectionmodel_set.all()
         for obj in objs:
-            collection_ids.append(obj.article_id)
+            if obj.flag=='1':
+                collection_ids.append(obj.article_id)
         articles=ArticleModel.objects.filter(id__in=collection_ids)
         star_ids=[]
         for article in articles:
-            objs=request.user.collectionmodel_set.all()
+            objs=request.user.starmodel_set.all()
             for obj in objs:
-                if obj.article==article:
+                if obj.article==article and obj.flag=='1':
                     star_ids.append(article.id)
         # 创建分页对象
         paginator = Paginator(articles, 2)
@@ -239,7 +259,7 @@ class CollectArticleList(View):
             page_content = paginator.page(1)
         except EmptyPage:
             page_content = paginator.page(num_pages)
-        return render(request, 'pieces/star_article.html', {'page_content': page_content,
+        return render(request, 'pieces/collect_article.html', {'page_content': page_content,
                                                         'page_list': page_list,
                                                         'current_page': page_content.number,
                                                         'num_pages': num_pages,
@@ -286,10 +306,10 @@ class ArticleSearchView(SearchView):
             stars_obj = article.object.starmodel_set.all()
             collections_obj = article.object.collectionmodel_set.all()
             for obj in stars_obj:
-                if obj.user == self.request.user:
+                if obj.user == self.request.user and obj.flag=='1':
                     star_ids.append(obj.article_id)
             for obj in collections_obj:
-                if obj.user == self.request.user:
+                if obj.user == self.request.user and obj.flag=='1':
                     collection_ids.append(obj.article_id)
         context = {
             "query": self.query,

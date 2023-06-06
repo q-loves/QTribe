@@ -161,9 +161,6 @@
             })
         }
 
-
-
-
 </script>
 
 <!--//导航栏-->
@@ -179,12 +176,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="">
+                    <a class="nav-link" href="/pieces/collect_life_list/">
                         <i class="el-icon-cold-drink"></i> 分享生活
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="">
+                    <a class="nav-link" href="/pieces/collect_article_list/">
                         <i class="el-icon-document-copy"></i> 文章
                     </a>
                 </li>
@@ -219,7 +216,7 @@
                             <div class="col-md-9">
                                 <div class="d-flex flex-column gap-2">
                                     <a href="javascript:" class="h4 text-decoration-none link-dark bsa-ellipsis2">
-                                        {% if video.is_top == 1%}<span class="badge bg-warning me-1 align-text-bottom">置顶</span>{% endif %}
+
                                         <span class="badge bg-danger me-1 align-text-bottom">荐</span>
                                         {{video.title}}
                                     </a>
@@ -242,12 +239,8 @@
                                     </div>
 
                                     <div class="d-flex align-items-center flex-wrap gap-2">
-                                        <a href="/pieces/top_video?v_id={{video.id}}&is_top={{video.is_top}}&current_page={{current_page}}"
-                                           class="badge rounded-pill bg-success text-white text-decoration-none"
-                                           id="overhead_video">{% if video.is_top == 1%}取消{% endif %}顶置</a>
-                                        <a href="javascript:delete_video({{video.id}},'{{video.title}}','{{current_page}}')"
-                                           class="badge rounded-pill bg-primary text-white text-decoration-none">删除</a>
-                                        <pre>  </pre>
+
+
 <!--                                        <div class="likeBtn" id="likeBtn">-->
 <!--                                            <a class="heart" id="heart" href="/pieces/star_video/?v_id={{video.id}}&current_page={{current_page}}"></a>-->
 <!--                                            <span>{{video.star_count}}</span>-->

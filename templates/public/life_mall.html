@@ -1,5 +1,136 @@
 {% extends 'base.html' %}
 {% block content %}
+{#爱心css文件#}
+<style>
+    .heart{
+        background-color: #8a93a0;
+        height: 13px;
+        width: 13px;
+        transform: rotate(-45deg) scale(1);
+        display: inline-block;
+        }
+
+    .heart::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: 0;
+        background-color: inherit;
+        border-radius: 50%;
+        height: 13px;
+        width: 13px;
+        }
+    .heart::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -50%;
+        background-color: inherit;
+        border-radius: 50%;
+        height: 13px;
+        width: 13px;
+        }
+    .putheart{
+        background-color: #FD2B1F;
+        height: 13px;
+        width: 13px;
+        transform: rotate(-45deg) scale(1);
+        display: inline-block;
+        }
+    .putheart::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: 0;
+        background-color: inherit;
+        border-radius: 50%;
+        height: 13px;
+        width: 13px;
+        }
+    .putheart::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -50%;
+        background-color: inherit;
+        border-radius: 50%;
+        height: 13px;
+        width: 13px;
+        }
+    .collect {
+       box-sizing: border-box;
+       position: relative;
+       display: inline-block;
+       color:#8a93a0;
+       width: 17px;
+       height: 17px;
+       transform: scale(var(--ggs,1));
+       border-left: 7px solid transparent;
+       border-right: 3px solid transparent;
+       border-bottom: 8px solid transparent;
+       box-shadow: 0 0 0 2px,
+          inset 6px 4px 0 -4px,
+          inset -6px 4px 0 -4px;
+       border-radius: 3px
+    }
+    .collect::after,
+    .collect::before {
+       content: "";
+       display: inline-block;
+       box-sizing: border-box;
+       position: absolute;
+       width: 2px;
+       height: 5px;
+       background: currentColor;
+       transform: rotate(46deg);
+       top: 5px;
+       right: 4px
+    }
+    .collect::after {
+       transform: rotate(-46deg);
+       right: 2px
+    }
+    .putcollect {
+       box-sizing: border-box;
+       position: relative;
+       color:#8a93a0;
+       background-color: #FFFF00;
+       display: inline-block;
+       width: 17px;
+       height: 17px;
+       transform: scale(var(--ggs,1));
+       border-left: 7px solid transparent;
+       border-right: 3px solid transparent;
+       border-bottom: 8px solid transparent;
+       box-shadow: 0 0 0 2px,
+          inset 6px 4px 0 -4px,
+          inset -6px 4px 0 -4px;
+       border-radius: 3px
+    }
+    .putcollect::after,
+    .putcollect::before {
+       content: "";
+       display: inline-block;
+       box-sizing: border-box;
+       position: absolute;
+       width: 2px;
+       height: 5px;
+       background: currentColor;
+       transform: rotate(46deg);
+       top: 5px;
+       right: 4px
+    }
+    .putcollect::after {
+       transform: rotate(-46deg);
+       right: 2px
+    }
+    . row img{
+        height:307px;
+        width:142px;
+
+    }
+
+</style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
     <div class="container-fluid"><a class="navbar-brand" href="javascript:">看点广场</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navcnt1" aria-controls="navcnt1" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
@@ -23,9 +154,9 @@
                 </li>
 
             </ul>
-            <form class="d-flex bsa-nav-search">
+            <form class="d-flex bsa-nav-search" action="/pieces/search_life/">
                 <div class="input-group">
-                    <input aria-label="搜索关键字" type="text" class="form-control" placeholder="搜索关键字" autocomplete="off">
+                    <input aria-label="搜索关键字" type="text" name="q" class="form-control" placeholder="搜索关键字" autocomplete="off">
                     <button class="btn" type="submit"><i class="bi bi-search"></i>
                     </button>
                 </div>
@@ -33,5 +164,117 @@
         </div>
     </div>
 </nav>
+{#内容#}
+<div class="card border-0 shadow-sm">
+    {% for life in page_content %}
+    <div class="card-body p-4">
+        <h5 class="card-title">欢迎光临{{life.user.username}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">来看大家的作品吧！！！</h6>
+        <hr>
+        <div class="row row-cols-1 g-3">
+            <div class="col">
+                <div class="card border-0 shadow">
+                    <div class="card-body">
+                        <div class="row">
+                            <a href="/pieces/details_life?l_id={{life.id}}"
+                               class="col-md-3 bg-light  d-none d-md-flex align-items-center justify-content-center bsa-art-thumbs-wrapper">
+                                <img src={{life.default_img.url}} class="img-fluid"   alt="文章缩略图">
+                            </a>
+                            <div class="col-md-9">
+                                <div class="d-flex flex-column gap-2">
+                                    <a href="javascript:" class="h4 text-decoration-none link-dark bsa-ellipsis2">
 
+                                        <span class="badge bg-danger me-1 align-text-bottom">荐</span>
+<!--                                        {{life.title}}-->
+                                    </a>
+
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        <a href="javascript:" class="text-decoration-none">
+                                            <img src="{{life.user.icon.url}}"
+                                                 class="bsa-width-40 bsa-height-40 rounded-circle" alt="作者头像">
+                                            <span class="text-muted">{{life.user.username}}</span>
+                                        </a>
+                                        <div class="text-muted">
+                                            <i class="bi bi-clock-fill"></i>
+                                            浏览次数:<span class="ms-1">{{life.running_count}}</span><br>
+                                            作者状态:<span class="ms-1">{%if life.status == '3'%}开心🥰{%endif%}{%if life.status=='1'%}阅读🤓{%endif%}{%if  life.status=='2'%}创作🧐{%endif%}{%if life.status=='4'%}emo😔{%endif%}{%if  life.status=='5'%}发呆😪{%endif%}</span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="text-secondary bsa-ellipsis3">
+<!--                                        {{life.remark}}-->
+                                    </div>
+
+                                    <div class="d-flex align-items-center flex-wrap gap-2">
+
+                                        <div class="likeBtn" id="likeBtn">
+                                            <a class="{% if life.id in star_ids %}put{% endif %}heart" id="heart" href="/pieces/star_life/?l_id={{life.id}}&current_page={{current_page}}&args=mall"></a>
+                                            <span>{{life.star_count}}</span>
+                                        </div>
+                                        <pre>  </pre>
+                                        <div>
+                                            <a class="{% if life.id in collection_ids %}put{% endif %}collect" href="/pieces/collect_life?l_id={{life.id}}&current_page={{current_page}}&args=mall"></a>
+                                            <span>{{life.collection_count}}</span>
+                                        </div>
+                                        <pre>  </pre>
+
+                                        <a> 发布时间:{{life.create_time}} </a>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    {% endfor %}
+</div>
+{#分页部分#}
+<hr>
+<div class="row row-cols-1 g3">
+    <div class="col">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination"> <!-- 逻辑判断，如果有前一页，则可以点击上一页按钮 -->
+                {% if page_content.has_previous() %}
+                <li class="page-item"><a class="page-link"
+                                         href="/index/life_mall/?page_number={{ page_content.previous_page_number() }}"
+                                         aria-label="Previous"> <span aria-hidden="true">«</span> </a></li>
+                {% else %}
+                <!-- 禁用按钮 -->
+                <li class="page-item"><a class="page-link"
+                                         href="/index/life_mall/?page_number=1"
+                                         aria-label="Previous"> <span aria-hidden="true">«</span> </a></li>
+                {% endif %}
+                <!-- 呈现所有的页码 -->
+                <!-- 呈现所有的页码 -->
+                {% for page_num in page_list %}
+                    {% if page_num == current_page %}
+                        <li class="page-item active" aria-current="page"><span class="page-link">{{page_num}}</span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="/index/life_mall/?page_number={{ page_num }}">{{page_num}}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                <!-- 逻辑判断，如果有后一页，则可以点击下一页按钮 -->
+                {% if page_content.has_next() %}
+                <li class="page-item"><a class="page-link"
+                                         href="/index/life_mall/?page_number={{ page_content.next_page_number() }}"
+                                         aria-label="Next"> <span aria-hidden="true">»</span> </a></li>
+                {% else %} <!-- 禁用按钮 -->
+                <li class="page-item"><a class="page-link"
+                                         href="/index/life_mall/?page_number={{num_pages}}"
+                                         aria-label="Next"> <span aria-hidden="true">»</span> </a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
 {% endblock content %}

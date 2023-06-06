@@ -37,7 +37,8 @@ let vue=new Vue({
               },
               //上传文章成功或失败后，弹出弹窗
               uploadFile:function(){
-
+                    this.check_title();
+                    this.check_content();
                     const formData = new FormData();
                     const file = this.$refs.fileInput.files[0];
                     if(!this.error_title && !this.error_content && file){
@@ -49,10 +50,10 @@ let vue=new Vue({
                         formData.append('title',this.title);
                         formData.append('content',this.content);
                         formData.append('image',file);
-                        console.log('file---->',formData)
                         axios.post('/pieces/publish_article/',formData).then(response=>{
                             if(response.data.code==200){
                                 swal('文章上传成功');
+                                window.location.href='/pieces/publish_article/';
                             }else{
                                 swal('文章上传失败');
                             }

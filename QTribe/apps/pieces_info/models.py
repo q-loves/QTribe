@@ -52,11 +52,29 @@ class VideoModel(BaseModel2):
         verbose_name_plural = verbose_name
         ordering=['-is_top','-id']
 
+class LifeModel(BaseModel2):
+    copy=models.CharField(verbose_name='文案',max_length=512)
+    user = models.ForeignKey('user.UserModel', on_delete=models.CASCADE, verbose_name='作者', related_name='life')
+    default_img = models.ImageField(verbose_name='首页图片', blank=True, null=True)
+    star_count = models.IntegerField(default=0, verbose_name='点赞量', blank=True, null=True)
+    collection_count = models.IntegerField(default=0, verbose_name='收藏量', blank=True, null=True)
+    comment_count = models.IntegerField(default=0, verbose_name='评论量', blank=True, null=True)
+    is_top = models.IntegerField(verbose_name='是否置顶', default=0)
+    is_friend = models.IntegerField(verbose_name='是否仅好友可见', default=0)
+    status=models.CharField(verbose_name='作者状态1.阅读2.创作3.开心4.emo5.发呆',blank=True,null=True,max_length=4)
+    running_count = models.IntegerField(verbose_name='播放次数', max_length=20, null=True, blank=True, default=0)
+    class Meta:
+        db_table = 't_life'
+        verbose_name = '生活琐事'
+        verbose_name_plural = verbose_name
+        ordering=['-is_top','-id']
+
 class ImageModel(BaseModel2):
     image=models.ImageField(verbose_name='图片内容',blank=True,null=True)#用户头像，文章图像，生活照片
     image_path=models.CharField(verbose_name='图片相对路径',max_length=256,blank=True,null=True)#视频截取图片
     video=models.ForeignKey('VideoModel',verbose_name='视频',on_delete=models.CASCADE,blank=True,null=True,related_name='image')
     article=models.ForeignKey('ArticleModel',verbose_name='文章',on_delete=models.CASCADE,blank=True,null=True,related_name='image')
+    life=models.ForeignKey('LifeModel',on_delete=models.CASCADE,verbose_name='生活琐事',blank=True,null=True,related_name='image')
     user=models.ForeignKey('user.UserModel',verbose_name='用户',on_delete=models.CASCADE,related_name='image')
 
     class Meta:
@@ -68,6 +86,7 @@ class CommentModel(BaseModel2):
     content=models.CharField(verbose_name='评论内容',max_length=128)
     article=models.ForeignKey('ArticleModel',on_delete=models.CASCADE,related_name='comment',blank=True,null=True)
     video=models.ForeignKey('VideoModel',on_delete=models.CASCADE,related_name='comment',blank=True,null=True)
+    life = models.ForeignKey('LifeModel', on_delete=models.CASCADE, verbose_name='生活琐事', blank=True, null=True,related_name='comment')
     user=models.ForeignKey('user.UserModel',verbose_name='用户',on_delete=models.CASCADE,related_name='comment')
     class Meta:
         db_table = 't_comment'

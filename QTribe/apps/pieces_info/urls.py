@@ -1,7 +1,7 @@
 from django.urls import path
 
-from pieces_info.views.article import MyArticle,  StarArticle, TopArticle, PublishArticle,DetailsArticle,DeleteArticle,CollectArticle,StarArticleList,ArticleSearchView
-from pieces_info.views.life import MyLife
+from pieces_info.views.article import MyArticle,  StarArticle, TopArticle, PublishArticle,DetailsArticle,DeleteArticle,CollectArticle,StarArticleList,ArticleSearchView,CollectArticleList
+from pieces_info.views.life import MyLife,ShareLife,StarLife, TopLife, DetailsLife, DeleteLife, CollectLife, StarLifeList,LifeSearchView,CollectLifeList
 from pieces_info.views.video import UploadVideo, MyVideo, PlayVideo, StarVideo, TopVideo, DeleteVideo,CollectVideo,StarVideoList,CollectVideoList,VideoSearchView
 
 
@@ -26,8 +26,18 @@ urlpatterns=[
      path('delete_article/', DeleteArticle.as_view()),
      path('collect_article/',CollectArticle.as_view()),
      path('star_article_list/',StarArticleList.as_view()),
+     path('collect_article_list/',CollectArticleList.as_view()),
      path('search_article/',ArticleSearchView()),
      #生活
      path('my_life/',MyLife.as_view()),
+     path('share_life/',ShareLife.as_view()),
+     path('star_life/', StarLife.as_view()),
+     path('top_life/', TopLife.as_view()),
+     path('details_life/', DetailsLife.as_view()),
+     path('delete_life/', DeleteLife.as_view()),
+     path('collect_life/',CollectLife.as_view()),
+     path('star_life_list/',StarLifeList.as_view()),
+     path('collect_life_list/',CollectLifeList.as_view()),
+     path('search_life/',LifeSearchView()),
 
 ]

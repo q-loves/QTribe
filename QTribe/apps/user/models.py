@@ -26,6 +26,8 @@ class FocusModel(BaseModel2):
 
     user=models.ForeignKey('UserModel',on_delete=models.CASCADE,verbose_name='用户')
     focus_user=models.ForeignKey('UserModel',on_delete=models.CASCADE,verbose_name='被关注用户',related_name='focus_user')
+    #避免用户重复关注，取消关注，浪费数据库资源。每当用户关注或取消关注时，只对flag进行操作，不会浪费数据库内存
+    flag=models.CharField(verbose_name='标志',max_length=2,blank=True,null=True)
     class Meta:
         db_table='t_focus_uer'
         verbose_name='关注列表'
@@ -36,7 +38,8 @@ class StarModel(BaseModel2):
     user = models.ForeignKey('UserModel', on_delete=models.CASCADE, verbose_name='用户')
     video = models.ForeignKey('pieces_info.VideoModel', on_delete=models.CASCADE, verbose_name='点赞视频',blank=True,null=True)
     article = models.ForeignKey('pieces_info.ArticleModel', on_delete=models.CASCADE, verbose_name='点赞文章',blank=True,null=True)
-
+    life = models.ForeignKey('pieces_info.LifeModel', on_delete=models.CASCADE, verbose_name='生活琐事', blank=True, null=True)
+    flag=models.CharField(verbose_name='标志',max_length=2,blank=True,null=True)
     class Meta:
         db_table = 't_star_uer'
         verbose_name = '点赞列表'
@@ -46,8 +49,8 @@ class CollectionModel(BaseModel2):
     user = models.ForeignKey('UserModel', on_delete=models.CASCADE, verbose_name='用户')
     video = models.ForeignKey('pieces_info.VideoModel', on_delete=models.CASCADE, verbose_name='收藏视频',blank=True,null=True)
     article = models.ForeignKey('pieces_info.ArticleModel', on_delete=models.CASCADE, verbose_name='收藏文章',blank=True,null=True)
-    # life = models.ForeignKey('pieces.LifeModel', on_delete=models.CASCADE, verbose_name='收藏生活',blank=True,null=True)
-
+    life = models.ForeignKey('pieces_info.LifeModel', on_delete=models.CASCADE, verbose_name='收藏生活',blank=True,null=True)
+    flag = models.CharField(verbose_name='标志', max_length=2, blank=True, null=True)
     class Meta:
         db_table = 't_collection_uer'
         verbose_name = '收藏列表'

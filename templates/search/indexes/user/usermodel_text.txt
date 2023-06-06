@@ -1,0 +1,4 @@
+{{object.username}}
+{{object.age}}
+{{object.phone}}
+{{object.personalized_signature}}

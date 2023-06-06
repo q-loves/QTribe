@@ -1,0 +1,217 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+ <!-- 引入bootstrap的css文件 -->
+
+    <link rel="stylesheet" href="/static/css/bootstrap.min1.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <!-- 引入bootstrap的js文件 -->
+    <script src="/static/js/jquery.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <!-- 引入jQuery文件 -->
+    <script src="/static/js/bootstrap.min1.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    <!-- 引入layui的css文件 -->
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <!-- 引入layui的js文件 -->
+    <script src="/static/layui/layui1.js"></script>
+
+
+
+<style>
+        .mainHeader{
+
+            padding-top: 1px;
+            padding-bottom: 1px;
+            background-color: white !important;
+            border-bottom: 5px solid #0b6cb8;
+        }
+
+        .logo_icon{
+
+            height: 38px;
+        }
+
+        .liColor{
+            color: #4f4f4f
+
+        }
+
+        .toolbar {
+            border: 1px solid #ccc;
+        }
+        .text {
+            border: 1px solid #ccc;
+            min-height: 300px;
+
+        }
+
+
+
+    /*错误提示*/
+.error-tip{
+    float:right;
+    height:20px;
+    line-height:20px;
+    text-align:left;
+    font-size:12px;
+    width:100%; color:red;
+<!--    display:none;-->
+    position:absolute;
+    right:0px;
+   }
+
+
+
+      .imgContainer div {
+            position: relative;
+            display: inline-block;
+
+        }
+
+        .imgContainer img {
+            width: 200px;
+            height: 200px;
+            margin: 10px;
+        }
+        /* 每张图片的X删除按钮  通过定位来实现 */
+
+        .imgContainer span {
+            position: absolute;
+            top: 5%;
+            right: 5%;
+            background-color: pink;
+            padding: 1px;
+            display: none;
+            cursor: pointer;
+        }
+
+
+
+</style>
+
+
+
+
+ <div class="card border-0 shadow-sm">
+            <div class="card-body py-4">
+<!--                <form enctype="multipart/form-data"   id="form">-->
+
+
+                    <div class="mb-3">
+                        <label for="content" class="form-label">生活文案₍ᐢ..ᐢ₎♡</label>
+                        <div style="padding: 8px 0; color: #ccc"></div>
+                            <div id="div1" class="toolbar">
+                        </div>
+                        <div id="div2" class="text" contenteditable="true"  ></div> <!--可使用 min-height 实现编辑区域自动增加高度-->
+<!--                        <span class="error-tip" v-show="error_content">  ${error_content_msg}  </span>-->
+                    </div>
+                    <div class="mb-3">
+
+                      <div class="container-fluid">
+                            <div class="row form-table-row">
+                                <div class="col-sm-6 form-table-col">
+                                    <div class="form-group form-flex">
+                                        <button class="btn btn-outline-info px-5 bsa-radius-30" id="selectFile">选择图片</button>
+                                        <div class="btn btn-outline-danger px-5 bsa-radius-30" id="deleteImg">清除图片</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-table-row">
+                                <div class="col-sm-6 form-table-col">
+                                    <div class="form-group form-flex">
+                                        <!--  imgContainer盒子用于预览图片  -->
+                                        <div class="imgContainer" style="" >
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                                  <div class="row form-table-row">
+                                <div class="col-sm-6 form-table-col">
+                                    <div class="form-group form-flex">
+                                        <div class="" style="">
+                                            <!-- 初始隐藏上传图片按钮，在选择了图片后进行显示 -->
+                                            <button class="btn btn-primary" id="uploadImg" style="display: none">上传</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        </div>
+
+
+<!--                    <button type="submit" class="btn btn-primary" >上传</button>-->
+<!--                    <span class="error-tip" v-show="error_form">  ${error_form_msg}  </span>-->
+
+            </div>
+
+        </div>
+
+<script>
+  var uploadInst;
+        layui.use('upload', function() {
+            var upload = layui.upload;
+            //执行实例
+            uploadInst = upload.render({
+                elem: '#selectFile',
+                 url: '/pieces/share_life/', //上传接口，根据自己实际情况进行配置
+                auto: false, // 关闭选择文件后的自动上传
+                acceptMime: 'image/*',
+                choose: function(obj) {
+                    var files = obj.pushFile();
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        // 每选择一张图片，就往imgContainer盒子里追加一个div
+                        $('.imgContainer').append(`<div><img src="${result}"><span onClick="deleteOne(this)">X<span></div>`);
+                        // 展示上传按钮
+                        $('#uploadImg').css('display', 'inline-block');
+                        // 监听删除全部图片时间
+                        $('#deleteImg').on('click', function() {
+                            delete files[index]; // 删除文件队列中的文件
+                            $('.imgContainer')[0].innerHTML = '';
+                            uploadInst.config.elem.next()[0].value = ''; // 允许覆盖选择同一个文件
+                            if ($('.imgContainer img').length == 0) {
+                                $('#uploadImg').css('display', 'none');
+                            }
+                        });
+                        // 鼠标经过图片所在盒子就显示左上角的X
+                        $('.imgContainer div').on('mouseenter', function(e) {
+                            $($(this)[0].children[1]).css('display', 'inline-block');
+                        });
+                        // 鼠标离开图片所在盒子就隐藏左上角的X
+                        $('.imgContainer div').on('mouseleave', function(e) {
+                            $($(this)[0].children[1]).css('display', 'none');
+                        });
+                        // 监听图片点击事件
+                        $('.imgContainer div img').on('click', function() {
+                            layer.open({
+                                type: 4,
+                                tips: 2, // 弹出层在下方
+                                content: ['<img style="width:400px;height:400px" src="' + $(this)[0].src + '">', this],
+                                shade: 0, // 不显示遮罩
+                                area: ['450px', '430px'], // 设置宽高
+                                time: 1000 // 1秒后自动隐藏弹出层
+                            });
+                        })
+                    });
+                },
+                done: function(res) {
+                    //上传完毕回调
+                },
+                error: function() {
+                    //请求异常回调
+                }
+            });
+        });
+        // 删除单张照片
+        function deleteOne(that) {
+            uploadInst.config.elem.next()[0].value = '';
+            $($(that)[0].parentNode)[0].innerHTML = '';
+            if ($('.imgContainer img').length == 0) {
+                $('#uploadImg').css('display', 'none');
+            }
+        }
+
+</script>
+
+{% endblock content %}

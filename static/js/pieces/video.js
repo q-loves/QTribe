@@ -38,6 +38,9 @@ let vue=new Vue({
               },
               //上传视频成功或失败后，弹出弹窗
               uploadFile:function(){
+
+                    this.check_title();
+                    this.check_remark();
                     const formData = new FormData();
                     const file = this.$refs.fileInput.files[0];
                     //判断表单是否填写完整
@@ -52,10 +55,11 @@ let vue=new Vue({
                         axios.post(url,formData).then(response=>{
                             if(response.data.code==200){
 
-                                  this.open1();
+                                  swal('视频上传成功');
+                                  window.location.href = '/pieces/upload_video/';
                             }else{
 
-                                  this.open2();
+                                  swal('视频上传失败');
                             }
                         });
                     }else{

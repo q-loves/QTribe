@@ -1,17 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<script>
-            //删除视频
-        function delete_article(id, title,current_page) {
-            // 设置弹出框的提示内容
-            $('#article_delete_message').text('确认要删除 '+ title + ', 这篇文章吗？')
-            // 给确认删除的按钮添加一个鼠标点击事件
-            $('#delete_btn').click(function () {
-                document.location.href = '/pieces/delete_article/?a_id='+id+'&current_page='+current_page
-            })
-            $("#delete_article").modal('show');
-        }
-</script>
+
 {#爱心css文件#}
 
 <style>
@@ -149,7 +138,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"  href="">
+                    <a class="nav-link"  href="/index/life_mall/">
                         <i class="el-icon-cold-drink"></i> 分享生活
                     </a>
                 </li>
@@ -161,13 +150,13 @@
                 </li>
 
             </ul>
-<!--            <form class="d-flex bsa-nav-search" action="/pieces/search_article/">-->
-<!--                <div class="input-group">-->
-<!--                    <input aria-label="搜索关键字" type="text" name="q" class="form-control" placeholder="搜索关键字" autocomplete="off">-->
-<!--                    <button class="btn" type="submit"><i class="bi bi-search"></i>-->
-<!--                    </button>-->
-<!--                </div>-->
-<!--            </form>-->
+            <form class="d-flex bsa-nav-search" action="/pieces/search_article/">
+                <div class="input-group">
+                    <input aria-label="搜索关键字" type="text" name="q" class="form-control" placeholder="搜索关键字" autocomplete="off">
+                    <button class="btn" type="submit"><i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </nav>
@@ -284,24 +273,5 @@
         </nav>
     </div>
 </div>
-{#删除视频状态框#}
-<div class="modal fade" id="delete_article" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="article_delete_message">
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    取消
-                </button>
-                <button type="button" class="btn btn-primary" id="delete_btn">确认删除</button>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock content %}

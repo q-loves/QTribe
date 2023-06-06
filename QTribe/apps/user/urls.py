@@ -1,8 +1,8 @@
 from django.urls import path, re_path
 
-from user.views import Register, Login ,CheckUsername, CheckPhone,Transform,UpdateInformation,CheckEmail,ResetPassword,CheckPassword
+from user.views import Register, Login ,CheckUsername, CheckPhone,Transform,UpdateInformation,CheckEmail,ResetPassword,CheckPassword,UploadImage,Logout,FocusUser,UserSearchView
 
-from user.views import UploadImage
+
 
 urlpatterns=[
    path('register/',Register.as_view()),
@@ -15,5 +15,8 @@ urlpatterns=[
    path('update_information/', UpdateInformation.as_view()),
    path('upload_image/',UploadImage.as_view()),
    path('reset_password/', ResetPassword.as_view()),
+   path('logout/', Logout.as_view()),
+   path('focus/', FocusUser.as_view()),
+   path('search_user/', UserSearchView()),
 
 ]

@@ -144,11 +144,16 @@ class StarVideo(View):
         current_page = int(request.GET.get('current_page'))
         q=request.GET.get('q')
         video = VideoModel.objects.get(id=v_id)
-        is_star = StarModel.objects.filter(user_id=request.user.id, video_id=v_id)
-        if is_star:
+        try:
+            is_star = StarModel.objects.get(user_id=request.user.id, video_id=v_id)
+            flag=is_star.flag
+        except:
+            is_star=0
+        if is_star and flag=='1':
             video.star_count -= 1
             video.save()
-            StarModel.objects.filter(user_id=request.user.id, video_id=v_id).delete()
+            is_star.flag = '0'
+            is_star.save()
             if args == 'mall':
                 return redirect(f'/index/video_mall?page_number={current_page}')
             if args == 'star':  # 有可能用户取消点赞后，当页就没有内容，防止报错，加一个try
@@ -164,13 +169,18 @@ class StarVideo(View):
         else:
             video.star_count += 1
             video.save()
-            StarModel.objects.create(user=request.user, video=video)
+            if not is_star:
+                StarModel.objects.create(user=request.user, video=video,flag='1')
+            else:
+                is_star.flag = '1'
+                is_star.save()
             if args == 'mall':
                 return redirect(f'/index/video_mall?page_number={current_page}')
             if args == 'collect':
                 return redirect(f'/pieces/collect_video_list?page_number={current_page}')
             if args=='search':
                 return redirect(f'/pieces/search_video/?page={current_page}&q={q}')
+
 
 # 视频收藏量
 class CollectVideo(View):
@@ -180,11 +190,16 @@ class CollectVideo(View):
         args = request.GET.get('args')  # 判断是从看点广场页面进入，还是从收藏列表页面进入
         q=request.GET.get('q')
         video = VideoModel.objects.get(id=v_id)
-        is_collect = CollectionModel.objects.filter(user_id=request.user.id, video_id=v_id)
-        if is_collect:
+        try:
+            is_collect = CollectionModel.objects.get(user_id=request.user.id, video_id=v_id)
+            flag=is_collect.flag
+        except:
+            is_collect=0
+        if is_collect and flag=='1':
             video.collection_count -= 1
             video.save()
-            CollectionModel.objects.filter(user_id=request.user.id, video_id=v_id).delete()
+            is_collect.flag='0'
+            is_collect.save()
             if args == 'mall':
                 return redirect(f'/index/video_mall?page_number={current_page}')
             if args == 'collect':
@@ -199,7 +214,11 @@ class CollectVideo(View):
         else:
             video.collection_count += 1
             video.save()
-            CollectionModel.objects.create(user=request.user, video=video)
+            if not is_collect:
+                CollectionModel.objects.create(user=request.user, video=video,flag='1')
+            else:
+                is_collect.flag = '1'
+                is_collect.save()
             if args == 'mall':
                 return redirect(f'/index/video_mall?page_number={current_page}')
             if args == 'star':
@@ -240,14 +259,15 @@ class StarVideoList(View):
         star_ids = []
         objs = request.user.starmodel_set.all()
         for obj in objs:
-            star_ids.append(obj.video_id)
+            if obj.flag=='1':
+                star_ids.append(obj.video_id)
         # 获取该用户所有点赞过的视频
         video_list = VideoModel.objects.filter(id__in=star_ids)
         collection_ids = []  # 用于筛选用户收藏过的视频，方便前端渲染
         for video in video_list:
             objs = request.user.collectionmodel_set.all()
             for obj in objs:
-                if obj.video == video:
+                if obj.video == video and obj.flag=='1':
                     collection_ids.append(video.id)
         # 创建分页对象
         paginator = Paginator(video_list, 2)
@@ -284,14 +304,15 @@ class CollectVideoList(View):
         collection_ids = []
         objs = request.user.collectionmodel_set.all()
         for obj in objs:
-            collection_ids.append(obj.video_id)
+            if obj.flag=='1':
+                collection_ids.append(obj.video_id)
         # 获取该用户所有收藏的视频
         video_list = VideoModel.objects.filter(id__in=collection_ids)
         star_ids = []  # 用于筛选用户点赞过的视频，方便前端渲染
         for video in video_list:
             objs = request.user.starmodel_set.all()
             for obj in objs:
-                if obj.video == video:
+                if obj.video == video and obj.flag=='1':
                     star_ids.append(video.id)
         # 创建分页对象
         paginator = Paginator(video_list, 2)
@@ -322,7 +343,7 @@ class CollectVideoList(View):
                                                              'star_ids': star_ids})
 
 #搜索引擎
-class VideoSearchView(SearchView,View):
+class VideoSearchView(SearchView):
 
     template = 'search/video_search.html'
     results = EmptySearchQuerySet()

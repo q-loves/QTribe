@@ -150,7 +150,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"  href="">
+                    <a class="nav-link"  href="/pieces/collect_life_list/">
                         <i class="el-icon-cold-drink"></i> 分享生活
                     </a>
                 </li>
@@ -177,7 +177,7 @@
     {% for article in page_content %}
     <div class="card-body p-4">
         <h5 class="card-title">欢迎光临{{article.user.username}}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">来看大家的作品吧！！！</h6>
+        <h6 class="card-subtitle mb-2 text-muted">来看你收藏的作品吧！！！</h6>
         <hr>
         <div class="row row-cols-1 g-3">
             <div class="col">
@@ -216,7 +216,7 @@
                                     <div class="d-flex align-items-center flex-wrap gap-2">
 
                                         <div class="likeBtn" id="likeBtn">
-                                            <a class="{% if article.id in collection_ids %}put{% endif %}heart" id="heart" href="/pieces/star_article/?a_id={{article.id}}&current_page={{current_page}}&args=collect"></a>
+                                            <a class="{% if article.id in star_ids %}put{% endif %}heart" id="heart" href="/pieces/star_article/?a_id={{article.id}}&current_page={{current_page}}&args=collect"></a>
                                             <span>{{article.star_count}}</span>
                                         </div>
                                         <pre>  </pre>

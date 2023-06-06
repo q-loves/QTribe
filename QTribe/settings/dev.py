@@ -72,8 +72,8 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-
                 'django.contrib.messages.context_processors.messages',
+                'index.context_processors.set_flag'
             ],
             # 补充Jinja2模板引擎环境
             'environment': 'QTribe.utils.jinja2_env.environment',
@@ -89,6 +89,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
             ],
         },
     },
@@ -260,7 +261,9 @@ HAYSTACK_CONNECTIONS = {
 
         'INDEX_NAME': 'article',  # Elasticsearch建⽴的索引库的名称
         # 排除掉其他的索引模型
-        'EXCLUDED_INDEXES': ['pieces_info.search_indexes.VideoModelIndex'],
+        'EXCLUDED_INDEXES': ['pieces_info.search_indexes.VideoModelIndex',
+                             'pieces_info.search_indexes.LifeModelIndex',
+                             'user.search_indexes.UserModelIndex'],
     },
     'video': {
         'ENGINE':
@@ -270,7 +273,33 @@ HAYSTACK_CONNECTIONS = {
 
         'INDEX_NAME': 'video',  # Elasticsearch建⽴的索引库的名称
         # 排除掉其他的索引模型
-        'EXCLUDED_INDEXES': ['pieces_info.search_indexes.ArticleModelIndex'],
+        'EXCLUDED_INDEXES': ['pieces_info.search_indexes.ArticleModelIndex',
+                             'pieces_info.search_indexes.LifeModelIndex',
+                             'user.search_indexes.UserModelIndex'],
+    },
+    'life': {
+        'ENGINE':
+            'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine'
+        ,
+        'URL': 'http://192.168.221.129:9200/',  # Elasticsearch服务器ip地址，端⼝号固定为9200
+
+        'INDEX_NAME': 'life',  # Elasticsearch建⽴的索引库的名称
+        # 排除掉其他的索引模型
+        'EXCLUDED_INDEXES': ['pieces_info.search_indexes.ArticleModelIndex',
+                             'pieces_info.search_indexes.VideoModelIndex',
+                             'user.search_indexes.UserModelIndex'],
+    },
+    'user': {
+        'ENGINE':
+            'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine'
+        ,
+        'URL': 'http://192.168.221.129:9200/',  # Elasticsearch服务器ip地址，端⼝号固定为9200
+
+        'INDEX_NAME': 'user',  # Elasticsearch建⽴的索引库的名称
+        # 排除掉其他的索引模型
+        'EXCLUDED_INDEXES': ['pieces_info.search_indexes.ArticleModelIndex',
+                             'pieces_info.search_indexes.VideoModelIndex',
+                             'pieces_info.search_indexes.LifeModelIndex'],
     },
 }
 

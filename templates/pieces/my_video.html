@@ -73,15 +73,10 @@
 <script src="/static/lib/formvalidation/js/formValidation.js"></script>
 <script src="/static/lib/formvalidation/js/framework/bootstrap.js"></script>
 <script src="/static/lib/formvalidation/js/language/zh_CN.js"></script>
-<script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
 
 {#发送ajax请求，播放视频，删除视频#}
 <script>
-
-        function starIt(id,current_page) {
-                let url = '/pieces/star_video?v_id='+id+'&current_page='+current_page
-                axios.get(url);
-                }
 
 
         function scanMedia(id,url,title) {

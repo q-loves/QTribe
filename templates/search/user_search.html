@@ -1,0 +1,153 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<script>
+    function focus(){
+
+        let o_id = document.getElementById("o_id").value ;
+        let current_page = document.getElementById("current_page").value ;
+        let q = document.getElementById("q").value ;
+        axios.get('/user/focus/?o_id='+o_id+'&is_focus=1').then(response=>{
+            if(response.data.code==200){
+                window.location.href='/user/search_user/?page='+current_page+'&q='+q
+            }else{
+                swal('关注失败');
+            }
+        });
+    }
+    function unfocus(){
+        let o_id = document.getElementById("o_id").value ;
+        let current_page = document.getElementById("current_page").value ;
+        let q = document.getElementById("q").value ;
+        axios.get('/user/focus/?o_id='+o_id+'&is_focus=0').then(response=>{
+            if(response.data.code==200){
+                window.location.href='/user/search_user/?page='+current_page+'&q='+q
+            }else{
+                swal('取消关注失败');
+            }
+        });
+    }
+
+</script>
+<!--导航栏-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
+    <div class="container-fluid"><a class="navbar-brand" href="javascript:">附近的人</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navcnt1" aria-controls="navcnt1" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navcnt1">
+
+            <form class="d-flex bsa-nav-search" action="/user/search_user/">
+                <div class="input-group">
+                    <input aria-label="搜索关键字" type="text" name="q" class="form-control" placeholder="搜索关键字" autocomplete="off">
+                    <button class="btn" type="submit"><i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+<!--内容部分-->
+<div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+
+
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover">
+                        <thead>
+                        <tr>
+
+                            <th>头像</th>
+                            <th>用户名</th>
+                            <th>年龄</th>
+                            <th>手机号</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for o_user in user_list %}
+                        <tr>
+                            <td>
+                                {% if o_user.id in icon_ids %}
+                                    <img src={{o_user.icon.url}} alt="Admin"
+                                         class="rounded-circle p-1 bsa-bg-color4 bsa-width-60 bsa-height-60" data-bs-toggle="modal"
+                                         data-bs-target="#exampleModal">
+                                {% else %}
+                                    <img src="" alt="Admin"
+                                         class="rounded-circle p-1 bsa-bg-color4 bsa-width-60 bsa-height-60" data-bs-toggle="modal"
+                                         data-bs-target="#exampleModal">
+                                {% endif %}
+
+                            </td>
+                            <td>{{o_user.username}}</td>
+                            <td>{{o_user.age}}</td>
+                            <td>{{o_user.phone}}</td>
+                            <td>
+<!--                                <form class="form" id="form">-->
+                                    <input  type="hidden" name="o_id" id="o_id" value="{{o_user.id}}" >
+                                    <input  type="hidden" name="current_page" id="current_page" value="{{current_page}}" >
+                                    <input  type="hidden" name="q" id="q" value="{{q}}" >
+                                    <div class="d-flex align-items-center">
+                                        {% if o_user.id not in focus_ids %}
+                                        <div class="col" >
+                                            <a href="javascript:focus()" class="btn btn-info px-5"><i class="bi bi-cloud-arrow-down me-1"></i>关注
+                                            </a>
+                                        </div>
+                                        {% else %}
+                                        <div class="col">
+                                            <a href="javascript:unfocus()" class="btn btn-danger px-5"><i class="bi bi-cloud-arrow-down me-1"></i>取消关注
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+<!--                                </form>-->
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+           </div>
+        </div>
+<!--分页部分-->
+{#分页部分#}
+<hr>
+<div class="row row-cols-1 g3">
+    <div class="col">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination"> <!-- 逻辑判断，如果有前一页，则可以点击上一页按钮 -->
+                {% if page.has_previous() %}
+                <li class="page-item"><a class="page-link"
+                                         href="/user/search_user/?q={{q}}&page={{ page.previous_page() }}"
+                                         aria-label="Previous"> <span aria-hidden="true">«</span> </a></li>
+                {% else %}
+                <!-- 禁用按钮 -->
+                <li class="page-item"><a class="page-link"
+                                         href="/user/search_user/?q={{q}}&page=1"
+                                         aria-label="Previous"> <span aria-hidden="true">«</span> </a></li>
+                {% endif %}
+                <!-- 呈现所有的页码 -->
+                <!-- 呈现所有的页码 -->
+                {% for page_num in page_list %}
+                    {% if page_num == current_page %}
+                        <li class="page-item active" aria-current="page"><span class="page-link">{{page_num}}</span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="/user/search_user/?q={{q}}&page={{ page_num }}">{{page_num}}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                <!-- 逻辑判断，如果有后一页，则可以点击下一页按钮 -->
+                {% if page.has_next() %}
+                <li class="page-item"><a class="page-link"
+                                         href="/user/search_user/?q={{q}}&page={{ page.next_page() }}"
+                                         aria-label="Next"> <span aria-hidden="true">»</span> </a></li>
+                {% else %} <!-- 禁用按钮 -->
+                <li class="page-item"><a class="page-link"
+                                         href="/user/search_user/?q={{q}}&page={{num_pages}}"
+                                         aria-label="Next"> <span aria-hidden="true">»</span> </a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+
+{% endblock content %}
