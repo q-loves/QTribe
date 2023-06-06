@@ -6,11 +6,17 @@ ______
 ### 1.基于Django+Vue实现平台功能，采用前后端不分离的模式。<br>
 ### 2.QQ，微信等第三方登录。<br>
 ### 3.配置redis储存临时动态信息，提升用户访问效率，减小mysql压力。<br>
-### 4.视频，照片等静态文件采用分布式储存，fastdfs（部署在docker上）
-### 5.elasticsearch+haystack搜索引擎（部署在docker上）
+### 4.视频，照片等静态文件采用分布式储存，fastdfs（部署在docker上）。
+### 5.elasticsearch+haystack搜索引擎（部署在docker上）。
 ______
-### 注：现在项目还未做完，大家如果想一起做的话，可以先fork到自己本地。先在自己电脑的C:\Windows\System32\drivers\etc\hosts文件里面映射一下地址（如下图）,然后在pycharm（其他编译器也可，我习惯用这个）里面配置一下环境pip install requirements.txt ，运行命令python manage.py runserver 8083（注意，必须是8083端口）可启动项目.
-![HE(D~H6PGZW55OQ`G%~BG`I(1)_edit_400445283161146](https://github.com/q-loves/QTribe/assets/121675743/5845a90b-8481-4639-9e07-8b58379f2cce)
+### 注：现在项目还未做完，大家如果想一起做的话，可以先fork到自己本地。:sparkling_heart:<br>
+### 1.先在自己电脑的C:\Windows\System32\drivers\etc\hosts文件里面映射一下地址（如下图）<br>
+### 2.在pycharm（其他编译器也可，我习惯用这个）里面配置一下环境pip install requirements.txt。<br>
+### 3.创建自己的mysql数据库，把setting.dev里面mysql的配置改成自己的。配置好后，运行python manage.py makemigrations 和 python manage.py migrate 命令进行数据库迁移。
+### 3.下载docker，在docker上拉取elasticsearch镜像，创建elasticsearch容器并开启。（这一步是实现搜索功能的，如果不按照步骤来，会报错:confused:）<br>
+### 4.运行命令python manage.py runserver 8083（注意，必须是8083端口）可启动项目.<br>
+![HE(D~H6PGZW55OQ`G%~BG`I(1)_edit_400445283161146](https://github.com/q-loves/QTribe/assets/121675743/d96099a0-9e63-4836-b0fb-92a737ae522f)
+
 
 ## 项目具体实现<br>
 ____
@@ -25,6 +31,9 @@ _____
 ---
 ![image](https://github.com/q-loves/QTribe/assets/121675743/1a9f32bd-8130-4033-8f99-8f0f601b0844)
 ### 绑定后就可以进入平台中心。下次再用QQ登陆时，扫码后就可直接进入平台中心。
+____
+![image](https://github.com/q-loves/QTribe/assets/121675743/a0aa5c91-ba46-4a0a-8413-269312a0f7c1)
+
 ## 平台内部结构
 ---
 ### 可以在看点广场里面浏览平台用户们上传的各种作品，自己可以点赞收藏，评论等
