@@ -88,7 +88,23 @@ class CommentModel(BaseModel2):
     video=models.ForeignKey('VideoModel',on_delete=models.CASCADE,related_name='comment',blank=True,null=True)
     life = models.ForeignKey('LifeModel', on_delete=models.CASCADE, verbose_name='生活琐事', blank=True, null=True,related_name='comment')
     user=models.ForeignKey('user.UserModel',verbose_name='用户',on_delete=models.CASCADE,related_name='comment')
+    comment = models.ForeignKey('self', verbose_name='评论的评论',on_delete=models.CASCADE, blank=True, null=True)
     class Meta:
         db_table = 't_comment'
         verbose_name = '评论'
         verbose_name_plural = verbose_name
+
+class Message(models.Model):
+    user_1=models.ForeignKey('user.UserModel',on_delete=models.CASCADE,verbose_name='发起动作的人',related_name='user_1')
+    article=models.ForeignKey('ArticleModel',on_delete=models.CASCADE,blank=True,null=True)
+    video=models.ForeignKey('VideoModel',on_delete=models.CASCADE,blank=True,null=True)
+    comment=models.ForeignKey('CommentModel',on_delete=models.CASCADE,blank=True,null=True)
+    life = models.ForeignKey('LifeModel', on_delete=models.CASCADE, verbose_name='生活琐事', blank=True, null=True)
+    user_2 = models.ForeignKey('user.UserModel', on_delete=models.CASCADE, verbose_name='接收消息的人',related_name='user_2')
+    status=models.IntegerField(verbose_name='状态0.已读1.未读',default=0)
+    type_1=models.CharField(verbose_name='信息类型1.点赞2.收藏3.评论4.关注5.好友申请6.好友通过',max_length=4,default='1')
+    class Meta:
+        db_table='t_message'
+        verbose_name='通知信息'
+        verbose_name_plural=verbose_name
+

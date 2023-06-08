@@ -16,6 +16,7 @@ from user.models import UserModel,FocusModel
 
 from pieces_info.models import ImageModel
 
+from QTribe.tasks import send_message
 
 
 class Register(View):
@@ -160,6 +161,8 @@ class FocusUser(View):
         if  is_focus:
             if focus_obj:
                 focus_obj.update(flag='1')
+                data={'type_2':'focus','u_id':u_id,'p_id':o_id}
+                send_message.delay(data)
                 return JsonResponse({'code': 200})
             FocusModel.objects.create(user_id=u_id,focus_user_id=o_id,flag='1')
             return JsonResponse({'code':200})

@@ -26,7 +26,7 @@ class NoFindPage(View):
 #查看个人资料
 class Information(View):
     def get(self,request):
-        return render(request,'pieces/information.html',{'user':request.user})
+        return render(request,'user/information.html',{'user':request.user})
 
 #视频广场
 class VideoMall(View):

@@ -4,6 +4,7 @@ from pieces_info.views.article import MyArticle,  StarArticle, TopArticle, Publi
 from pieces_info.views.life import MyLife,ShareLife,StarLife, TopLife, DetailsLife, DeleteLife, CollectLife, StarLifeList,LifeSearchView,CollectLifeList
 from pieces_info.views.video import UploadVideo, MyVideo, PlayVideo, StarVideo, TopVideo, DeleteVideo,CollectVideo,StarVideoList,CollectVideoList,VideoSearchView
 
+from pieces_info.views.comment import Comment_life
 
 urlpatterns=[
      #视频
@@ -39,5 +40,7 @@ urlpatterns=[
      path('star_life_list/',StarLifeList.as_view()),
      path('collect_life_list/',CollectLifeList.as_view()),
      path('search_life/',LifeSearchView()),
+     #评论
+     path('comment_life/',Comment_life.as_view())
 
 ]

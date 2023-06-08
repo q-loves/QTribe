@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <style>
         .col img {
@@ -6,6 +7,7 @@
             height: 300px;
             margin: 10px;
         }
+
 </style>
  <div class="card border-0 shadow-sm">
             <div class="row g-0">
@@ -25,17 +27,92 @@
                         <h2 class="card-title mb-4">
                             {{life.copy|safe}}
                         </h2>
-
-                        <div class="d-flex gap-3 mt-3">
-                            <a href="javascript:" class="btn btn-primary">立即购买</a>
-                            <a href="javascript:" class="btn btn-outline-primary">
-                                <i class='bi bi-cart'></i>
-                                <span class="text">加入购物车</span>
-                            </a>
+                    <form id="form" >
+                        <input  type="hidden" name="l_id" ref="l_id" value="{{l_id}}" >
+                        <div class="d-flex gap-3 mt-3" >
+                                <div class="col">
+                                    <button  class="btn btn-secondary px-5 bsa-radius-30" @click="open_it" ><i class="bi bi-chat-left-text me-1"></i>评论一下
+                                    </button>
+                                </div>
+                                <div class="col">
+                                    <button  class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal2"><i class="bi bi-chat-left me-0">其他评论{{life.comment_count}}</i>
+                                    </button>
+                                </div>
                         </div>
+                    </form>
                     </div>
                 </div>
             </div>
             <hr/>
+<!--评论页面-->
 
+<div class="modal fade" id="exampleModal2" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">友友们的评论</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- 内容都应该被包裹在此-->
+                <div class="card border-0 shadow-sm">
+
+                <hr>
+
+
+                <div class="row row-cols-1 gap-3">
+
+                {% for comment in comments %}
+                    <div class="col-">
+                        <div class="d-flex flex-column flex-wrap gap-2 border-bottom pb-2">
+                            <div class="d-flex align-items-center flex-wrap gap-2">
+                                <img src="{{comment.user.icon.url}}"
+                                     class="rounded-circle bsa-width-38 bsa-height-38" alt="用户头像">
+                                <div class="fw-bold">
+                                    {{comment.user.username}}
+                                </div>
+                            </div>
+                            <div class="bsa-font-13 text-muted d-flex flex-wrap align-items-center gap-2">
+                                <div>2楼</div>
+                                <div>1天前</div>
+                                <div>{{comment.user.province}}{{comment.user.city}}</div>
+                            </div>
+                            <div>
+                                {{comment.content|safe}}
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between flex-wrap text-secondary gap-3">
+                                <div class="d-flex align-items-center flex-wrap gap-3">
+                                    <i class="bi bi-hand-thumbs-up"></i> 10
+                                    <i class="bi bi-hand-thumbs-down"></i> 0
+                                    <i class="bi bi-reply"></i>
+                                    <i class="bi bi-chat-right"></i>
+                                </div>
+                                <div class="dropdown">
+                                    <i class="bi bi-three-dots-vertical bsa-cursor-pointer" data-bs-toggle="dropdown"
+                                       aria-expanded="false"></i>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li><a class="dropdown-item" href="Javascript:">举报</a></li>
+                                        <li><a class="dropdown-item" href="Javascript:">加入黑名单</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                {% endfor %}
+
+                </div>
+
+
+            </div>
+        </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="{{static('js/comment/comment.js')}}"></script>
 {% endblock content %}
+

@@ -16,7 +16,7 @@ from user.models import StarModel, CollectionModel
 
 class ShareLife(View):
     def get(self,request):
-        return render(request,'pieces/share_life4.html')
+        return render(request,'pieces/share_life.html')
     def post(self,request):
         try:
             copy=request.POST.get('copy')
@@ -178,13 +178,17 @@ class DetailsLife(View):
         life=LifeModel.objects.get(id=l_id)
         life.running_count+=1
         life.save()
-        objs=life.image.all()
+        images=life.image.all()
         imgs=[]
-        for obj in objs:
-
+        for obj in images:
             imgs.append(obj.image)
+        comments=life.comment.all()
+        comms=[]
+        for comment in comments:
+            comms.append(comment)
 
-        return render(request,'pieces/life_details.html',{'life':life,'imgs':imgs})
+
+        return render(request,'pieces/life_details.html',{'life':life,'imgs':imgs,'l_id':l_id,'comments':comms})
 #删除文章
 class DeleteLife(View):
     def get(self,request):
