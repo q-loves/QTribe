@@ -13,6 +13,8 @@ from pieces_info.models import ImageModel
 
 from user.models import StarModel, CollectionModel
 
+from QTribe.tasks import send_message
+
 
 class ShareLife(View):
     def get(self,request):
@@ -46,7 +48,7 @@ class MyLife(View):
         page_number = int(request.GET.get('page_number', 1))
         lives=LifeModel.objects.filter(user=request.user)
         # 创建分页对象
-        paginator = Paginator(lives, 2)
+        paginator = Paginator(lives, 5)
         num_pages = paginator.num_pages
         # 获取页码数列，用于前端遍历
         if paginator.num_pages > 5:
@@ -102,6 +104,8 @@ class StarLife(View):
         else:
             life.star_count+=1
             life.save()
+            data={'u_id':request.user.id,'type_2':'star_life','p_id':l_id}
+            send_message.delay(data)
             if not is_star:
                 StarModel.objects.create(user=request.user,life=life,flag='1')
             else:
@@ -146,6 +150,8 @@ class CollectLife(View):
         else:
             life.collection_count+=1
             life.save()
+            data={'u_id':request.user.id,'type_2':'collect_life','p_id':l_id}
+            send_message.delay(data)
             if not is_collect:
                 CollectionModel.objects.create(user=request.user,life=life,flag='1')
             else:
@@ -186,9 +192,7 @@ class DetailsLife(View):
         comms=[]
         for comment in comments:
             comms.append(comment)
-
-
-        return render(request,'pieces/life_details.html',{'life':life,'imgs':imgs,'l_id':l_id,'comments':comms})
+        return render(request,'pieces/life_details.html',{'life':life,'imgs':imgs,'l_id':l_id,'comms':comms})
 #删除文章
 class DeleteLife(View):
     def get(self,request):

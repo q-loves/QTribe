@@ -15,13 +15,17 @@ class StartIt(View):
 
 class HomePage(View):
     def get(self,request):
-        return render(request,'center2.html',{'user':request.user})
+        return render(request,'center3.html',{'user':request.user})
 
 #404页面
 class NoFindPage(View):
     def get(self,request):
         return render(request,'404.html')
 
+#电影页面
+class FreeMovie(View):
+    def get(self,request):
+        return render(request,'movie/TV_home.html')
 
 #查看个人资料
 class Information(View):
@@ -49,7 +53,7 @@ class VideoMall(View):
                     collection_ids.append(video.id)
 
         # 创建分页对象
-        paginator = Paginator(video_list, 2)
+        paginator = Paginator(video_list, 5)
         num_pages = paginator.num_pages
         # 获取页码数列，用于前端遍历
         if paginator.num_pages > 5:
@@ -93,7 +97,7 @@ class ArticleMall(View):
                 if obj.article==article and obj.flag=='1':
                     collection_ids.append(article.id)
         # 创建分页对象
-        paginator = Paginator(articles, 2)
+        paginator = Paginator(articles, 5)
         num_pages = paginator.num_pages
         # 获取页码数列，用于前端遍历
         if paginator.num_pages > 5:
@@ -139,7 +143,7 @@ class LifeMall(View):
                     collection_ids.append(life.id)
 
         # 创建分页对象
-        paginator = Paginator(lives, 2)
+        paginator = Paginator(lives, 5)
         num_pages = paginator.num_pages
         # 获取页码数列，用于前端遍历
         if paginator.num_pages > 5:
@@ -172,12 +176,24 @@ class OtherUser(View):
     def get(self,request):
         page_number = int(request.GET.get('page_number', 1))
         users=UserModel.objects.exclude(id=request.user.id).all()
-        objs=request.user.focusmodel_set.all()
+        focus_objs=request.user.focusmodel_set.all()
+        friend1_objs=request.user.friendmodel_set.all()
+        friend2_objs=request.user.friend_user.all()
         focus_ids=[]#查询用户关注的用户
+        friend_ids=[]#查询用户好友
         icon_ids=[]
-        for obj in objs:
+        for obj in focus_objs:
             if obj.flag=='1':
                 focus_ids.append(obj.focus_user_id)
+        #因为在friend表中两个字段关联的字段名不一样，所以要循环两次
+        for obj in friend1_objs:
+            if obj.flag=='1':
+                friend_ids.append(obj.friend_user_id)
+        for obj in friend2_objs:
+            if obj.flag=='1':
+                friend_ids.append(obj.user_id)
+
+
         for user in users:
             if  user.icon:
                 icon_ids.append(user.id)
@@ -207,4 +223,11 @@ class OtherUser(View):
                                                         'current_page': page_content.number,
                                                         'num_pages': num_pages,
                                                         'focus_ids':focus_ids,
+                                                        'friend_ids':friend_ids,
                                                         'icon_ids':icon_ids,})
+
+class OtherDetails(View):
+    def get(self,request):
+        u_id=int(request.GET.get('u_id'))
+        user=UserModel.objects.get(id=u_id)
+        return render(request,'user/center3.html',{'user_':user})

@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-7*3tmx7*vk-i@v1)yq3o9x492aq0h0bbkj0to153(l0m%)_#3a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'www.nagle.cn']
+ALLOWED_HOSTS = ['127.0.0.1', 'www.nagle.cn','localhost']
 
 
 # Application definition
@@ -74,7 +74,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'index.context_processors.set_flag'
+                'index.context_processors.set_icon_flag',
+                'index.context_processors.get_message',
             ],
             # 补充Jinja2模板引擎环境
             'environment': 'QTribe.utils.jinja2_env.environment',
@@ -314,3 +315,5 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_CACHE_BACKEND = 'redis://127.0.0.1:6379/4'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/5'
 CELERY_RESULT_SERIALIZER='json'
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880

@@ -56,15 +56,10 @@
             <div class="modal-body">
                 <!-- 内容都应该被包裹在此-->
                 <div class="card border-0 shadow-sm">
-
-                <hr>
-
-
                 <div class="row row-cols-1 gap-3">
 
-                {% for comment in comments %}
-                    <div class="col-">
-                        <div class="d-flex flex-column flex-wrap gap-2 border-bottom pb-2">
+                {% for comment in comms %}
+
                             <div class="d-flex align-items-center flex-wrap gap-2">
                                 <img src="{{comment.user.icon.url}}"
                                      class="rounded-circle bsa-width-38 bsa-height-38" alt="用户头像">
@@ -103,15 +98,12 @@
                 {% endfor %}
 
                 </div>
-
-
             </div>
         </div>
             </div>
 
-        </div>
-    </div>
-</div>
+
+
 
 <script type="text/javascript" src="{{static('js/comment/comment.js')}}"></script>
 {% endblock content %}

@@ -80,6 +80,7 @@
 
 
         function scanMedia(id,url,title) {
+            console.log('url---->',url);
             //播放视频
             $.ajax({
                 //增加浏览数量
@@ -120,6 +121,8 @@
 
 </script>
 
+
+
 <!--//导航栏-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
     <div class="container-fluid"><a class="navbar-brand" href="javascript:">我的作品</a>
@@ -156,6 +159,8 @@
 </nav>
 {#视频内容#}
 <div class="card border-0 shadow-sm">
+
+
     {% for video in page_content %}
     <div class="card-body p-4">
         <h5 class="card-title">欢迎光临{{video.user.username}}</h5>

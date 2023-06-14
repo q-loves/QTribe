@@ -18,9 +18,9 @@ class Comment_life(View):
             comment=data_['comment']
             l_id=int(data_['l_id'])
             with transaction.atomic():
-                CommentModel.objects.create(content=comment,life_id=l_id,user=user)
+                comm=CommentModel.objects.create(content=comment,life_id=l_id,user=user)
                 LifeModel.objects.filter(id=l_id).update(comment_count=F('comment_count')+1)
-            data={'u_id' : user.id, 'type_2': 'LifeModel', 'p_id' : l_id}
+            data={'u_id' : user.id, 'type_2': 'comment_life', 'p_id' : l_id,'c_id':comm.id}
             send_message.delay(data)
 
             return JsonResponse({'code':200})

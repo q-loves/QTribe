@@ -17,6 +17,8 @@ from pieces_info.models import VideoModel, ImageModel
 
 from user.models import StarModel, CollectionModel
 
+from QTribe.tasks import send_message
+
 
 class UploadVideo(LoginRequiredMixin, View):
     def get(self, request):
@@ -102,7 +104,7 @@ class MyVideo(View):
         # 获取该用户所有视频
         video_list = VideoModel.objects.filter(user__id=request.user.id)
         # 创建分页对象
-        paginator = Paginator(video_list, 2)
+        paginator = Paginator(video_list, 5)
         num_pages = paginator.num_pages
         # 获取页码数列，用于前端遍历
         if paginator.num_pages > 5:
@@ -169,6 +171,8 @@ class StarVideo(View):
         else:
             video.star_count += 1
             video.save()
+            data={'u_id':request.user.id,'type_2':'star_video','p_id':v_id}
+            send_message.delay(data)
             if not is_star:
                 StarModel.objects.create(user=request.user, video=video,flag='1')
             else:
@@ -214,6 +218,8 @@ class CollectVideo(View):
         else:
             video.collection_count += 1
             video.save()
+            data={'u_id':request.user.id,'type_2':'collect_video','p_id':v_id}
+            send_message.delay(data)
             if not is_collect:
                 CollectionModel.objects.create(user=request.user, video=video,flag='1')
             else:

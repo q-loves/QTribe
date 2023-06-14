@@ -3,7 +3,7 @@ import json
 from django.contrib import auth
 from django.contrib.admin import action
 from django.db import transaction
-from django.db.models import F
+from django.db.models import F, Q
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
@@ -12,9 +12,9 @@ from django.views import View
 from haystack.query import EmptySearchQuerySet
 from haystack.views import SearchView
 
-from user.models import UserModel,FocusModel
+from user.models import UserModel,FocusModel,FriendModel
 
-from pieces_info.models import ImageModel
+from pieces_info.models import ImageModel,Message
 
 from QTribe.tasks import send_message
 
@@ -168,6 +168,92 @@ class FocusUser(View):
             return JsonResponse({'code':200})
         return JsonResponse({'code':400})
 
+#用户添加好友
+class MakeFriend(View):
+    def get(self,request):
+        o_id=request.GET.get('o_id')
+        u_id=request.user.id
+        is_friend=int(request.GET.get('is_friend'))
+        friend_obj_1=FriendModel.objects.filter(user_id=u_id,friend_user_id=o_id)
+        friend_obj_2=FriendModel.objects.filter(user_id=o_id,friend_user_id=u_id)
+        if not is_friend:#如果已经是好友，就是删除好友的请求
+            if friend_obj_1:
+                friend_obj_1.update(flag='0')
+                return JsonResponse({'code':200})
+            if friend_obj_2:
+                friend_obj_2.update(flag='0')
+                return JsonResponse({'code':200})
+        if  is_friend:
+                data={'type_2':'friend_1','u_id':u_id,'p_id':o_id}
+                send_message.delay(data)
+                return JsonResponse({'code': 200})
+            # FriendModel.objects.create(user_id=u_id,friend_user_id=o_id,flag='1')
+            # return JsonResponse({'code':200})
+        return JsonResponse({'code':400})
+#是否同意添加该好友
+class ResponseFriend(View):
+    def get(self,request):
+        m_id = request.GET.get('m_id')
+        u2_id = request.GET.get('u2_id')
+        u1_id = request.GET.get('u1_id')
+        friend_obj_1 = FriendModel.objects.filter(user_id=u2_id, friend_user_id=u1_id)
+        friend_obj_2 = FriendModel.objects.filter(user_id=u1_id, friend_user_id=u2_id)
+        data = {'type_2': 'friend_2', 'u_id': u2_id, 'p_id': u1_id}
+        try:
+            with transaction.atomic():
+                Message.objects.filter(id=m_id).update(status=1)
+                if friend_obj_1:
+                    friend_obj_1.update(flag='1')
+                    send_message.delay(data)
+                    return JsonResponse({'code': 200})
+                elif friend_obj_2:
+                    friend_obj_2.update(flag='1')
+                    send_message.delay(data)
+                    return JsonResponse({'code': 200})
+                else:
+                    FriendModel.objects.create(user_id=u1_id, friend_user_id=u2_id, flag='1')
+                    return JsonResponse({'code': 200})
+        except:
+            return JsonResponse({'code': 500})
+class RefuseFriend(View):
+    def get(self,request):
+        try:
+            m_id = request.GET.get('m_id')
+            u2_id = request.GET.get('u2_id')
+            u1_id = request.GET.get('u1_id')
+            Message.objects.filter(id=m_id).update(status=1)
+            data = {'type_2': 'friend_3', 'u_id': u2_id, 'p_id': u1_id}
+            send_message.delay(data)
+            return JsonResponse({'code':200})
+        except:
+            return JsonResponse({'code': 400})
+class ReadMessage(View):
+    def get(self,request):
+        u2_id=request.user.id
+        type_=request.GET.get('type_')
+        # try:
+        if type_=='pieces':
+            msgs=Message.objects.filter(Q(type_1='1')|Q(type_1='2')|Q(type_1='4')|Q(type_1='8')).filter(user_2_id=u2_id,status=0).all()
+            for msg in msgs:
+                msg.status=1
+            Message.objects.bulk_update(msgs,['status'])
+        elif type_=='comments':
+            msgs=Message.objects.filter(user_2_id=u2_id,status=0,type_1='3').all()
+            for msg in msgs:
+                msg.status=1
+            Message.objects.bulk_update(msgs,['status'])
+        elif type_=='friend':
+            msgs=Message.objects.filter(Q(type_1='6')|Q(type_1='7')).filter(user_2_id=u2_id,status=0).all()
+            for msg in msgs:
+                msg.status=1
+            Message.objects.bulk_update(msgs,['status'])
+        return JsonResponse({'code': 200})
+        # except:
+        #     return JsonResponse({'code':400})
+
+
+
+
 #搜索引擎
 class UserSearchView(SearchView):
 
@@ -204,6 +290,7 @@ class UserSearchView(SearchView):
             page_list = paginator.page_range
         user_list=[]
         focus_ids=[]
+        friend_ids=[]
         icon_ids = []
         for user in page:
             user_list.append(user.object)
@@ -213,6 +300,10 @@ class UserSearchView(SearchView):
         for obj in focus_objs:
             if obj.flag=='1':
                 focus_ids.append(obj.focus_user_id)
+        friend_objs=self.request.user.friendmodel_set.all()
+        for obj in friend_objs:
+            if obj.flag=='1':
+                friend_ids.append(obj.friend_user_id)
         context = {
             "query": self.query,
             "form": self.form,
@@ -225,6 +316,7 @@ class UserSearchView(SearchView):
             "q":self.get_query(),
             "suggestion": None,
             "focus_ids":focus_ids,
+            "friend_ids":friend_ids,
             "icon_ids":icon_ids,
         }
 

@@ -26,6 +26,29 @@
             }
         });
     }
+    function make_friend(){
+        let o_id = document.getElementById("o_id").value ;
+        let current_page = document.getElementById("current_page").value ;
+        axios.get('/user/make_friend/?o_id='+o_id+'&is_friend=1').then(response=>{
+            if(response.data.code==200){
+                swal('好友申请已发送成功，等待用户同意')
+            }else{
+                swal('请求发送失败');
+            }
+        });
+    }
+    function make_unfriend(){
+        let o_id = document.getElementById("o_id").value ;
+        let current_page = document.getElementById("current_page").value ;
+        axios.get('/user/make_friend/?o_id='+o_id+'&is_friend=0').then(response=>{
+            if(response.data.code==200){
+                window.location.href='/index/other_user/?current_page='+current_page
+            }else{
+                swal('删除失败');
+            }
+        });
+    }
+
 
 </script>
 <!--导航栏-->
@@ -66,6 +89,9 @@
                         {% for o_user in page_content %}
                         <tr>
                             <td>
+                                <li class="dropdown">
+                                    <div class="bsa-nav-item" data-bs-toggle="dropdown">
+                                        <div class="d-flex align-items-center mb-2">
                                 {% if o_user.id in icon_ids %}
                                     <img src={{o_user.icon.url}} alt="Admin"
                                          class="rounded-circle p-1 bsa-bg-color4 bsa-width-60 bsa-height-60" data-bs-toggle="modal"
@@ -75,6 +101,14 @@
                                          class="rounded-circle p-1 bsa-bg-color4 bsa-width-60 bsa-height-60" data-bs-toggle="modal"
                                          data-bs-target="#exampleModal">
                                 {% endif %}
+                                            </div>
+                                    </div>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="/index/other_details/?u_id={{o_user.id}}"><i class="bi bi-person me-2"></i>访问空间</a></li>
+
+                                    </ul>
+
+
 
                             </td>
                             <td>{{o_user.username}}</td>
@@ -96,7 +130,19 @@
                                             </button>
                                         </div>
                                         {% endif %}
+                                        {% if o_user.id not in friend_ids %}
+                                        <div class="col">
+                                            <button type="button" onclick="make_friend()" class="btn btn-warning px-5"><i class="bi bi-heart me-1"></i>添加好友
+                                            </button>
+                                        </div>
+                                        {% else %}
+                                         <div class="col">
+                                            <button type="button" onclick="make_unfriend()" class="btn btn-danger px-5"><i class="bi bi-heart me-1"></i>删除好友
+                                            </button>
+                                        </div>
+                                        {% endif %}
                                     </div>
+
                                 </form>
                             </td>
                         </tr>

@@ -10,8 +10,10 @@ from haystack.query import EmptySearchQuerySet
 from haystack.views import SearchView
 from pieces_info.models import ArticleModel,ImageModel
 
-#上传文章
+# #上传文章
 from user.models import StarModel,CollectionModel
+
+from QTribe.tasks import send_message
 
 
 class PublishArticle(View):
@@ -34,7 +36,7 @@ class MyArticle(View):
         page_number = int(request.GET.get('page_number', 1))
         articles=ArticleModel.objects.filter(user=request.user)
         # 创建分页对象
-        paginator = Paginator(articles, 2)
+        paginator = Paginator(articles, 5)
         num_pages = paginator.num_pages
         # 获取页码数列，用于前端遍历
         if paginator.num_pages > 5:
@@ -92,6 +94,8 @@ class StarArticle(View):
         else:
             article.star_count+=1
             article.save()
+            data={'u_id':request.user.id,'type_2':'star_article','p_id':a_id}
+            send_message.delay(data)
             if not is_star:
                 StarModel.objects.create(user=request.user,article=article,flag='1')
             else:
@@ -136,6 +140,8 @@ class CollectArticle(View):
         else:
             article.collection_count+=1
             article.save()
+            data={'u_id':request.user.id,'type_2':'collect_article','p_id':a_id}
+            send_message.delay(data)
             if not is_collect:
                 CollectionModel.objects.create(user=request.user,article=article,flag='1')
             else:

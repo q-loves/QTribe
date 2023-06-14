@@ -23,7 +23,6 @@ class UserModel(AbstractUser,BaseModel2):
         verbose_name_plural=verbose_name
 
 class FocusModel(BaseModel2):
-
     user=models.ForeignKey('UserModel',on_delete=models.CASCADE,verbose_name='用户')
     focus_user=models.ForeignKey('UserModel',on_delete=models.CASCADE,verbose_name='被关注用户',related_name='focus_user')
     #避免用户重复关注，取消关注，浪费数据库资源。每当用户关注或取消关注时，只对flag进行操作，不会浪费数据库内存
@@ -33,6 +32,17 @@ class FocusModel(BaseModel2):
         verbose_name='关注列表'
         verbose_name_plural=verbose_name
 
+class FriendModel(BaseModel2):
+    user = models.ForeignKey('UserModel', on_delete=models.CASCADE, verbose_name='发起申请用户')
+    friend_user = models.ForeignKey('UserModel', on_delete=models.CASCADE, verbose_name='通过申请用户',
+                                   related_name='friend_user')
+    # 避免用户重复添加，删除好友，浪费数据库资源。每当用户添加或删除时，只对flag进行操作，不会浪费数据库内存
+    flag = models.CharField(verbose_name='标志', max_length=2, blank=True, null=True)
+
+    class Meta:
+        db_table = 't_friend_uer'
+        verbose_name = '好友列表'
+        verbose_name_plural = verbose_name
 
 class StarModel(BaseModel2):
     user = models.ForeignKey('UserModel', on_delete=models.CASCADE, verbose_name='用户')

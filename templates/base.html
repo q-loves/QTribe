@@ -33,9 +33,37 @@
             background-size:250px 700px ;
         }
     </style>
+    <script>
+        function response_friend(m_id,u1_id,u2_id){
+            axios.get('/user/response_friend/?m_id='+m_id+'&u1_id='+u1_id+'&u2_id='+u2_id).then(response=>{
+                if(response.data.code==200){
+                    swal('你们已经成为好友啦');
+                }else{
+                    swal('发生错误');
+                }
+            });
+        }
+        function refuse_friend(m_id,u1_id,u2_id){
+            axios.get('/user/refuse_friend/?m_id='+m_id+'&u1_id='+u1_id+'&u2_id='+u2_id).then(response=>{
+                if(response.data.code==200){
+                    swal('已拒绝');
+                }else{
+                    swal('发生错误');
+                }
+            });
+        }
+        function read_message(type_){
+            axios.get('/user/read_message/?type_='+type_).then(response=>{
+                if(response.data.code==200){
+                    swal('全部设为已读');
+                }else{
+                    swal('发生错误');
+                }
+            });
+        }
+    </script>
 
-
-        <title>qloves Blog</title>
+    <title>qloves Blog</title>
 </head>
 <body>
 
@@ -71,7 +99,7 @@
     <li class="dropdown">
         <div class="bsa-nav-item" data-bs-toggle="dropdown">
             <div class="bsa-header-badge-wrapper">
-                <span class="bsa-header-badge">99+</span>
+                {% if m_count != 0%}<span class="bsa-header-badge">{{m_count}}</span>{% endif %}
                 <i class="bi bi-bell"></i>
             </div>
         </div>
@@ -79,41 +107,137 @@
             <div class="card border-0">
                 <div class="card-header bg-white d-flex align-items-center justify-content-between">
                     <span class="bsa-font-15">通知列表</span>
-                    <a href="javascript:" class="text-muted bsa-font-13 text-decoration-none">全部设为已读</a>
+                    <a href="javascript:read_message('pieces')" class="text-muted bsa-font-13 text-decoration-none">全部设为已读</a>
                 </div>
                 <div class="card-body p-0">
                     <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
+                        <div  class="d-flex align-items-center justify-content-center bsa-font-20 bsa-height-45 bsa-width-45 rounded-circle bsa-bg-color3v text-white">
+                            <i class="bi bi-calendar4-event me-2 align-middle"></i>
+                        </div></a>
+                    {% for message in messages %}
+<!--                        {% if message.type_1=='4'%}-->
 
+<!--                            <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">-->
+<!--                                <div class="d-flex align-items-center justify-content-center bsa-font-20 bsa-height-45 bsa-width-45 rounded-circle bsa-bg-color2 text-white">-->
+<!--                                    <i class="bi bi-people"></i>-->
+<!--                                </div>-->
+<!--                                <div class="d-flex flex-column gap-1 ms-3">-->
+<!--                                    <h5 class="text-dark mb-0 bsa-ellipsis">新增关注</h5>-->
+<!--                                    <div class="text-secondary bsa-ellipsis2">-->
+<!--                                        有用户关注你啦-->
+<!--                                    </div>-->
+<!--                                    <div class="small text-muted">30分钟前</div>-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                        {% endif %}-->
 
-                    </a>
-                    <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
-                        <div class="d-flex align-items-center justify-content-center bsa-font-20 bsa-height-45 bsa-width-45 rounded-circle bsa-bg-color2 text-white">
-                            <i class="bi bi-people"></i>
-                        </div>
-                        <div class="d-flex flex-column gap-1 ms-3">
-                            <h5 class="text-dark mb-0 bsa-ellipsis">新增好友申请</h5>
-                            <div class="text-secondary bsa-ellipsis2">
-                                100个新用户注册
-                            </div>
-                            <div class="small text-muted">30分钟前</div>
-                        </div>
-                    </a>
-                    <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
-                        <div class="d-flex align-items-center justify-content-center bsa-font-20 bsa-height-45 bsa-width-45 rounded-circle bsa-bg-color3 text-white">
-                            <i class="bi bi-chat-square-dots"></i>
-                        </div>
-                        <div class="d-flex flex-column gap-1 ms-3">
-                            <h5 class="text-dark mb-0 bsa-ellipsis">新的评论</h5>
-                            <div class="text-secondary bsa-ellipsis2">
-                                您收到客户新的评论
-                            </div>
-                            <div class="small text-muted">2天前</div>
-                        </div>
-                    </a>
-
+                        {% if message.type_1=='1'%}
+                             <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
+                                <div class="bsa-icon-badge position-relative bg-primary me-3">
+                                    <i class="bi bi-heart align-middle bsa-font-15 text-white"></i>
+                                </div>
+                                <div class="d-flex flex-column gap-1 ms-3">
+                                    <h5 class="text-dark mb-0 bsa-ellipsis">有人赞了你</h5>
+                                    <div class="text-secondary bsa-ellipsis2">
+                                        有人点赞了您的作品
+                                    </div>
+                                    <div class="small text-muted">2天前</div>
+                                </div>
+                             </a>
+                        {% endif %}
+                        {% if message.type_1=='4' %}
+                            <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
+                                <div class="d-flex align-items-center justify-content-center bsa-font-20 bsa-height-45 bsa-width-45 rounded-circle bsa-bg-color4 text-white">
+                                    <i class="bi bi-person-workspace"></i>
+                                </div>
+                                <div class="d-flex flex-column gap-1 ms-3">
+                                    <h5 class="text-dark mb-0 bsa-ellipsis">有人关注了你</h5>
+                                    <div class="text-secondary bsa-ellipsis2">
+                                        有用户关注了你哟，快来看看吧
+                                    </div>
+                                    <div class="small text-muted">1周前</div>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
                 </div>
                 <div class="card-footer text-center bg-white">
                     <a href="javascript:" class="text-muted bsa-font-14 text-decoration-none">查看所有通知</a>
+                </div>
+            </div>
+        </div>
+    </li>
+
+    <!--    评论    -->
+     <li class="dropdown">
+        <div class="bsa-nav-item" data-bs-toggle="dropdown">
+            <div class="bsa-header-badge-wrapper">
+                {% if c_count != 0%}<span class="bsa-header-badge">{{c_count}}</span>{% endif %}
+                <i class="bi bi-chat-left"></i>
+            </div>
+        </div>
+        <div class="dropdown-menu dropdown-menu-end p-0">
+            <div class="card border-0">
+                <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                    <span class="bsa-font-15">消息列表</span>
+                    <a href="javascript:read_message('comments')" class="text-muted bsa-font-13 text-decoration-none">全部设为已读</a>
+                </div>
+                <div class="card-body p-0">
+                    {% for comm in comments %}
+                        <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
+                            <img src="{{comm.user_1.icon.url}}" class="bsa-height-45 bsa-width-45 rounded-circle" alt="头像">
+                            <div class="d-flex flex-column gap-1 ms-3">
+                                <h5 class="text-dark mb-0 bsa-ellipsis">{{comm.user_1.username}}</h5>
+                                <div class="text-secondary bsa-ellipsis2">
+                                    {{comm.comment_1.content}}
+                                </div>
+                                <div class="small text-muted">6分钟前</div>
+
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+                <div class="card-footer text-center bg-white">
+                    <a href="javascript:" class="text-muted bsa-font-14 text-decoration-none">查看所有消息</a>
+                </div>
+            </div>
+        </div>
+    </li>
+    <!--    好友申请信息    -->
+     <li class="dropdown">
+        <div class="bsa-nav-item" data-bs-toggle="dropdown">
+            <div class="bsa-header-badge-wrapper">
+                {% if f_count != 0%}<span class="bsa-header-badge">{{f_count}}</span>{% endif %}
+                <i class="bi bi-person"></i>
+            </div>
+        </div>
+        <div class="dropdown-menu dropdown-menu-end p-0">
+            <div class="card border-0">
+                <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                    <span class="bsa-font-15">信息通知</span>
+                    <a href="javascript:read_message('friend')" class="text-muted bsa-font-13 text-decoration-none">全部设为已读</a>
+                </div>
+                <div class="card-body p-0">
+                    {% for msg in friends %}
+                        <a href="javascript:" class="d-flex align-items-center text-decoration-none py-2 px-3 bsa-hover">
+                            <img src="{{msg.user_1.icon.url}}" class="bsa-height-45 bsa-width-45 rounded-circle" alt="头像">
+                            <div class="d-flex flex-column gap-1 ms-3">
+                                <h5 class="text-dark mb-0 bsa-ellipsis">{{msg.user_1.username}}</h5>
+                                <div class="text-secondary bsa-ellipsis2">
+                                    {% if msg.type_1=='5'%}用户{{msg.user_1.username}}请求添加你为好友🥰~~{% endif %}
+                                    {% if msg.type_1=='6'%}用户{{msg.user_1.username}}已经添加你为好友😁~~{% endif %}
+                                    {% if msg.type_1=='7'%}用户{{msg.user_1.username}}拒绝添加你为好友😔~~{% endif %}
+                                </div>
+                                {% if msg.type_1=='5'%}
+                                <div class="small text-muted">6分钟前</div><span><button type="button" onclick="response_friend({{msg.id}},{{msg.user_1.id}},{{msg.user_2.id}})" class="btn btn-outline-success">同意</button>&nbsp;&nbsp;&nbsp;<button type="button" onclick="refuse_friend({{msg.id}},{{msg.user_1.id}},{{msg.user_2.id}})" class="btn btn-outline-danger">拒绝</button></span>
+                                {% endif %}
+
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+                <div class="card-footer text-center bg-white">
+                    <a href="javascript:" class="text-muted bsa-font-14 text-decoration-none">查看所有消息</a>
                 </div>
             </div>
         </div>
@@ -228,29 +352,27 @@
 </div>
 
 
-
-
 <script src="/static/js/bootstrap.bundle.min.js"></script>
 <script src="/static/js/bootstrap-admin.min.js"></script>
-<script src="/static/js/jquery-1.12.4.min.js"></script>
-<script src="/static/js/jquery.plugin-countdown.min.js"></script>
-<script src="/static/js/jquery-countdown.min.js"></script>
-<script src="/static/js/bootstrap.min.js"></script>
-<script src="/static/js/owl.carousel.min.js"></script>
-<script src="/static/js/magnific-popup.min.js"></script>
-<script src="/static/js/isotope.min.js"></script>
-<script src="/static/js/jquery.scrollbar.min.js"></script>
-<script src="/static/js/jquery-ui.min.js"></script>
-<script src="/static/js/mobile-menu.js"></script>
-<script src="/static/js/chosen.min.js"></script>
-<script src="/static/js/slick.js"></script>
-<script src="/static/js/jquery.elevateZoom.min.js"></script>
-<script src="/static/js/jquery.actual.min.js"></script>
-<script src="/static/js/fancybox/source/jquery.fancybox.js"></script>
-<script src="/static/js/lightbox.min.js"></script>
-<script src="/static/js/owl.thumbs.min.js"></script>
-<script src="/static/js/jquery.scrollbar.min.js"></script>
-<script src="/static/js/frontend-plugin.js"></script>
+<!--<script src="/static/js/jquery-1.12.4.min.js"></script>-->
+<!--<script src="/static/js/jquery.plugin-countdown.min.js"></script>-->
+<!--<script src="/static/js/jquery-countdown.min.js"></script>-->
+<!--<script src="/static/js/bootstrap.min.js"></script>-->
+<!--<script src="/static/js/owl.carousel.min.js"></script>-->
+<!--<script src="/static/js/magnific-popup.min.js"></script>-->
+<!--<script src="/static/js/isotope.min.js"></script>-->
+<!--<script src="/static/js/jquery.scrollbar.min.js"></script>-->
+<!--<script src="/static/js/jquery-ui.min.js"></script>-->
+<!--<script src="/static/js/mobile-menu.js"></script>-->
+<!--<script src="/static/js/chosen.min.js"></script>-->
+<!--<script src="/static/js/slick.js"></script>-->
+<!--<script src="/static/js/jquery.elevateZoom.min.js"></script>-->
+<!--<script src="/static/js/jquery.actual.min.js"></script>-->
+<!--<script src="/static/js/fancybox/source/jquery.fancybox.js"></script>-->
+<!--<script src="/static/js/lightbox.min.js"></script>-->
+<!--<script src="/static/js/owl.thumbs.min.js"></script>-->
+<!--<script src="/static/js/jquery.scrollbar.min.js"></script>-->
+<!--<script src="/static/js/frontend-plugin.js"></script>-->
 
 
 </body>
